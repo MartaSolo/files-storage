@@ -3,7 +3,7 @@
 
 <template>
   <div>
-    <p>Homepage</p>
+    <DragAndDropInput />
   </div>
 </template>
 
