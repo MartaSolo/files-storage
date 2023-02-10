@@ -1,24 +1,64 @@
 <script setup lang="ts">
+
+const isDragActive=ref(false);
+
+const handleSubmit=()=> {
+  console.log("Submit");
+}
+
+const handleDrop=(e:Event)=> {
+  isDragActive.value = false;
+}
+
+const handleDrag=(e:Event)=> {
+  if(e.type==="dragenter" || e.type==="dragover") {
+    isDragActive.value = true;
+  }
+  if(e.type==="dragleave") {
+    isDragActive.value = false;
+  }
+}
 </script>
 
 <template>
-  <form class="form--file">
-    <label 
-      class="form--file-label" for="file">
-      Drop your file here
-      <img class="form--file-icon" src="../assets/img/drag-and-drop.png" alt="drag and drop icon"/>
+  <form 
+    class="form--file"
+    :class="{active:isDragActive}" 
+    @submit.prevent="handleSubmit" 
+    @drop.prevent="handleDrop" 
+    @dragenter="handleDrag"
+  >
+    <label class="form--file-label" for="file">
+      <div class="form--file-wrapper">
+        Drop your file here
+        <img 
+          class="form--file-icon" 
+          src="../assets/img/drag-and-drop.png" 
+          alt="drag and drop icon"
+        />
       or 
       <button 
-        class="form--file-button">Upload your file
-        <img class="form--file-icon" src="../assets/img/upload.png" alt="upload"/>
-        </button>
+        class="form--file-button">
+        Upload your file
+          <img 
+            class="form--file-icon" 
+            src="../assets/img/upload.png" 
+            alt="upload"
+          />
+      </button>
         <input 
           class="form--file-input" 
           type="file" 
           id="file" 
           name="file"
-      />
+        />
+      </div>
     </label>
+    <div class="form--file-overlay"      
+      @dragenter="handleDrag"
+      @dragover.prevent="handleDrag"
+      @dragleave="handleDrag">
+    </div>
   </form>
 </template>
 
@@ -28,15 +68,19 @@
   max-width: 500px;
   height: 350px;
   border-radius: 16px;
+  position: relative;
+}
+.form--file.active {
+  background-color: rgb(168, 203, 203);
 }
 
-.form--file:hover {
-  border: 4px dashed rgb(177, 177, 177);
-}
 .form--file-label {
-  background-color: rgb(251, 249, 249);
+  display: block;
   height: 100%;
-  width: 100%;
+}
+
+.form--file-wrapper{
+  height: 100%;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -61,9 +105,14 @@
   gap:0.5rem;
 }
 
-.form--file-button:hover  {
-  background-color: rgb(8, 139, 139);
+.form--file-overlay {
+  height: 100%;
+  width: 100%;
+  border-radius: 8px;
+  position: absolute;
+  top:0;
 }
+
 .form--file-icon {
   width:50px;
   height:50px;
