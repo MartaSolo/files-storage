@@ -1,64 +1,58 @@
 <script setup lang="ts">
+const isDragActive = ref(false);
 
-const isDragActive=ref(false);
-
-const handleSubmit=()=> {
+const handleSubmit = () => {
   console.log("Submit");
-}
+};
 
-const handleDrop=(e:Event)=> {
+const handleDrop = () => {
   isDragActive.value = false;
-}
+};
 
-const handleDrag=(e:Event)=> {
-  if(e.type==="dragenter" || e.type==="dragover") {
+const handleDrag = (e: Event) => {
+  if (e.type === "dragenter" || e.type === "dragover") {
     isDragActive.value = true;
   }
-  if(e.type==="dragleave") {
+  if (e.type === "dragleave") {
     isDragActive.value = false;
   }
-}
+};
 </script>
 
 <template>
-  <form 
+  <form
     class="form--file"
-    :class="{active:isDragActive}" 
-    @submit.prevent="handleSubmit" 
-    @drop.prevent="handleDrop" 
+    :class="{ active: isDragActive }"
+    @submit.prevent="handleSubmit"
+    @drop.prevent="handleDrop"
     @dragenter="handleDrag"
   >
     <label class="form--file-label" for="file">
       <div class="form--file-wrapper">
         Drop your file here
-        <img 
-          class="form--file-icon" 
-          src="../assets/img/drag-and-drop.png" 
+        <img
+          class="form--file-icon"
+          src="../assets/img/drag-and-drop.png"
           alt="drag and drop icon"
         />
-      or 
-      <button 
-        class="form--file-button">
-        Upload your file
-          <img 
-            class="form--file-icon" 
-            src="../assets/img/upload.png" 
+        or
+        <button class="form--file-button">
+          Upload your file
+          <img
+            class="form--file-icon"
+            src="../assets/img/upload.png"
             alt="upload"
           />
-      </button>
-        <input 
-          class="form--file-input" 
-          type="file" 
-          id="file" 
-          name="file"
-        />
+        </button>
+        <input id="file" class="form--file-input" type="file" name="file" />
       </div>
     </label>
-    <div class="form--file-overlay"      
+    <div
+      class="form--file-overlay"
       @dragenter="handleDrag"
       @dragover.prevent="handleDrag"
-      @dragleave="handleDrag">
-    </div>
+      @dragleave="handleDrag"
+    ></div>
   </form>
 </template>
 
@@ -79,14 +73,14 @@ const handleDrag=(e:Event)=> {
   height: 100%;
 }
 
-.form--file-wrapper{
+.form--file-wrapper {
   height: 100%;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  padding: 2rem;;
+  padding: 2rem;
   font-size: 1.5rem;
   font-weight: 600;
   color: rgb(6, 89, 89);
@@ -102,7 +96,7 @@ const handleDrag=(e:Event)=> {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap:0.5rem;
+  gap: 0.5rem;
 }
 
 .form--file-overlay {
@@ -110,12 +104,12 @@ const handleDrag=(e:Event)=> {
   width: 100%;
   border-radius: 8px;
   position: absolute;
-  top:0;
+  top: 0;
 }
 
 .form--file-icon {
-  width:50px;
-  height:50px;
+  width: 50px;
+  height: 50px;
 }
 
 .form--file-input {
