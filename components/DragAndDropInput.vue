@@ -2,26 +2,30 @@
 import { computed } from "vue";
 
 const maxFilesNumber = ref<number>(10);
-const maxFileSizeBytes = ref<number>(5000000);
+const maxFileSizeMB = ref<number>(5);
 const isDragActive = ref(false);
 const message = ref<string>("");
 const uploadedFiles = ref<string[]>([]);
+const notUploadedFiles = ref<string[]>([]);
 
-const maxFileSizeMB = computed(() => {
-  return maxFileSizeBytes.value / 1000000;
+const maxFileSizeBytes = computed(() => {
+  return maxFileSizeMB.value * 1000000;
 });
 
 const handleDrag = (e: Event) => {
   if (e.type === "dragenter" || e.type === "dragover") {
     isDragActive.value = true;
+    message.value = "";
+    uploadedFiles.value = [];
+    notUploadedFiles.value = [];
   }
   if (e.type === "dragleave") {
     isDragActive.value = false;
   }
 };
 
-const numberOfFilesExceeded = (data: []) => {
-  if (data.length > maxFilesNumber.value) {
+const numberOfFilesExceeded = (arrayOfFiles: []) => {
+  if (arrayOfFiles.length > maxFilesNumber.value) {
     message.value = `You can upload up to ${maxFilesNumber.value} files at a time!`;
     return true;
   } else {
@@ -41,6 +45,8 @@ const handleDrop = (e: Event) => {
         if (file.size < maxFileSizeBytes.value) {
           uploadedFiles.value.push(file.name);
           // send to backend
+        } else {
+          notUploadedFiles.value.push(file.name);
         }
       }
     });
@@ -50,6 +56,8 @@ const handleDrop = (e: Event) => {
       if (file.size < maxFileSizeBytes.value) {
         uploadedFiles.value.push(file.name);
         // send to backend
+      } else {
+        notUploadedFiles.value.push(file.name);
       }
     });
   }
@@ -69,34 +77,32 @@ const handleSubmit = () => {
       @dragenter="handleDrag"
     >
       <label class="form--file-label" for="file">
-        <div class="form--file-wrapper">
-          Drop your file here
+        Drop your file here
+        <img
+          class="form--file-icon"
+          src="../assets/img/drag-and-drop.png"
+          alt="drag and drop icon"
+        />
+        or
+        <button class="form--file-button">
+          Upload your file
           <img
             class="form--file-icon"
-            src="../assets/img/drag-and-drop.png"
-            alt="drag and drop icon"
+            src="../assets/img/upload.png"
+            alt="upload"
           />
-          or
-          <button class="form--file-button">
-            Upload your file
-            <img
-              class="form--file-icon"
-              src="../assets/img/upload.png"
-              alt="upload"
-            />
-          </button>
-          <p class="form--file-info">
-            You can upload max {{ maxFilesNumber }} files, max
-            {{ maxFileSizeMB }}MB each.
-          </p>
-          <input
-            id="file"
-            class="form--file-input"
-            type="file"
-            name="file"
-            multiple
-          />
-        </div>
+        </button>
+        <p class="form--file-info">
+          You can upload max {{ maxFilesNumber }} files, max
+          {{ maxFileSizeMB }}MB each.
+        </p>
+        <input
+          id="file"
+          class="form--file-input"
+          type="file"
+          name="file"
+          multiple
+        />
       </label>
       <div
         class="form--file-overlay"
@@ -107,17 +113,19 @@ const handleSubmit = () => {
       ></div>
     </form>
     <div v-if="message" class="upload--error-message">{{ message }}</div>
-    <div v-if="uploadedFiles.length > 0" class="uploaded--files">
-      You have just uploaded:
-      <ol class="uploaded--files-list">
-        <li
-          v-for="(file, index) in uploadedFiles"
-          :key="index"
-          class="uploaded--files-list-item"
-        >
-          {{ file }}
-        </li>
-      </ol>
+    <div v-if="uploadedFiles.length > 0" class="uploaded--files-success">
+      <FileList
+        title="Uploaded files:"
+        :items="uploadedFiles"
+        :success="true"
+      />
+    </div>
+    <div v-if="notUploadedFiles.length > 0" class="uploaded--files-failure">
+      <FileList
+        title="Files not uploaded due to the exceeded size:"
+        :items="notUploadedFiles"
+        :success="false"
+      />
     </div>
   </div>
 </template>
@@ -128,26 +136,27 @@ const handleSubmit = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1 px solid green;
 }
 
 .form--file {
   border: 4px dashed grey;
-  max-width: 500px;
   height: 350px;
   border-radius: 16px;
   position: relative;
   margin: 1rem 0;
+}
+
+@media (min-width: 768px) {
+  .form--file {
+    width: 600px;
+  }
 }
 .form--file.active {
   background-color: rgb(168, 203, 203);
 }
 
 .form--file-label {
-  display: block;
-  height: 100%;
-}
-
-.form--file-wrapper {
   height: 100%;
   border-radius: 16px;
   display: flex;
@@ -158,6 +167,7 @@ const handleSubmit = () => {
   font-size: 1.5rem;
   font-weight: 600;
   color: rgb(6, 89, 89);
+  text-align: center;
 }
 
 .form--file-button {
@@ -172,6 +182,10 @@ const handleSubmit = () => {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+  cursor: pointer;
+}
+.form--file-button:hover {
+  background-color: rgb(5, 130, 130);
 }
 
 .form--file-overlay {
@@ -180,6 +194,10 @@ const handleSubmit = () => {
   border-radius: 8px;
   position: absolute;
   top: 0;
+  /* z-index: -99; */
+}
+.form--file-overlay:hover {
+  background: red;
 }
 
 .form--file-info {
@@ -203,13 +221,4 @@ const handleSubmit = () => {
   color: rgb(239, 26, 26);
   text-align: center;
 }
-.uploaded--files {
-  font-size: 1.2rem;
-  color: rgb(20, 24, 27);
-}
-
-.uploaded--files-list {
-  list-style-type: decimal;
-}
-
 </style>
