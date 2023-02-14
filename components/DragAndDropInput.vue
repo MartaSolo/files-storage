@@ -63,6 +63,24 @@ const handleDrop = (e: Event) => {
   }
 };
 
+const handleUpload = (e: Event) => {
+  // e.preventDefault();
+  console.log("handleUpload", e);
+  if (e.target.files[0]) {
+    console.log(e.target.files[0].name);
+    // mam tu dostep do plików
+  }
+};
+
+// https://erikmartinjordan.com/input-type-file-javascript-keyboard
+const handleKeydown = (e: Event) => {
+  console.log(e);
+  const input = document.getElementById("file");
+  if (e.code === "Enter") {
+    input?.click();
+  }
+};
+
 const handleSubmit = () => {
   console.log("Submit");
 };
@@ -71,47 +89,48 @@ const handleSubmit = () => {
 <template>
   <div class="wrapper">
     <form
-      class="form--file"
-      :class="{ active: isDragActive }"
+      class="file--form"
       @submit.prevent="handleSubmit"
       @dragenter="handleDrag"
     >
-      <label class="form--file-label" for="file">
-        Drop your file here
-        <img
-          class="form--file-icon"
-          src="../assets/img/drag-and-drop.png"
-          alt="drag and drop icon"
-        />
-        or
-        <button class="form--file-button">
-          Upload your file
-          <img
-            class="form--file-icon"
-            src="../assets/img/upload.png"
-            alt="upload"
-          />
-        </button>
-        <p class="form--file-info">
-          You can upload max {{ maxFilesNumber }} files, max
-          {{ maxFileSizeMB }}MB each.
-        </p>
-        <input
-          id="file"
-          class="form--file-input"
-          type="file"
-          name="file"
-          multiple
-        />
-      </label>
+      <p class="file--info">
+        You can upload max {{ maxFilesNumber }} files, max {{ maxFileSizeMB }}MB
+        each.
+      </p>
       <div
-        class="form--file-overlay"
+        class="file--dropzone"
+        :class="{ active: isDragActive }"
         @drop.prevent="handleDrop"
         @dragenter="handleDrag"
         @dragover.prevent="handleDrag"
         @dragleave="handleDrag"
-      ></div>
+      >
+        <p class="file--dropzone-description">Drop your files here</p>
+        <img
+          class="file--dropzone-icon"
+          src="../assets/img/drag-and-drop.png"
+          alt="drag and drop icon"
+        />
+        <p class="file--dropzone-description">or</p>
+      </div>
+      <label class="file--label" for="file" tabindex="0" @keydown="handleKeydown">
+        Upload your files
+        <img
+          class="file--label-icon"
+          src="../assets/img/upload.png"
+          alt="upload"
+        />
+        <input
+          id="file"
+          class="file--input"
+          type="file"
+          name="file"
+          multiple
+          @change="handleUpload"
+        />
+      </label>
     </form>
+
     <div v-if="message" class="upload--error-message">{{ message }}</div>
     <div v-if="uploadedFiles.length > 0" class="uploaded--files-success">
       <FileList
@@ -136,29 +155,39 @@ const handleSubmit = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1 px solid green;
+  border: 1px solid green;
 }
 
-.form--file {
-  border: 4px dashed grey;
-  height: 350px;
+.file--form {
+  width: 100%;
+  box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
+  height: 450px;
   border-radius: 16px;
-  position: relative;
+  padding: 1rem;
   margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 @media (min-width: 768px) {
-  .form--file {
-    width: 600px;
+  .file--form {
+    width: 700px;
   }
 }
-.form--file.active {
-  background-color: rgb(168, 203, 203);
+
+.file--info {
+  color: rgb(143, 148, 148);
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: center;
+  padding: 1rem;
 }
 
-.form--file-label {
-  height: 100%;
+.file--dropzone {
+  border: 4px dashed rgb(168, 203, 203);
   border-radius: 16px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -168,23 +197,35 @@ const handleSubmit = () => {
   font-weight: 600;
   color: rgb(6, 89, 89);
   text-align: center;
+  margin-bottom: 1rem;
+}
+.file--dropzone.active {
+  background-color: rgb(218, 233, 233);
 }
 
-.form--file-button {
-  border: 1px solid black;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+.file--dropzone-description {
+  padding: 1rem;
+}
+
+.file--button {
+  border-radius: 16px;
+}
+.file--label {
+  border-radius: 16px;
   background-color: rgb(6, 89, 89);
-  color: rgb(251, 249, 249);
-  font-size: 1rem;
-  font-weight: 400;
+  max-width: 300px;
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 0.5rem;
+  padding: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  color: rgb(251, 249, 249);
   cursor: pointer;
 }
-.form--file-button:hover {
+
+.form--file-label:hover {
   background-color: rgb(5, 130, 130);
 }
 
@@ -194,25 +235,15 @@ const handleSubmit = () => {
   border-radius: 8px;
   position: absolute;
   top: 0;
-  /* z-index: -99; */
-}
-.form--file-overlay:hover {
-  background: red;
 }
 
-.form--file-info {
-  color: rgb(143, 148, 148);
-  font-size: 1rem;
-  font-weight: 400;
-  text-align: center;
-}
-
-.form--file-icon {
+.file--dropzone-icon,
+.file--label-icon {
   width: 50px;
   height: 50px;
 }
 
-.form--file-input {
+.file--input {
   display: none;
 }
 

@@ -58,7 +58,6 @@ const computedClass = computed(() => {
   color: rgb(239, 26, 26);
 }
 
-
 .list--list {
   font-size: 1rem;
   counter-reset: list-item-counter;
