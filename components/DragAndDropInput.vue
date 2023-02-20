@@ -70,13 +70,19 @@ const handleDrop = (e: Event) => {
 const handleUpload = (e: Event) => {
   // e.preventDefault();
   console.log("handleUpload", e);
-  if (e.target.files[0]) {
-    console.log(e.target.files[0].name);
-    // mam tu dostep do plików
-  }
+  if (!e.target?.files) return;
+  if (numberOfFilesExceeded(e.target?.files)) return;
+
+  [...e.target?.files].forEach((file) => {
+    if (file.size < maxFileSizeBytes.value) {
+      uploadedFiles.value.push(file.name);
+      // send to backend
+    } else {
+      notUploadedFiles.value.push(file.name);
+    }
+  });
 };
 
-// https://erikmartinjordan.com/input-type-file-javascript-keyboard
 const handleKeydown = (e: Event) => {
   console.log(e);
   const input = document.getElementById("file");
@@ -122,6 +128,8 @@ const handleSubmit = () => {
         class="file--label"
         for="file"
         tabindex="0"
+        role="button"
+        aria-pressed="false"
         @keydown="handleKeydown"
         @click="resetState"
       >
@@ -142,21 +150,27 @@ const handleSubmit = () => {
       </label>
     </form>
 
-    <div v-if="message" class="upload--error-message">{{ message }}</div>
-    <div v-if="uploadedFiles.length > 0" class="uploaded--files-success">
+    <Transition>
+      <div v-if="message" class="upload--error-message">{{ message }}</div>
+    </Transition>
+
+    <Transition>
       <FileList
+        v-if="uploadedFiles.length"
         title="Uploaded files:"
         :items="uploadedFiles"
         :success="true"
       />
-    </div>
-    <div v-if="notUploadedFiles.length > 0" class="uploaded--files-failure">
+    </Transition>
+
+    <Transition>
       <FileList
+        v-if="notUploadedFiles.length"
         title="Files not uploaded due to the exceeded size:"
         :items="notUploadedFiles"
         :success="false"
       />
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -251,5 +265,15 @@ const handleSubmit = () => {
   font-size: 1.2rem;
   color: rgb(239, 26, 26);
   text-align: center;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
