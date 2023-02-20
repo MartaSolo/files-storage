@@ -12,12 +12,16 @@ const maxFileSizeBytes = computed(() => {
   return maxFileSizeMB.value * 1000000;
 });
 
+const resetState = () => {
+  message.value = "";
+  uploadedFiles.value = [];
+  notUploadedFiles.value = [];
+};
+
 const handleDrag = (e: Event) => {
   if (e.type === "dragenter" || e.type === "dragover") {
     isDragActive.value = true;
-    message.value = "";
-    uploadedFiles.value = [];
-    notUploadedFiles.value = [];
+    resetState();
   }
   if (e.type === "dragleave") {
     isDragActive.value = false;
@@ -77,6 +81,7 @@ const handleKeydown = (e: Event) => {
   console.log(e);
   const input = document.getElementById("file");
   if (e.code === "Enter") {
+    resetState();
     input?.click();
   }
 };
@@ -113,7 +118,13 @@ const handleSubmit = () => {
         />
         <p class="file--dropzone-description">or</p>
       </div>
-      <label class="file--label" for="file" tabindex="0" @keydown="handleKeydown">
+      <label
+        class="file--label"
+        for="file"
+        tabindex="0"
+        @keydown="handleKeydown"
+        @click="resetState"
+      >
         Upload your files
         <img
           class="file--label-icon"
@@ -207,9 +218,6 @@ const handleSubmit = () => {
   padding: 1rem;
 }
 
-.file--button {
-  border-radius: 16px;
-}
 .file--label {
   border-radius: 16px;
   background-color: rgb(6, 89, 89);
@@ -225,16 +233,8 @@ const handleSubmit = () => {
   cursor: pointer;
 }
 
-.form--file-label:hover {
+.file--label:hover {
   background-color: rgb(5, 130, 130);
-}
-
-.form--file-overlay {
-  height: 100%;
-  width: 100%;
-  border-radius: 8px;
-  position: absolute;
-  top: 0;
 }
 
 .file--dropzone-icon,
