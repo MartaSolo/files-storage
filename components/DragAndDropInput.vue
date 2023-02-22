@@ -10,6 +10,7 @@ const isDragActive = ref(false);
 const message = ref<string>("");
 const uploadedFiles = ref<string[]>([]);
 const notUploadedFiles = ref<string[]>([]);
+const root = ref<HTMLElement | null>(null);
 
 const maxFileSizeBytes = computed(() => {
   return props.maxFileSizeMB * 1000000;
@@ -88,25 +89,17 @@ const handleUpload = (e: Event) => {
 
 const handleKeydown = (e: Event) => {
   console.log(e);
-  const input = document.getElementById("file");
+  const input = root.value?.querySelector("#file") as HTMLInputElement | null;
   if (e.code === "Enter") {
     resetState();
     input?.click();
   }
 };
-
-const handleSubmit = () => {
-  console.log("Submit");
-};
 </script>
 
 <template>
-  <div class="wrapper">
-    <form
-      class="file--form"
-      @submit.prevent="handleSubmit"
-      @dragenter="handleDrag"
-    >
+  <div ref="root" class="wrapper">
+    <form class="file--form" @submit.prevent @dragenter="handleDrag">
       <p class="file--info">
         You can upload max {{ maxFilesNumber }} files, max {{ maxFileSizeMB }}MB
         each.
