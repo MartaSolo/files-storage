@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 const isDragActive = ref(false);
-const message = ref<string>("");
+const message = ref("");
 const uploadedFiles = ref<string[]>([]);
 const notUploadedFiles = ref<string[]>([]);
 const root = ref<HTMLElement | null>(null);
@@ -22,7 +22,7 @@ const resetState = () => {
   notUploadedFiles.value = [];
 };
 
-const handleDrag = (e: Event) => {
+const handleDrag = (e: DragEvent) => {
   if (e.type === "dragenter" || e.type === "dragover") {
     isDragActive.value = true;
     resetState();
@@ -32,8 +32,10 @@ const handleDrag = (e: Event) => {
   }
 };
 
-const numberOfFilesExceeded = (arrayOfFiles: []) => {
-  if (arrayOfFiles.length > props.maxFilesNumber) {
+const numberOfFilesExceeded = (
+  listOfFiles: FileList | DataTransferItemList
+) => {
+  if (listOfFiles.length > props.maxFilesNumber) {
     message.value = `You can upload up to ${props.maxFilesNumber} files at a time!`;
     return true;
   } else {
@@ -41,24 +43,26 @@ const numberOfFilesExceeded = (arrayOfFiles: []) => {
   }
 };
 
-const handleDrop = (e: Event) => {
+const handleDrop = (e: DragEvent) => {
   e.stopPropagation();
   isDragActive.value = false;
 
-  if (e.dataTransfer.items) {
+  if (e.dataTransfer?.items) {
     if (numberOfFilesExceeded(e.dataTransfer.items)) return;
     [...e.dataTransfer.items].forEach((item) => {
       if (item.kind === "file") {
         const file = item.getAsFile();
-        if (file.size < maxFileSizeBytes.value) {
-          uploadedFiles.value.push(file.name);
-          // send to backend
-        } else {
-          notUploadedFiles.value.push(file.name);
+        if (file) {
+          if (file.size < maxFileSizeBytes.value) {
+            uploadedFiles.value.push(file.name);
+            // send to backend
+          } else {
+            notUploadedFiles.value.push(file.name);
+          }
         }
       }
     });
-  } else {
+  } else if (e.dataTransfer?.files) {
     if (numberOfFilesExceeded(e.dataTransfer.files)) return;
     [...e.dataTransfer.files].forEach((file) => {
       if (file.size < maxFileSizeBytes.value) {
@@ -72,11 +76,8 @@ const handleDrop = (e: Event) => {
 };
 
 const handleUpload = (e: Event) => {
-  // e.preventDefault();
-  console.log("handleUpload", e);
-  if (!e.target?.files) return;
+  if (!e.target?.files || numberOfFilesExceeded(e.target?.files)) return;
   if (numberOfFilesExceeded(e.target?.files)) return;
-
   [...e.target?.files].forEach((file) => {
     if (file.size < maxFileSizeBytes.value) {
       uploadedFiles.value.push(file.name);
@@ -87,8 +88,7 @@ const handleUpload = (e: Event) => {
   });
 };
 
-const handleKeydown = (e: Event) => {
-  console.log(e);
+const handleKeydown = (e: KeyboardEvent) => {
   const input = root.value?.querySelector("#file") as HTMLInputElement | null;
   if (e.code === "Enter") {
     resetState();
