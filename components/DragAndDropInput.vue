@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const maxFilesNumber = ref<number>(10);
-const maxFileSizeMB = ref<number>(5);
+const props = defineProps<{
+  maxFilesNumber: number;
+  maxFileSizeMB: number;
+}>();
+
 const isDragActive = ref(false);
 const message = ref<string>("");
 const uploadedFiles = ref<string[]>([]);
 const notUploadedFiles = ref<string[]>([]);
 
 const maxFileSizeBytes = computed(() => {
-  return maxFileSizeMB.value * 1000000;
+  return props.maxFileSizeMB * 1000000;
 });
 
 const resetState = () => {
@@ -29,8 +32,8 @@ const handleDrag = (e: Event) => {
 };
 
 const numberOfFilesExceeded = (arrayOfFiles: []) => {
-  if (arrayOfFiles.length > maxFilesNumber.value) {
-    message.value = `You can upload up to ${maxFilesNumber.value} files at a time!`;
+  if (arrayOfFiles.length > props.maxFilesNumber) {
+    message.value = `You can upload up to ${props.maxFilesNumber} files at a time!`;
     return true;
   } else {
     return false;

@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    <DragAndDropInput />
+    <DragAndDropInput :max-file-size-m-b="5" :max-files-number="10" />
   </div>
 </template>
 
