@@ -170,7 +170,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   </div>
 </template>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .wrapper {
   padding: 1rem;
   display: flex;
@@ -198,7 +198,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 }
 
 .file--info {
-  color: rgb(143, 148, 148);
+  color: $text-color-secondary;
   font-size: 1rem;
   font-weight: 400;
   text-align: center;
@@ -206,7 +206,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 }
 
 .file--dropzone {
-  border: 4px dashed rgb(168, 203, 203);
+  border: 4px dashed $color-green-medium;
   border-radius: 16px;
   width: 100%;
   display: flex;
@@ -216,12 +216,12 @@ const handleKeydown = (e: KeyboardEvent) => {
   padding: 2rem;
   font-size: 1.5rem;
   font-weight: 600;
-  color: rgb(6, 89, 89);
+  color: $color-green-dark;
   text-align: center;
   margin-bottom: 1rem;
 }
 .file--dropzone.active {
-  background-color: rgb(218, 233, 233);
+  background-color: $color-green-light;
 }
 
 .file--dropzone-description {
@@ -230,7 +230,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 .file--label {
   border-radius: 16px;
-  background-color: rgb(6, 89, 89);
+  background-color: $color-green-dark;
   max-width: 300px;
   display: flex;
   align-items: center;
@@ -239,12 +239,12 @@ const handleKeydown = (e: KeyboardEvent) => {
   font-size: 1.5rem;
   font-weight: 600;
   text-align: center;
-  color: rgb(251, 249, 249);
+  color: $color-white;
   cursor: pointer;
 }
 
 .file--label:hover {
-  background-color: rgb(5, 130, 130);
+  background-color: $color-green-dark-hover;
 }
 
 .file--dropzone-icon,
@@ -259,7 +259,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 .upload--error-message {
   font-size: 1.2rem;
-  color: rgb(239, 26, 26);
+  color: $text-color-error;
   text-align: center;
 }
 

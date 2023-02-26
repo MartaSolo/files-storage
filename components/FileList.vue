@@ -29,9 +29,9 @@ const computedClass = computed(() => {
   </div>
 </template>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .list--wrapper {
-  color: rgb(97, 99, 99);
+  color: $text-color-primary;
   font-size: 1.2rem;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -52,10 +52,10 @@ const computedClass = computed(() => {
 }
 
 .list--wrapper.success .list--title {
-  color: rgb(25, 135, 84);
+  color: $text-color-success;
 }
 .list--wrapper.failure .list--title {
-  color: rgb(239, 26, 26);
+  color: $text-color-error;
 }
 
 .list--list {
@@ -71,7 +71,7 @@ const computedClass = computed(() => {
 .list--item::before {
   counter-increment: list-item-counter;
   content: counter(list-item-counter);
-  background-color: rgb(97, 99, 99);
+  background-color: $text-color-primary;
   color: rgb(255, 255, 255);
   display: flex;
   justify-content: center;
@@ -82,9 +82,9 @@ const computedClass = computed(() => {
 }
 
 .list--wrapper.success .list--item::before {
-  background-color: rgb(25, 135, 84);
+  background-color: $text-color-success;
 }
 .list--wrapper.failure .list--item::before {
-  background-color: rgb(239, 26, 26);
+  background-color: $text-color-error;
 }
 </style>
