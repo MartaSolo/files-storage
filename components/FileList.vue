@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const props = withDefaults(defineProps<{
+const props = withDefaults(
+  defineProps<{
     items: string[];
     title: string;
-    theme?: "success" | "failure" | "default";
+    theme?: "success" | "failure" | "none";
   }>(),
   {
-    theme: "default",
+    theme: "none",
   }
 );
 
 const computedClass = computed(() => {
-  return props.theme === "default" ? "" : props.theme;
+  return props.theme === "none" ? "" : props.theme;
 });
 </script>
 
