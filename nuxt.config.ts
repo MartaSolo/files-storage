@@ -12,16 +12,3 @@ export default defineNuxtConfig({
   },
   css: ["@/assets/scss/main.scss"],
 });
-
-// export default defineNuxtConfig({
-//   modules: ["@nuxtjs/tailwindcss"],
-//   // buildModules: ["@nuxtjs/style-resources"],
-//   // styleResources: {
-//   //   scss: [
-//   //     "./assets/scss/main.scss",
-//   //     "./assets/scss/_colors.scss",
-//   //     "./assets/scss/_font.scss",
-//   //   ],
-//   //   hoistUseStatements: true,
-//   // },
-// });
