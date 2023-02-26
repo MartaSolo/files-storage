@@ -6,10 +6,14 @@
       <h1 class="font-mono text-2xl my-4">Nuxt 3 Playground</h1>
     </header>
 
-    <main>
+    <main class="content">
       <slot />
     </main>
   </div>
 </template>
 
-<style lang="css" scoped></style>
+<style lang="scss" scoped>
+.content {
+  padding: 1rem;
+}
+</style>

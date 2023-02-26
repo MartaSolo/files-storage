@@ -172,18 +172,15 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 <style lang="scss" scoped>
 .wrapper {
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid green;
 }
 
 .file--form {
   width: 100%;
   max-width: 700px;
   box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
-  height: 450px;
   border-radius: 16px;
   padding: 1rem;
   margin: 1rem 0;
