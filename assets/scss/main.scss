@@ -1,0 +1,21 @@
+@import "./font.scss";
+@import "./colors.scss";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-primary;
+  color: $text-color-primary;
+  margin: 0 auto;
+}
+
+a {
+  cursor: pointer;
+}
+
+button {
+  background-color: $color-white;
+  cursor: pointer;
+}
