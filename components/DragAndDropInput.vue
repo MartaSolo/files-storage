@@ -155,7 +155,7 @@ const handleKeydown = (e: KeyboardEvent) => {
         v-if="uploadedFiles.length"
         title="Uploaded files:"
         :items="uploadedFiles"
-        :success="true"
+        theme="success"
       />
     </Transition>
 
@@ -164,7 +164,7 @@ const handleKeydown = (e: KeyboardEvent) => {
         v-if="notUploadedFiles.length"
         title="Files not uploaded due to the exceeded size:"
         :items="notUploadedFiles"
-        :success="false"
+        theme="failure"
       />
     </Transition>
   </div>
@@ -181,6 +181,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 .file--form {
   width: 100%;
+  max-width: 700px;
   box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
   height: 450px;
   border-radius: 16px;
@@ -189,12 +190,6 @@ const handleKeydown = (e: KeyboardEvent) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-@media (min-width: 768px) {
-  .file--form {
-    width: 700px;
-  }
 }
 
 .file--info {

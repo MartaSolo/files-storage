@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const props = defineProps<{
-  items: string[];
-  title: string;
-  success?: boolean;
-}>();
+const props = withDefaults(defineProps<{
+    items: string[];
+    title: string;
+    theme?: "success" | "failure" | "default";
+  }>(),
+  {
+    theme: "default",
+  }
+);
 
 const computedClass = computed(() => {
-  if (props.success) {
-    return "success";
-  } else if (!props.success) {
-    return "failure";
-  } else {
-    return "";
-  }
+  return props.theme === "default" ? "" : props.theme;
 });
 </script>
 
@@ -37,13 +35,8 @@ const computedClass = computed(() => {
   margin-bottom: 1rem;
   border-radius: 16px;
   box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
-  width: 385px;
-}
-
-@media (min-width: 768px) {
-  .list--wrapper {
-    width: 600px;
-  }
+  width: 100%;
+  max-width: 700px;
 }
 
 .list--title {
