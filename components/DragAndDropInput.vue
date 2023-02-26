@@ -76,9 +76,9 @@ const handleDrop = (e: DragEvent) => {
 };
 
 const handleUpload = (e: Event) => {
-  if (!e.target?.files || numberOfFilesExceeded(e.target?.files)) return;
-  if (numberOfFilesExceeded(e.target?.files)) return;
-  [...e.target?.files].forEach((file) => {
+  const target = e.target as HTMLInputElement;
+  if (!target.files || numberOfFilesExceeded(target.files)) return;
+  [...target.files].forEach((file) => {
     if (file.size < maxFileSizeBytes.value) {
       uploadedFiles.value.push(file.name);
       // send to backend
