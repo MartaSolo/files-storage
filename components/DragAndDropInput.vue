@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { supabase } from "@/lib/supabaseClient";
 
 const props = defineProps<{
   maxFilesNumber: number;
@@ -43,6 +44,13 @@ const numberOfFilesExceeded = (
   }
 };
 
+const uploadFileToSupabase = async (file: File) => {
+  const { error } = await supabase.storage
+    .from("files")
+    .upload(`public/${file.name}`, file);
+  if (error) throw error;
+};
+
 const handleDrop = (e: DragEvent) => {
   e.stopPropagation();
   isDragActive.value = false;
@@ -55,7 +63,7 @@ const handleDrop = (e: DragEvent) => {
         if (file) {
           if (file.size < maxFileSizeBytes.value) {
             uploadedFiles.value.push(file.name);
-            // send to backend
+            uploadFileToSupabase(file);
           } else {
             notUploadedFiles.value.push(file.name);
           }
@@ -67,7 +75,7 @@ const handleDrop = (e: DragEvent) => {
     [...e.dataTransfer.files].forEach((file) => {
       if (file.size < maxFileSizeBytes.value) {
         uploadedFiles.value.push(file.name);
-        // send to backend
+        uploadFileToSupabase(file);
       } else {
         notUploadedFiles.value.push(file.name);
       }
@@ -81,7 +89,7 @@ const handleUpload = (e: Event) => {
   [...target.files].forEach((file) => {
     if (file.size < maxFileSizeBytes.value) {
       uploadedFiles.value.push(file.name);
-      // send to backend
+      uploadFileToSupabase(file);
     } else {
       notUploadedFiles.value.push(file.name);
     }
