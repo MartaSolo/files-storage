@@ -13,15 +13,15 @@ const props = withDefaults(
 );
 
 const computedClass = computed(() => {
-  return props.theme === "none" ? "" : props.theme;
+  return props.theme === "none" ? "" : `list--${props.theme}`;
 });
 </script>
 
 <template>
-  <div class="list--wrapper" :class="computedClass">
-    <p class="list--title">{{ title }}</p>
-    <ol class="list--list" role="list">
-      <li v-for="item in items" :key="item" class="list--item">
+  <div class="list" :class="computedClass">
+    <p class="list__title">{{ title }}</p>
+    <ol class="list__list" role="list">
+      <li v-for="item in items" :key="item" class="list__item">
         {{ item }}
       </li>
     </ol>
@@ -29,7 +29,7 @@ const computedClass = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.list--wrapper {
+.list {
   color: $text-color-primary;
   font-size: 1.2rem;
   padding: 1rem;
@@ -40,29 +40,29 @@ const computedClass = computed(() => {
   max-width: 700px;
 }
 
-.list--title {
+.list__title {
   padding-left: 0.5rem;
   font-weight: 500;
 }
 
-.list--wrapper.success .list--title {
+.list--success .list__title {
   color: $text-color-success;
 }
-.list--wrapper.failure .list--title {
+.list--failure .list__title {
   color: $text-color-error;
 }
 
-.list--list {
+.list__list {
   font-size: 1rem;
   counter-reset: list-item-counter;
 }
 
-.list--item {
+.list__item {
   display: flex;
   padding: 0.5rem;
   gap: 0.5rem;
 }
-.list--item::before {
+.list__item::before {
   counter-increment: list-item-counter;
   content: counter(list-item-counter);
   background-color: $text-color-primary;
@@ -75,10 +75,10 @@ const computedClass = computed(() => {
   border-radius: 50%;
 }
 
-.list--wrapper.success .list--item::before {
+.list--success .list__item::before {
   background-color: $text-color-success;
 }
-.list--wrapper.failure .list--item::before {
+.list--failure .list__item::before {
   background-color: $text-color-error;
 }
 </style>
