@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 const props = defineProps<{
   maxFilesNumber: number;
   maxFileSizeMB: number;
@@ -99,7 +97,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 <template>
   <div ref="root" class="wrapper">
-    <form class="file--form" @submit.prevent @dragenter="handleDrag">
+    <form class="file--form" @submit.prevent>
       <p class="file--info">
         You can upload max {{ maxFilesNumber }} files, max {{ maxFileSizeMB }}MB
         each.
@@ -115,7 +113,7 @@ const handleKeydown = (e: KeyboardEvent) => {
         <p class="file--dropzone-description">Drop your files here</p>
         <img
           class="file--dropzone-icon"
-          src="../assets/img/drag-and-drop.png"
+          src="@/assets/img/drag-and-drop.png"
           alt="drag and drop icon"
         />
         <p class="file--dropzone-description">or</p>
@@ -132,7 +130,7 @@ const handleKeydown = (e: KeyboardEvent) => {
         Upload your files
         <img
           class="file--label-icon"
-          src="../assets/img/upload.png"
+          src="@/assets/img/upload.png"
           alt="upload"
         />
         <input
