@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { supabase } from "@/lib/supabaseClient";
+const client = useSupabaseClient();
 
 const props = defineProps<{
   maxFilesNumber: number;
@@ -44,7 +44,7 @@ const numberOfFilesExceeded = (
 };
 
 const uploadFileToSupabase = async (file: File) => {
-  const { error } = await supabase.storage
+  const { error } = await client.storage
     .from("files")
     .upload(`public/${file.name}`, file);
   if (error) throw error;
