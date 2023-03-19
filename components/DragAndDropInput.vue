@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { supabase } from "@/lib/supabaseClient";
 
 const props = defineProps<{
@@ -106,30 +105,30 @@ const handleKeydown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <div ref="root" class="wrapper">
-    <form class="file--form" @submit.prevent @dragenter="handleDrag">
-      <p class="file--info">
+  <div ref="root" class="drag-and-drop">
+    <form class="drag-and-drop__form" @submit.prevent>
+      <p class="drag-and-drop__info">
         You can upload max {{ maxFilesNumber }} files, max {{ maxFileSizeMB }}MB
         each.
       </p>
       <div
-        class="file--dropzone"
-        :class="{ active: isDragActive }"
+        class="drag-and-drop__dropzone"
+        :class="{ 'drag-and-drop__dropzone--active': isDragActive }"
         @drop.prevent="handleDrop"
         @dragenter="handleDrag"
         @dragover.prevent="handleDrag"
         @dragleave="handleDrag"
       >
-        <p class="file--dropzone-description">Drop your files here</p>
+        <p class="drag-and-drop__description">Drop your files here</p>
         <img
-          class="file--dropzone-icon"
-          src="../assets/img/drag-and-drop.png"
+          class="drag-and-drop__icon"
+          src="@/assets/img/drag-and-drop.png"
           alt="drag and drop icon"
         />
-        <p class="file--dropzone-description">or</p>
+        <p class="drag-and-drop__description">or</p>
       </div>
       <label
-        class="file--label"
+        class="drag-and-drop__label"
         for="file"
         tabindex="0"
         role="button"
@@ -139,13 +138,13 @@ const handleKeydown = (e: KeyboardEvent) => {
       >
         Upload your files
         <img
-          class="file--label-icon"
-          src="../assets/img/upload.png"
+          class="drag-and-drop__icon"
+          src="@/assets/img/upload.png"
           alt="upload"
         />
         <input
           id="file"
-          class="file--input"
+          class="drag-and-drop__input"
           type="file"
           name="file"
           multiple
@@ -155,7 +154,7 @@ const handleKeydown = (e: KeyboardEvent) => {
     </form>
 
     <Transition>
-      <div v-if="message" class="upload--error-message">{{ message }}</div>
+      <div v-if="message" class="drag-and-drop__error">{{ message }}</div>
     </Transition>
 
     <Transition>
@@ -179,13 +178,13 @@ const handleKeydown = (e: KeyboardEvent) => {
 </template>
 
 <style lang="scss" scoped>
-.wrapper {
+.drag-and-drop {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.file--form {
+.drag-and-drop__form {
   width: 100%;
   max-width: 700px;
   box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
@@ -197,7 +196,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   align-items: center;
 }
 
-.file--info {
+.drag-and-drop__info {
   color: $text-color-secondary;
   font-size: 1rem;
   font-weight: 400;
@@ -205,7 +204,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   padding: 1rem;
 }
 
-.file--dropzone {
+.drag-and-drop__dropzone {
   border: 4px dashed $color-green-medium;
   border-radius: 16px;
   width: 100%;
@@ -220,15 +219,15 @@ const handleKeydown = (e: KeyboardEvent) => {
   text-align: center;
   margin-bottom: 1rem;
 }
-.file--dropzone.active {
+.drag-and-drop__dropzone--active {
   background-color: $color-green-light;
 }
 
-.file--dropzone-description {
+.drag-and-drop__description {
   padding: 1rem;
 }
 
-.file--label {
+.drag-and-drop__label {
   border-radius: 16px;
   background-color: $color-green-dark;
   max-width: 300px;
@@ -247,17 +246,16 @@ const handleKeydown = (e: KeyboardEvent) => {
   background-color: $color-green-dark-hover;
 }
 
-.file--dropzone-icon,
-.file--label-icon {
+.drag-and-drop__icon {
   width: 50px;
   height: 50px;
 }
 
-.file--input {
+.drag-and-drop__input {
   display: none;
 }
 
-.upload--error-message {
+.drag-and-drop__error {
   font-size: 1.2rem;
   color: $text-color-error;
   text-align: center;
