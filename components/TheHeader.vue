@@ -1,15 +1,9 @@
-// https://github.com/Jacobs63/vue3-tabs-component/blob/master/src/components/Tabs.vue
 <script setup lang="ts">
 const activeTab = ref<string>('addFiles');
 
 const handleClick = () => {
   console.log("click");
 };
-
-const computedClass = computed(() => {
-  return 
-});
-
 </script>
 
 <template>
@@ -20,7 +14,6 @@ const computedClass = computed(() => {
     <ul class="header__tabs">
       <li
         class="header__tab header__tab--active"
-        :class="computedClass"
         tabindex="0"
         role="tab"
         @click="handleClick"
