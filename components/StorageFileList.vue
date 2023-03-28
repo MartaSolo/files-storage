@@ -17,7 +17,9 @@ const listAllFiles = async () => {
   });
 };
 
-listAllFiles();
+onMounted(() => {
+  listAllFiles();
+});
 </script>
 
 <template>
