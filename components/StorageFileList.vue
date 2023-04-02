@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { FileObject } from "@/types/FileObject";
-
 const client = useSupabaseClient();
-
-const fileList = ref<FileObject[] | null>([]);
 
 const listAllFiles = async () => {
   const { data, error } = await client.storage.from("files").list("public", {
@@ -12,27 +8,34 @@ const listAllFiles = async () => {
     sortBy: { column: "name", order: "asc" },
   });
   if (error) throw error;
-  data?.forEach((file) => {
-    fileList.value?.push(file);
-  });
+  return data;
 };
 
-onMounted(() => {
-  listAllFiles();
-});
+const {
+  data: fileList,
+  pending: fileListPending,
+  error: fileListError,
+} = await useAsyncData(listAllFiles, { server: false });
 </script>
 
 <template>
   <section class="files">
-    <h2>Your uploaded files:</h2>
-    <BaseLoader v-if="!fileList?.length" />
-    <ul v-else class="files__list">
-      <StorageFileListItem
-        v-for="file in fileList"
-        :key="file.id"
-        :file="file"
-      />
-    </ul>
+    <BaseLoader v-if="fileListPending" />
+    <ErrorMessage
+      v-else-if="fileListError"
+      title="Something went wrong"
+      description="We are sorry, but your files cannot be displayed at the moment."
+    />
+    <template v-else>
+      <h2 class="files__title">Your uploaded files:</h2>
+      <ul class="files__list">
+        <StorageFileListItem
+          v-for="file in fileList"
+          :key="file.id"
+          :file="file"
+        />
+      </ul>
+    </template>
   </section>
 </template>
 
