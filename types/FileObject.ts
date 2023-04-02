@@ -14,5 +14,7 @@ export interface FileObject {
   last_accessed_at: string;
   name: string;
   updated_at: string;
-  metadata: Metadata;
+  metadata: {
+    [key: string]: Metadata;
+  };
 }
