@@ -18,3 +18,5 @@ export interface FileObject {
     [key: string]: Metadata;
   };
 }
+
+export type Keys = keyof FileObject;
