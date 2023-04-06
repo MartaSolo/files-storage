@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { FileObject } from "@/types/FileObject";
-import { Keys } from "@/types/FileObject";
+import { FileObject, Keys } from "@/types/FileObject";
 
 const client = useSupabaseClient();
 
