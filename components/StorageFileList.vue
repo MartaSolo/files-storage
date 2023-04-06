@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const client = useSupabaseClient();
+import { Database } from "@/types/storage";
+
+const client = useSupabaseClient<Database>();
 
 const listAllFiles = async () => {
   const { data, error } = await client.storage.from("files").list("public", {
