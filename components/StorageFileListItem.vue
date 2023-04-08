@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FileObject } from "@/types/FileObject";
+import { FileObject } from "@supabase/storage-js";
 
 const props = defineProps<{
   file: FileObject;
