@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { FileObject, Keys } from "@/types/FileObject";
+import { FileObject } from "@supabase/storage-js";
+import { FileObjectKeys } from "@/types/FileObjectKeys";
 
 const client = useSupabaseClient();
 
@@ -19,16 +20,16 @@ const {
   error: fileListError,
 } = await useAsyncData(listAllFiles, { server: false });
 
-const nestedSort =
-  (key: Keys, order: string) => (e1: FileObject, e2: FileObject) => {
+const sortFiles = (key: FileObjectKeys, order: string) => {
+  return fileList.value?.sort((e1: FileObject, e2: FileObject) => {
     const a = e1[key] ? e1[key] : e1.metadata[key];
     const b = e2[key] ? e2[key] : e2.metadata[key];
     const sortOrder = order === "asc" ? 1 : -1;
+    if (key === "name") {
+      return sortOrder === 1 ? a.localeCompare(b) : b.localeCompare(a);
+    }
     return a < b ? -sortOrder : a > b ? sortOrder : 0;
-  };
-
-const sortFiles = (key: Keys, order: string) => {
-  return fileList.value?.sort(nestedSort(key, order));
+  });
 };
 </script>
 
