@@ -42,7 +42,8 @@ const sortFiles = (key: FileObjectKeys, order: string) => {
       description="We are sorry, but your files cannot be displayed at the moment."
     />
     <template v-else>
-      <SortFilesSelect_2 @set-sort-options="sortFiles" />
+      <SortFilesSelect @set-sort-options="sortFiles" />
+      <!-- <SortFilesSelect_2 @set-sort-options="sortFiles" /> -->
       <h2 class="files__title">Your uploaded files:</h2>
       <ul class="files__list">
         <StorageFileListItem

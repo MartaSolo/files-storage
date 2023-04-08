@@ -120,4 +120,3 @@ const selectedOnKeyDown = (e: KeyboardEvent) => {
   font-weight: 800;
 }
 </style>
-
