@@ -2,6 +2,7 @@
 import { SortOption } from "@/types/SortOptions";
 import SortUp from "@/components/svg/SortUp.vue";
 import SortDown from "@/components/svg/SortDown.vue";
+import { useClickOutside } from "@/composable/useClickOutside";
 
 const sortOptions = ref<SortOption[]>([
   { name: "name ascending", column: "name", order: "asc" },
@@ -15,10 +16,13 @@ const sortOptions = ref<SortOption[]>([
 ]);
 
 const defaultSelectedOption = sortOptions.value[0].name;
-
 const selectedOption = ref<string>(defaultSelectedOption);
-
 const isDropdownOpen = ref(false);
+
+const sort = ref<HTMLElement | null>(null);
+useClickOutside(sort, () => {
+  isDropdownOpen.value = false;
+});
 
 const emit = defineEmits<{
   (e: "setSortOptions", column: string, order: string): void;
@@ -46,7 +50,7 @@ const selectedOnKeyDown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <div class="sort">
+  <div ref="sort" class="sort">
     <div class="sort__select">
       <div class="sort__label">Sort by:</div>
       <div
