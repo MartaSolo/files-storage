@@ -1,5 +1,5 @@
 export interface SortOption {
-  name: string;
+  label: string;
   column: "name" | "mimetype" | "size" | "created_at";
   order: "asc" | "desc";
 }
