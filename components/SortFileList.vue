@@ -3,6 +3,7 @@ import { SortOption } from "@/types/SortOptions";
 import SortUp from "@/components/svg/SortUp.vue";
 import SortDown from "@/components/svg/SortDown.vue";
 import { useClickOutside } from "@/composable/useClickOutside";
+import { useSortColumn, useSortOrder } from "@/composable/useState";
 
 const sortOptions = ref<SortOption[]>([
   { label: "name ascending", column: "name", order: "asc" },
@@ -21,10 +22,21 @@ useClickOutside(root, () => {
   isDropdownOpen.value = false;
 });
 
+const sortColumn = useSortColumn();
+const sortOrder = useSortOrder();
+
 const isDropdownOpen = ref(false);
-const defaultSelectedOption = sortOptions.value[0].label;
+
+const defaultSelectedOption = sortOptions.value.filter(
+  (option) =>
+    option.column === sortColumn.value && option.order === sortOrder.value
+)[0].label;
+
 const selectedOption = ref<string>(defaultSelectedOption);
-const highlightedOptionIndex = ref(0);
+
+const highlightedOptionIndex = ref(
+  sortOptions.value.map((option) => option.label).indexOf(selectedOption.value)
+);
 
 const sortOptionsLength = computed(() => {
   return sortOptions.value.length;
@@ -62,18 +74,20 @@ const toggleOptions = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
-const emit = defineEmits<{
-  (e: "setSortOptions", column: string, order: string): void;
-}>();
-
 const selectOption = (chosenOption: SortOption) => {
   toggleOptions();
   selectedOption.value = chosenOption.label;
   highlightedOptionIndex.value = sortOptions.value.findIndex(
     (option) => option.label === selectedOption.value
   );
-  emit("setSortOptions", chosenOption.column, chosenOption.order);
+  sortColumn.value = chosenOption.column;
+  sortOrder.value = chosenOption.order;
+  emit("setSortOptions");
 };
+
+const emit = defineEmits<{
+  (e: "setSortOptions"): void;
+}>();
 
 const handleKeyUpEnter = () => {
   if (isDropdownOpen.value) {
