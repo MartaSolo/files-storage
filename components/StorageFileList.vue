@@ -1,41 +1,30 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
-import { FileObjectKeys } from "@/types/FileObjectKeys";
+import { useSortColumn, useSortOrder } from "@/composable/useState";
 
-const client = useSupabaseClient();
-
-const listAllFiles = async () => {
-  const { data, error } = await client.storage.from("files").list("public", {
-    limit: 100,
-    offset: 0,
-    sortBy: { column: "name", order: "asc" },
-  });
-  if (error) throw error;
-  return data;
-};
+const sortColumn = useSortColumn();
+const sortOrder = useSortOrder();
 
 const {
   data: fileList,
-  pending: fileListPending,
+  // refresh,
   error: fileListError,
-} = await useAsyncData(listAllFiles, { server: false });
+} = await useFetch<FileObject[]>(
+  `/api/files?key=${sortColumn.value}&order=${sortOrder.value}`
+);
 
-const sortFiles = (key: FileObjectKeys, order: string) => {
-  return fileList.value?.sort((e1: FileObject, e2: FileObject) => {
-    const a = e1[key] ? e1[key] : e1.metadata[key];
-    const b = e2[key] ? e2[key] : e2.metadata[key];
-    const sortOrder = order === "asc" ? 1 : -1;
-    if (key === "name") {
-      return sortOrder === 1 ? a.localeCompare(b) : b.localeCompare(a);
-    }
-    return a < b ? -sortOrder : a > b ? sortOrder : 0;
-  });
+const sortFiles = async () => {
+  // refresh();
+  const { data: sortedFileList } = await useFetch<FileObject[]>(
+    `/api/files?key=${sortColumn.value}&order=${sortOrder.value}`
+  );
+  fileList.value = sortedFileList.value;
 };
 </script>
 
 <template>
   <section class="files">
-    <BaseLoader v-if="fileListPending" />
+    <BaseLoader v-if="!fileList" />
     <ErrorMessage
       v-else-if="fileListError"
       title="Something went wrong"
