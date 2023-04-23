@@ -7,18 +7,14 @@ const sortOrder = useSortOrder();
 
 const {
   data: fileList,
-  // refresh,
+  refresh,
   error: fileListError,
-} = await useFetch<FileObject[]>(
-  `/api/files?key=${sortColumn.value}&order=${sortOrder.value}`
-);
+} = await useFetch<FileObject[]>(`/api/files`, {
+  query: { key: sortColumn, order: sortOrder },
+});
 
-const sortFiles = async () => {
-  // refresh();
-  const { data: sortedFileList } = await useFetch<FileObject[]>(
-    `/api/files?key=${sortColumn.value}&order=${sortOrder.value}`
-  );
-  fileList.value = sortedFileList.value;
+const sortFiles = () => {
+  refresh();
 };
 </script>
 
