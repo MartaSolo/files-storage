@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
-import { useSortColumn, useSortOrder } from "@/composable/useState";
 
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();

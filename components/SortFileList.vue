@@ -2,8 +2,6 @@
 import { SortOption } from "@/types/SortOptions";
 import SortUp from "@/components/svg/SortUp.vue";
 import SortDown from "@/components/svg/SortDown.vue";
-import { useClickOutside } from "@/composable/useClickOutside";
-import { useSortColumn, useSortOrder } from "@/composable/useState";
 
 const sortOptions = ref<SortOption[]>([
   { label: "name ascending", column: "name", order: "asc" },
