@@ -101,10 +101,13 @@ const handleKeyUpEnter = () => {
 <template>
   <div ref="root" class="sort">
     <div class="sort__select">
-      <div class="sort__label">Sort by:</div>
+      <span id="sort-label" class="sort__label">Sort by:</span>
       <div
         class="sort__selected"
         tabindex="0"
+        aria-haspopup="listbox"
+        :aria-expanded="isDropdownOpen"
+        aria-controls="sort-dropdown"
         @click="toggleOptions"
         @keyup.space="toggleOptions"
         @keyup.enter="handleKeyUpEnter"
@@ -113,16 +116,24 @@ const handleKeyUpEnter = () => {
         @keyup.down.exact="highlightNextOption"
         @keydown.tab="isDropdownOpen = false"
       >
-        <div class="sort__selected--option">{{ selectedOption }}</div>
+        {{ selectedOption }}
         <component :is="isDropdownOpen ? SortUp : SortDown" />
       </div>
     </div>
-    <ul v-if="isDropdownOpen" class="sort__list">
+    <ul
+      v-if="isDropdownOpen"
+      id="sort-dropdown"
+      class="sort__dropdown"
+      role="listbox"
+    >
       <li
         v-for="(option, index) in sortOptions"
+        :id="option.label"
         :key="option.label"
         class="sort__option"
         :class="calculatedClass(option.label, index)"
+        role="option"
+        :aria-selected="option.label === selectedOption"
         @click="selectOption(option)"
       >
         {{ option.label }}
@@ -155,7 +166,7 @@ const handleKeyUpEnter = () => {
   justify-content: space-between;
 }
 
-.sort__list {
+.sort__dropdown {
   border: 1px solid $color-green-light;
   border-radius: 8px;
   width: 230px;
