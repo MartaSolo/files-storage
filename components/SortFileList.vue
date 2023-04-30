@@ -87,7 +87,7 @@ const emit = defineEmits<{
   (e: "setSortOptions"): void;
 }>();
 
-const handleKeyUpEnter = () => {
+const selectOptionByKeyboard = () => {
   if (isDropdownOpen.value) {
     const highlightedOption = sortOptions.value[highlightedOptionIndex.value];
     selectOption(highlightedOption);
@@ -102,29 +102,32 @@ const handleKeyUpEnter = () => {
   <div ref="root" class="sort">
     <div class="sort__select">
       <span id="sort-label" class="sort__label">Sort by:</span>
-      <div
+      <button
+        id="sort-button"
         class="sort__selected"
-        tabindex="0"
         aria-haspopup="listbox"
         :aria-expanded="isDropdownOpen"
         aria-controls="sort-dropdown"
         @click="toggleOptions"
-        @keyup.space="toggleOptions"
-        @keyup.enter="handleKeyUpEnter"
+        @keyup.enter.prevent="selectOptionByKeyboard"
+        @keyup.space.prevent="selectOptionByKeyboard"
+        @keydown.enter.prevent
         @keyup.escape="isDropdownOpen = false"
-        @keyup.up.exact="highlightPrevOption"
-        @keyup.down.exact="highlightNextOption"
+        @keyup.up.prevent="highlightPrevOption"
+        @keyup.down.prevent="highlightNextOption"
         @keydown.tab="isDropdownOpen = false"
       >
         {{ selectedOption }}
         <component :is="isDropdownOpen ? SortUp : SortDown" />
-      </div>
+      </button>
     </div>
     <ul
       v-if="isDropdownOpen"
       id="sort-dropdown"
       class="sort__dropdown"
+      tabindex="-1"
       role="listbox"
+      aria-labelledby="sort-button"
     >
       <li
         v-for="(option, index) in sortOptions"
