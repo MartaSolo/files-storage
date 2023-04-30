@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 const isDragActive = ref(false);
-const message = ref("");
+const errorMessages = ref<string[]>([]);
 const uploadedFiles = ref<string[]>([]);
 const notUploadedFiles = ref<string[]>([]);
 const root = ref<HTMLElement | null>(null);
@@ -17,7 +17,7 @@ const maxFileSizeBytes = computed(() => {
 });
 
 const resetState = () => {
-  message.value = "";
+  errorMessages.value = [];
   uploadedFiles.value = [];
   notUploadedFiles.value = [];
 };
@@ -36,7 +36,9 @@ const numberOfFilesExceeded = (
   listOfFiles: FileList | DataTransferItemList
 ) => {
   if (listOfFiles.length > props.maxFilesNumber) {
-    message.value = `You can upload up to ${props.maxFilesNumber} files at a time!`;
+    errorMessages.value.push(
+      `You can upload up to ${props.maxFilesNumber} files at a time!`
+    );
     return true;
   } else {
     return false;
@@ -47,7 +49,17 @@ const uploadFileToSupabase = async (file: File) => {
   const { error } = await client.storage
     .from("files")
     .upload(`public/${file.name}`, file);
-  if (error) throw error;
+  if (error) {
+    errorMessages.value.push(`Error: ${error?.message}`);
+    notUploadedFiles.value.push(file.name);
+    throw error;
+  } else {
+    uploadedFiles.value.push(file.name);
+  }
+};
+
+const addExceededSizeErrorMessage = () => {
+  errorMessages.value.push(`Error: some files have exceeded size`);
 };
 
 const handleDrop = (e: DragEvent) => {
@@ -61,9 +73,9 @@ const handleDrop = (e: DragEvent) => {
         const file = item.getAsFile();
         if (file) {
           if (file.size < maxFileSizeBytes.value) {
-            uploadedFiles.value.push(file.name);
             uploadFileToSupabase(file);
           } else {
+            addExceededSizeErrorMessage();
             notUploadedFiles.value.push(file.name);
           }
         }
@@ -73,9 +85,9 @@ const handleDrop = (e: DragEvent) => {
     if (numberOfFilesExceeded(e.dataTransfer.files)) return;
     [...e.dataTransfer.files].forEach((file) => {
       if (file.size < maxFileSizeBytes.value) {
-        uploadedFiles.value.push(file.name);
         uploadFileToSupabase(file);
       } else {
+        addExceededSizeErrorMessage();
         notUploadedFiles.value.push(file.name);
       }
     });
@@ -154,10 +166,6 @@ const handleKeydown = (e: KeyboardEvent) => {
     </form>
 
     <Transition>
-      <div v-if="message" class="drag-and-drop__error">{{ message }}</div>
-    </Transition>
-
-    <Transition>
       <FileList
         v-if="uploadedFiles.length"
         title="Uploaded files:"
@@ -165,11 +173,15 @@ const handleKeydown = (e: KeyboardEvent) => {
         theme="success"
       />
     </Transition>
-
+    <Transition>
+      <div v-if="errorMessages" class="drag-and-drop__error">
+        <p v-for="message in errorMessages" :key="message">{{ message }}</p>
+      </div>
+    </Transition>
     <Transition>
       <FileList
         v-if="notUploadedFiles.length"
-        title="Files not uploaded due to the exceeded size:"
+        title="Files not uploaded:"
         :items="notUploadedFiles"
         theme="failure"
       />
@@ -259,6 +271,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   font-size: 1.2rem;
   color: $text-color-error;
   text-align: center;
+  padding: 0.5rem 0;
 }
 
 .v-enter-active,
