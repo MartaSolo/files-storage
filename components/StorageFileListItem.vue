@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
-import MoreActions from "@/components/svg/MoreActions.vue";
 
 const client = useSupabaseClient();
 
@@ -72,14 +71,12 @@ const fileImageSource = computed(() => {
 </script>
 
 <template>
-  <li class="file">
+  <li ref="root" class="file">
     <div class="file__details">
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
-      <button class="file__actions" aria-label="More">
-        <MoreActions />
-      </button>
+      <FileMenu />
     </div>
     <div class="file__preview">
       <video
@@ -114,18 +111,6 @@ const fileImageSource = computed(() => {
   color: $text-color-secondary;
 }
 
-.file__actions {
-  border-radius: 50%;
-  background-color: $color-green-light;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    background-color: $color-green-medium;
-  }
-}
 .file__preview {
   width: 200px;
   height: 150px;
