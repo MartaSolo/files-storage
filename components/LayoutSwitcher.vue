@@ -2,9 +2,9 @@
 import GridLayout from "@/components/svg/GridLayout.vue";
 import ListLayout from "@/components/svg/ListLayout.vue";
 
-const isTextDisplayed = ref(false);
-
 const layoutType = useLayoutType();
+
+const { isTextDisplayed, showText, hideText } = useButtonText();
 
 const descriptionText = computed(() => {
   return layoutType.value === "grid" ? "Grid layout" : "List layout";
@@ -18,13 +18,6 @@ const toggleLayout = () => {
   layoutType.value === "grid"
     ? (layoutType.value = "list")
     : (layoutType.value = "grid");
-};
-
-const showText = () => {
-  isTextDisplayed.value = true;
-};
-const hideText = () => {
-  isTextDisplayed.value = false;
 };
 </script>
 
@@ -68,13 +61,7 @@ const hideText = () => {
 }
 
 .layout__text {
-  background-color: $text-color-primary;
-  display: inline-block;
-  color: $color-grey-lighter;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  font-size: 0.75rem;
-  position: absolute;
+  @include buttonDescription;
   top: 52px;
 }
 </style>
