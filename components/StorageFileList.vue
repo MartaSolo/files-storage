@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
-import GridLayout from "@/components/svg/GridLayout.vue";
-import ListLayout from "@/components/svg/ListLayout.vue";
 
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
-const fileView = useFileView();
 
 const {
   data: fileList,
@@ -18,12 +15,6 @@ const {
 const sortFiles = () => {
   refresh();
 };
-
-const toggleLayout = () => {
-  fileView.value === "grid"
-    ? (fileView.value = "list")
-    : (fileView.value = "grid");
-};
 </script>
 
 <template>
@@ -35,8 +26,10 @@ const toggleLayout = () => {
       description="We are sorry, but your files cannot be displayed at the moment."
     />
     <template v-else>
-      <SortFileList @set-sort-options="sortFiles" />
-      <button class="files__view" @click="toggleLayout"></button>
+      <div class="files__menu">
+        <SortFileList @set-sort-options="sortFiles" />
+        <LayoutSwitcher />
+      </div>
       <h2 class="files__title">Your uploaded files:</h2>
       <ul class="files__list">
         <StorageFileListItem
@@ -50,9 +43,11 @@ const toggleLayout = () => {
 </template>
 
 <style lang="scss" scoped>
-.files__view {
-  width: 50px;
-  height: 50px;
-  background-color: green;
+.files__menu {
+  padding-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2rem;
 }
 </style>
