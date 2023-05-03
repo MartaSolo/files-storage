@@ -1,11 +1,12 @@
 <template>
   <svg
     id="Layer_1"
+    class="list__layout"
     baseProfile="tiny"
-    height="24px"
+    height="30px"
     version="1.2"
     viewBox="0 0 24 24"
-    width="24px"
+    width="30px"
     xml:space="preserve"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,3 +25,8 @@
     <circle cx="5" cy="5" r="2.5" />
   </svg>
 </template>
+<style lang="scss">
+.list__layout {
+  fill: $text-color-primary;
+}
+</style>
