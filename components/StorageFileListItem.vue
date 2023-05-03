@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
+import MoreActions from "@/components/svg/MoreActions.vue";
 
 const client = useSupabaseClient();
 
 const props = defineProps<{
   file: FileObject;
 }>();
-
-const { data } = await client.storage
-  .from("files/public")
-  .getPublicUrl(`${props.file.name}`);
 
 const fileName = computed(() => {
   return props.file.name;
@@ -41,6 +38,37 @@ const previewFileType = computed(() => {
     return fileExtension;
   }
 });
+
+const { data } = await client.storage
+  .from("files/public")
+  .getPublicUrl(`${props.file.name}`);
+
+// const retrievePublicUrl = async () => {
+//   const { data } = await client.storage
+//     .from("files/public")
+//     .getPublicUrl(`${props.file.name}`);
+//   console.log("data", data);
+//   return data;
+// };
+
+// const { data, error: publicUrlError } = await useAsyncData(retrievePublicUrl, {
+//   server: false,
+// });
+
+const fileImageSource = computed(() => {
+  switch (previewFileType.value) {
+    case "image":
+    case "video":
+    case "pdf":
+      return data.publicUrl;
+    case "docx":
+      return "/_nuxt/assets/img/docx_file.png";
+    case "xlsx":
+      return "/_nuxt/assets/img/xlsx_file.png";
+    default:
+      return "/_nuxt/assets/img/empty_file.png";
+  }
+});
 </script>
 
 <template>
@@ -49,37 +77,26 @@ const previewFileType = computed(() => {
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
-      <button class="file__actions"></button>
+      <button class="file__actions" aria-label="More">
+        <MoreActions />
+      </button>
     </div>
-    <img
-      v-if="previewFileType === 'image'"
-      class="file__preview"
-      :src="data.publicUrl"
-    />
-    <video
-      v-else-if="previewFileType === 'video'"
-      class="file__preview"
-      controls
-    >
-      <source :src="data.publicUrl" />
-      Your browser does not support HTML video.
-    </video>
-    <embed
-      v-else-if="previewFileType === 'pdf'"
-      class="file__preview"
-      :src="data.publicUrl"
-    />
-    <img
-      v-else-if="previewFileType === 'docx'"
-      class="file__preview"
-      src="@/assets/img/docx_file.png"
-    />
-    <img
-      v-else-if="previewFileType === 'xlsx'"
-      class="file__preview"
-      src="@/assets/img/xlsx_file.png"
-    />
-    <img v-else class="file__preview" src="@/assets/img/empty_file.png" />
+    <div class="file__preview">
+      <video
+        v-if="previewFileType === 'video'"
+        class="file__preview--video"
+        controls
+      >
+        <source :src="fileImageSource" />
+        Your browser does not support HTML video.
+      </video>
+      <embed
+        v-else-if="previewFileType === 'pdf'"
+        class="file__preview--embed"
+        :src="fileImageSource"
+      />
+      <img v-else class="file__preview" :src="fileImageSource" />
+    </div>
   </li>
 </template>
 
@@ -99,13 +116,29 @@ const previewFileType = computed(() => {
 
 .file__actions {
   border-radius: 50%;
-  background-color: red;
+  background-color: $color-green-light;
   width: 40px;
   height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    background-color: $color-green-medium;
+  }
 }
 .file__preview {
   width: 200px;
-  height: 100px;
+  height: 150px;
+  border: 1px solid green;
+}
+.file__preview--image {
+  height: 100%;
+  object-fit: contain;
+}
+
+.file__preview--video {
+  height: 100%;
+  object-fit: scale-down;
 }
 
 .file__delete,
