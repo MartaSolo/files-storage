@@ -32,7 +32,7 @@ const hideText = () => {
   <div class="layout">
     <button
       class="layout__button"
-      :aria-labelledby="description"
+      aria-labelledby="description"
       @click="toggleLayout"
       @mouseenter="showText"
       @mouseleave="hideText"
