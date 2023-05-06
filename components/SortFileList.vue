@@ -3,7 +3,7 @@ import { SortOption } from "@/types/SortOptions";
 import SortUp from "@/components/svg/SortUp.vue";
 import SortDown from "@/components/svg/SortDown.vue";
 
-const sortOptions = ref<SortOption[]>([
+const sortOptions: SortOption[] = [
   { label: "name ascending", column: "name", order: "asc" },
   { label: "name descending", column: "name", order: "desc" },
   { label: "type ascending", column: "mimetype", order: "asc" },
@@ -12,7 +12,7 @@ const sortOptions = ref<SortOption[]>([
   { label: "size descending", column: "size", order: "desc" },
   { label: "time created ascending", column: "created_at", order: "asc" },
   { label: "time created descending", column: "created_at", order: "desc" },
-]);
+];
 
 const root = ref<HTMLElement | null>(null);
 
@@ -25,7 +25,7 @@ const sortOrder = useSortOrder();
 
 const isDropdownOpen = ref(false);
 
-const defaultSelectedOption = sortOptions.value.filter(
+const defaultSelectedOption = sortOptions.filter(
   (option) =>
     option.column === sortColumn.value && option.order === sortOrder.value
 )[0].label;
@@ -33,21 +33,19 @@ const defaultSelectedOption = sortOptions.value.filter(
 const selectedOption = ref<string>(defaultSelectedOption);
 
 const highlightedOptionIndex = ref(
-  sortOptions.value.map((option) => option.label).indexOf(selectedOption.value)
+  sortOptions.map((option) => option.label).indexOf(selectedOption.value)
 );
 
-const sortOptionsLength = computed(() => {
-  return sortOptions.value.length;
-});
+const sortOptionsLength = sortOptions.length;
 
 const prevOptionIndex = computed(() => {
   const prev = highlightedOptionIndex.value - 1;
-  return prev < 0 ? sortOptionsLength.value - 1 : prev;
+  return prev < 0 ? sortOptionsLength - 1 : prev;
 });
 
 const nextOptionIndex = computed(() => {
   const next = highlightedOptionIndex.value + 1;
-  return next > sortOptionsLength.value - 1 ? 0 : next;
+  return next > sortOptionsLength - 1 ? 0 : next;
 });
 
 const highlightPrevOption = () => {
@@ -75,7 +73,7 @@ const toggleOptions = () => {
 const selectOption = (chosenOption: SortOption) => {
   toggleOptions();
   selectedOption.value = chosenOption.label;
-  highlightedOptionIndex.value = sortOptions.value.findIndex(
+  highlightedOptionIndex.value = sortOptions.findIndex(
     (option) => option.label === selectedOption.value
   );
   sortColumn.value = chosenOption.column;
@@ -89,7 +87,7 @@ const emit = defineEmits<{
 
 const selectOptionByKeyboard = () => {
   if (isDropdownOpen.value) {
-    const highlightedOption = sortOptions.value[highlightedOptionIndex.value];
+    const highlightedOption = sortOptions[highlightedOptionIndex.value];
     selectOption(highlightedOption);
     isDropdownOpen.value = false;
   } else {
