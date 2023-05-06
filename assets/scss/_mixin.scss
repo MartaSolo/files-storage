@@ -21,13 +21,3 @@
     @content;
   }
 }
-
-@mixin buttonDescription {
-  background-color: $text-color-primary;
-  display: inline-block;
-  color: $color-grey-lighter;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  font-size: 0.75rem;
-  position: absolute;
-}
