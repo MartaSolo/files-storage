@@ -2,10 +2,10 @@
   <svg
     id="Layer_1"
     enable-background="new 0 0 32 32"
-    height="30px"
+    height="25px"
     version="1.1"
     viewBox="0 0 32 32"
-    width="30px"
+    width="25px"
     xml:space="preserve"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
