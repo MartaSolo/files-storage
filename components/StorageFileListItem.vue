@@ -38,28 +38,23 @@ const previewFileType = computed(() => {
   }
 });
 
-const { data } = await client.storage
-  .from("files/public")
-  .getPublicUrl(`${props.file.name}`);
+const retrievePublicUrl = async () => {
+  const { data } = await client.storage
+    .from("files/public")
+    .getPublicUrl(`${props.file.name}`);
+  return data;
+};
 
-// const retrievePublicUrl = async () => {
-//   const { data } = await client.storage
-//     .from("files/public")
-//     .getPublicUrl(`${props.file.name}`);
-//   console.log("data", data);
-//   return data;
-// };
-
-// const { data, error: publicUrlError } = await useAsyncData(retrievePublicUrl, {
-//   server: false,
-// });
+const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
+  server: false,
+});
 
 const fileImageSource = computed(() => {
   switch (previewFileType.value) {
     case "image":
     case "video":
     case "pdf":
-      return data.publicUrl;
+      return data.value?.publicUrl;
     case "docx":
       return "/_nuxt/assets/img/docx_file.png";
     case "xlsx":
@@ -91,6 +86,8 @@ const fileImageSource = computed(() => {
         v-else-if="previewFileType === 'pdf'"
         class="file__preview--embed"
         :src="fileImageSource"
+        type="application/pdf"
+        frameBorder="0"
       />
       <img v-else class="file__preview" :src="fileImageSource" />
     </div>
