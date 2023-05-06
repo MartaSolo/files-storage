@@ -3,6 +3,8 @@ import { FileObject } from "@supabase/storage-js";
 
 const client = useSupabaseClient();
 
+const layoutType = useLayoutType();
+
 const props = defineProps<{
   file: FileObject;
 }>();
@@ -38,6 +40,10 @@ const previewFileType = computed(() => {
   }
 });
 
+const computedClass = computed(() => {
+  return layoutType.value === "grid" ? "file--grid" : "file--list";
+});
+
 const retrievePublicUrl = async () => {
   const { data } = await client.storage
     .from("files/public")
@@ -66,12 +72,12 @@ const fileImageSource = computed(() => {
 </script>
 
 <template>
-  <li ref="root" class="file">
+  <div ref="root" class="file" :class="computedClass">
     <div class="file__details">
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
-      <FileMenu />
+      <FileMenu class="file__details--actions" />
     </div>
     <div class="file__preview">
       <video
@@ -91,26 +97,62 @@ const fileImageSource = computed(() => {
       />
       <img v-else class="file__preview" :src="fileImageSource" />
     </div>
-  </li>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.file {
+.file {}
+
+.file--grid {
+  border: 1px solid grey;
   background-color: $color-grey-lighter;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  border-radius: 8px;
   width: 300px;
-  height: 250px;
+  height: 200px;
+  padding: 0.5rem;
+  @include smallScreen {
+    width: 100%;
+  }
 }
+
+.file--grid .file__details {
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "name name button"
+    "size type button";
+}
+
+.file__details--name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .file__details--size,
 .file__details--type {
   font-size: 0.75rem;
   color: $text-color-secondary;
 }
 
+.file--grid .file__details--name {
+  grid-area: name;
+}
+.file--grid .file__details--size {
+  grid-area: size;
+}
+.file--grid .file__details--type {
+  grid-area: type;
+}
+.file--grid .file__details--actions {
+  grid-area: button;
+  justify-self: end;
+}
+
 .file__preview {
   width: 200px;
-  height: 150px;
+  height: 100px;
   border: 1px solid green;
 }
 .file__preview--image {
@@ -123,11 +165,7 @@ const fileImageSource = computed(() => {
   object-fit: scale-down;
 }
 
-.file__delete,
-.file__copy {
-  border: 1px solid green;
-  margin-right: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 4px;
+.file__preview--embed {
+  width: 80%;
 }
 </style>
