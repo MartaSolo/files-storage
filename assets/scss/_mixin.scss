@@ -1,3 +1,9 @@
+@mixin xsmallScreen {
+  @media (min-width: $screen-xs) {
+    @content;
+  }
+}
+
 @mixin smallScreen {
   @media (min-width: $screen-sm) {
     @content;
@@ -16,8 +22,14 @@
   }
 }
 
-@mixin extraLargeScreen {
-  @media (min-width: $screen-lg) {
+@mixin xlargeScreen {
+  @media (min-width: $screen-xl) {
+    @content;
+  }
+}
+
+@mixin xxlargeScreen {
+  @media (min-width: $screen-xl) {
     @content;
   }
 }
