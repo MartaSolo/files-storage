@@ -29,7 +29,7 @@
 }
 
 @mixin xxlargeScreen {
-  @media (min-width: $screen-xl) {
+  @media (min-width: $screen-xxl) {
     @content;
   }
 }
