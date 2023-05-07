@@ -14,6 +14,10 @@ const descriptionWidth = computed(() => {
   return props.description.length * 7;
 });
 
+const descriptionStyle = computed(() => {
+  return `width:${descriptionWidth.value}px;`;
+});
+
 const showText = () => {
   isTextDisplayed.value = true;
 };
@@ -39,7 +43,7 @@ const hideText = () => {
       v-show="isTextDisplayed"
       id="description"
       class="description"
-      :style="`width:${descriptionWidth}px;`"
+      :style="descriptionStyle"
     >
       {{ description }}
     </div>
