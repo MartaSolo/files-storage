@@ -31,12 +31,20 @@ const sortFileType = computed(() => {
 const previewFileType = computed(() => {
   const type = props.file.metadata.mimetype;
   const explicitTypes = type.split("/")[0];
+
+  const splitName = props.file.name.split(".");
+  const fileExtension = splitName[splitName.length - 1];
+
   if (explicitTypes === "image" || explicitTypes === "video") {
     return explicitTypes;
-  } else {
-    const splitName = props.file.name.split(".");
-    const fileExtension = splitName[splitName.length - 1];
+  } else if (
+    fileExtension === "docx" ||
+    fileExtension === "xlsx" ||
+    fileExtension === "pdf"
+  ) {
     return fileExtension;
+  } else {
+    return "other";
   }
 });
 
@@ -74,6 +82,11 @@ const fileImageSource = computed(() => {
 <template>
   <div ref="root" class="file" :class="computedClass">
     <div class="file__details">
+      <FileCheckbox
+        :name="fileName"
+        :type="previewFileType"
+        class="file__details--checkbox"
+      />
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
@@ -104,7 +117,6 @@ const fileImageSource = computed(() => {
 .file {}
 
 .file--grid {
-  border: 1px solid grey;
   background-color: $color-grey-lighter;
   border-radius: 8px;
   width: 300px;
@@ -117,11 +129,12 @@ const fileImageSource = computed(() => {
 
 .file--grid .file__details {
   display: grid;
-  grid-template-columns: 40% 40% 20%;
+  grid-template-columns: minmax(20px, 20px) 1fr 1fr minmax(40px, 40px);
   grid-template-rows: auto;
   grid-template-areas:
-    "name name button"
-    "size type button";
+    "checkbox name name button"
+    ". size type button";
+  gap: 0.25rem;
 }
 
 .file__details--name {
@@ -134,6 +147,10 @@ const fileImageSource = computed(() => {
 .file__details--type {
   font-size: 0.75rem;
   color: $text-color-secondary;
+}
+
+.file--grid .file__details--checkbox {
+  grid-area: checkbox;
 }
 
 .file--grid .file__details--name {
@@ -153,7 +170,7 @@ const fileImageSource = computed(() => {
 .file__preview {
   width: 200px;
   height: 100px;
-  border: 1px solid green;
+  // border: 1px solid green;
 }
 .file__preview--image {
   height: 100%;
