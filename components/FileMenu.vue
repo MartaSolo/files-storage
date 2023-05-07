@@ -27,7 +27,6 @@ const toggleMenu = () => {
 
 <style lang="scss" scoped>
 .menu {
-  border: 1px solid green;
   width: 40px;
   height: 40px;
   position: relative;
