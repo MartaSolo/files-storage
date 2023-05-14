@@ -63,6 +63,7 @@ const hideText = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.2s;
 }
 
 .button__btn--green {
@@ -72,7 +73,7 @@ const hideText = () => {
   }
 }
 .button__btn--grey {
-  background-color: $color-grey-lighter;
+  background-color: $color-grey-lightest;
   &:hover {
     background-color: $color-grey-light;
   }
@@ -81,7 +82,7 @@ const hideText = () => {
 .description {
   background-color: $text-color-primary;
   display: inline-block;
-  color: $color-grey-lighter;
+  color: $color-grey-lightest;
   padding: 0.25rem 0;
   border-radius: 5px;
   font-size: 0.75rem;
