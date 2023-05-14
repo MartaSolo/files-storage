@@ -49,9 +49,6 @@ const sortFiles = () => {
 </template>
 
 <style lang="scss" scoped>
-.files {
- 
-}
 .files__menu {
   padding: 0 1rem 1rem 1rem;
   display: flex;
@@ -73,7 +70,7 @@ const sortFiles = () => {
   grid-template-rows: auto;
   grid-template-columns: 1fr;
   justify-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   @include xsmallScreen {
     border: 1px solid red;
   }
