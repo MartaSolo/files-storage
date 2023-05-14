@@ -118,13 +118,13 @@ const computedClass = computed(() => {
   left: -1px;
 }
 .checkbox__input--other::before {
-  background-color: $color-grey-light;
+  background-color: $color-grey-other;
   width: 20px;
   height: 22px;
   border-radius: 4px;
   content: "=";
   text-align: center;
-  color: $text-color-primary;
+  color: $color-white;
   top: -1px;
   left: -1px;
 }
