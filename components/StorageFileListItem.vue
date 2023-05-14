@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
+import XlsxFile from "@/components/svg/XlsxFile.vue";
+import SomeFile from "@/components/svg/SomeFile.vue";
+import DocxFile from "@/components/svg/DocxFile.vue";
 
 const client = useSupabaseClient();
 
@@ -52,6 +55,20 @@ const computedClass = computed(() => {
   return layoutType.value === "grid" ? "file--grid" : "file--list";
 });
 
+const filePreviewComponent = computed(() => {
+  return (
+    previewFileType.value === "docx" ||
+    previewFileType.value === "xlsx" ||
+    previewFileType.value === "other"
+  );
+});
+
+const fileComponent = computed(() => {
+  if (previewFileType.value === "docx") return DocxFile;
+  if (previewFileType.value === "xlsx") return XlsxFile;
+  if (previewFileType.value === "other") return SomeFile;
+});
+
 const retrievePublicUrl = async () => {
   const { data } = await client.storage
     .from("files/public")
@@ -61,21 +78,6 @@ const retrievePublicUrl = async () => {
 
 const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
   server: false,
-});
-
-const fileImageSource = computed(() => {
-  switch (previewFileType.value) {
-    case "image":
-    case "video":
-    case "pdf":
-      return data.value?.publicUrl;
-    case "docx":
-      return "/_nuxt/assets/img/docx_file.png";
-    case "xlsx":
-      return "/_nuxt/assets/img/xlsx_file.png";
-    default:
-      return "/_nuxt/assets/img/empty_file.png";
-  }
 });
 </script>
 
@@ -92,32 +94,35 @@ const fileImageSource = computed(() => {
       <p class="file__details--type">{{ sortFileType }}</p>
       <FileMenu class="file__details--actions" />
     </div>
-    <div class="file__preview">
+    <div v-if="layoutType === 'grid'" class="file__preview">
       <video
         v-if="previewFileType === 'video'"
         class="file__preview--video"
         controls
       >
-        <source :src="fileImageSource" />
+        <source :src="data?.publicUrl" />
         Your browser does not support HTML video.
       </video>
       <embed
         v-else-if="previewFileType === 'pdf'"
         class="file__preview--embed"
-        :src="fileImageSource"
+        :src="data?.publicUrl"
         type="application/pdf"
         frameBorder="0"
       />
-      <img v-else class="file__preview" :src="fileImageSource" />
+      <component
+        :is="fileComponent"
+        v-else-if="filePreviewComponent"
+        class="file__preview--component"
+      />
+      <img v-else class="file__preview--image" :src="data?.publicUrl" />
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.file {}
-
 .file--grid {
-  background-color: $color-grey-lighter;
+  background-color: $color-grey-lightest;
   border-radius: 8px;
   width: 300px;
   height: 200px;
@@ -125,11 +130,17 @@ const fileImageSource = computed(() => {
   @include smallScreen {
     width: 100%;
   }
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: $color-grey-lighter;
+  }
 }
 
 .file--grid .file__details {
   display: grid;
-  grid-template-columns: minmax(20px, 20px) 1fr 1fr minmax(40px, 40px);
+  grid-template-columns: 20px 70px 1fr 40px;
   grid-template-rows: auto;
   grid-template-areas:
     "checkbox name name button"
@@ -138,15 +149,14 @@ const fileImageSource = computed(() => {
 }
 
 .file__details--name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @include cropText;
 }
 
 .file__details--size,
 .file__details--type {
   font-size: 0.75rem;
   color: $text-color-secondary;
+  @include cropText;
 }
 
 .file--grid .file__details--checkbox {
@@ -168,21 +178,36 @@ const fileImageSource = computed(() => {
 }
 
 .file__preview {
-  width: 200px;
-  height: 100px;
-  // border: 1px solid green;
-}
-.file__preview--image {
-  height: 100%;
-  object-fit: contain;
+  margin: 0.5rem;
+  flex-grow: 1;
 }
 
+.file__preview:has(.file__preview--video),
+.file__preview:has(.file__preview--component) {
+  display: flex;
+  justify-content: center;
+}
+
+.file__preview--image,
+.file__preview--embed,
+.file__preview--component,
 .file__preview--video {
-  height: 100%;
-  object-fit: scale-down;
+  width: 100%;
+  height: 130px;
 }
 
-.file__preview--embed {
-  width: 80%;
+.file__preview--image {
+  object-fit: cover;
+  object-position: left top;
+}
+</style>
+
+<style lang="scss">
+.file--grid:hover .button__btn--grey {
+  background-color: $color-grey-lighter;
+  transition: background-color 0.2s;
+}
+.file--grid:hover .button__btn--grey:hover {
+  background-color: $color-grey-light;
 }
 </style>
