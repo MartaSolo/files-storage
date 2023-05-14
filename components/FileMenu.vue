@@ -16,7 +16,7 @@ const toggleMenu = () => {
 
 <template>
   <div ref="root" class="menu">
-    <IconButton description="More actions" theme="green" @click="toggleMenu">
+    <IconButton description="More actions" theme="grey" @click="toggleMenu">
       <template #icon>
         <MoreActions />
       </template>
@@ -33,9 +33,10 @@ const toggleMenu = () => {
 }
 
 .menu__list {
-  width: 200px;
+  width: 100px;
   height: 200px;
-  background-color: palevioletred;
   position: absolute;
+  z-index: 9999;
+  background-color: palevioletred;
 }
 </style>
