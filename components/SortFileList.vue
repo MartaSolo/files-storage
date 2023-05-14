@@ -174,6 +174,7 @@ const selectOptionByKeyboard = () => {
   background-color: $color-white;
   position: absolute;
   left: 66px;
+  z-index: 9999;
 }
 
 .sort__option {
