@@ -42,7 +42,7 @@ const hideText = () => {
     <div
       v-show="isTextDisplayed"
       id="description"
-      class="description"
+      class="button__description"
       :style="descriptionStyle"
     >
       {{ description }}
@@ -79,7 +79,7 @@ const hideText = () => {
   }
 }
 
-.description {
+.button__description {
   background-color: $text-color-primary;
   display: inline-block;
   color: $color-grey-lightest;
@@ -90,5 +90,6 @@ const hideText = () => {
   top: 40px;
   display: flex;
   justify-content: center;
+  z-index: 99999;
 }
 </style>
