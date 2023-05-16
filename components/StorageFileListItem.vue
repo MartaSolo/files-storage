@@ -121,20 +121,52 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
 </template>
 
 <style lang="scss" scoped>
-.file--grid {
+.file {
   background-color: $color-grey-lightest;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: $color-grey-lighter;
+  }
+}
+
+.file__details--checkbox {
+  grid-area: checkbox;
+}
+
+.file__details--name {
+  grid-area: name;
+  @include cropText;
+}
+
+.file__details--size,
+.file__details--type {
+  font-size: 0.75rem;
+  color: $text-color-secondary;
+  @include cropText;
+}
+
+.file__details--size {
+  grid-area: size;
+}
+.file__details--type {
+  grid-area: type;
+}
+
+.file__details--actions {
+  grid-area: button;
+  justify-self: end;
+}
+
+// file--grid
+.file--grid {
   border-radius: 8px;
   width: 300px;
   height: 200px;
   padding: 0.5rem;
-  @include smallScreen {
-    width: 100%;
-  }
   display: flex;
   flex-direction: column;
-  transition: background-color 0.2s;
-  &:hover {
-    background-color: $color-grey-lighter;
+  @include smallScreen {
+    width: 100%;
   }
 }
 
@@ -146,35 +178,6 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
     "checkbox name name button"
     ". size type button";
   gap: 0.25rem;
-}
-
-.file__details--name {
-  @include cropText;
-}
-
-.file__details--size,
-.file__details--type {
-  font-size: 0.75rem;
-  color: $text-color-secondary;
-  @include cropText;
-}
-
-.file--grid .file__details--checkbox {
-  grid-area: checkbox;
-}
-
-.file--grid .file__details--name {
-  grid-area: name;
-}
-.file--grid .file__details--size {
-  grid-area: size;
-}
-.file--grid .file__details--type {
-  grid-area: type;
-}
-.file--grid .file__details--actions {
-  grid-area: button;
-  justify-self: end;
 }
 
 .file__preview {
@@ -200,14 +203,62 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
   object-fit: cover;
   object-position: left top;
 }
+
+//file--list
+.file--list {
+  border-top: 1px solid $color-grey-light;
+  &:last-child {
+    border-bottom: 1px solid $color-grey-light;
+  }
+}
+
+.file--list .file__details {
+  display: grid;
+  padding: 0.25rem 0.5rem;
+  gap: 0.25rem;
+  grid-template-rows: auto;
+  align-items: center;
+  grid-template-columns: 20px 1fr 40px;
+  grid-template-areas: "checkbox name button";
+  @include smallScreen {
+    grid-template-columns: 20px 1fr minmax(70px, 90px) 40px;
+    grid-template-areas: "checkbox name size button";
+  }
+  @include mediumScreen {
+    grid-template-columns: 20px 1fr 120px 130px 40px;
+    grid-template-areas: "checkbox name size type button";
+  }
+  @include largeScreen {
+    grid-template-columns: 20px 1fr 150px 180px 40px;
+  }
+  @include xlargeScreen {
+    grid-template-columns: 20px 1fr 190px 220px 40px;
+  }
+  @include xxlargeScreen {
+    grid-template-columns: 20px 1fr 220px 250px 40px;
+  }
+}
+
+.file--list .file__details--size {
+  display: none;
+  @include smallScreen {
+    display: block;
+  }
+}
+.file--list .file__details--type {
+  display: none;
+  @include mediumScreen {
+    display: block;
+  }
+}
 </style>
 
 <style lang="scss">
-.file--grid:hover .button__btn--grey {
+.file:hover .button__btn--grey {
   background-color: $color-grey-lighter;
   transition: background-color 0.2s;
 }
-.file--grid:hover .button__btn--grey:hover {
+.file:hover .button__btn--grey:hover {
   background-color: $color-grey-light;
 }
 </style>
