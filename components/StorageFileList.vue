@@ -59,40 +59,34 @@ const sortFiles = () => {
 .files__list {
   overflow-y: scroll;
   height: calc(100vh - 230px);
+  padding: 0 1rem 1rem 0;
   @include mediumScreen {
     height: calc(100vh - 222px);
   }
 }
 
 .files__list--grid {
-  border: 1px solid blue;
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: 1fr;
   justify-items: center;
   gap: 1.5rem;
   @include xsmallScreen {
-    border: 1px solid red;
   }
   @include smallScreen {
-    border: 1px solid green;
     grid-template-columns: 1fr 1fr;
   }
   @include mediumScreen {
-    border: 1px solid yellow;
     grid-template-columns: 1fr 1fr 1fr;
   }
   @include largeScreen {
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    border: 1px solid brown;
   }
   @include xlargeScreen {
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    border: 1px solid blue;
   }
   @include xxlargeScreen {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    border: 1px solid palevioletred;
   }
 }
 </style>
