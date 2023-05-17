@@ -68,9 +68,23 @@ const computedClass = computed(() => {
   top: -1px;
 }
 
+.checkbox__input--image::before,
+.checkbox__input--video::before,
+.checkbox__input--pdf::before,
+.checkbox__input--docx::before,
+.checkbox__input--xlsx::before,
+.checkbox__input--other::before {
+  width: 20px;
+  height: 22px;
+  border-radius: 4px;
+  text-align: center;
+  color: $color-white;
+  top: -1px;
+  left: -1px;
+}
+
 .checkbox__input--image::before {
   background-image: url("@/assets/img/image_icon.png");
-  width: 20px;
   height: 28px;
   top: -4px;
   left: -1px;
@@ -78,7 +92,6 @@ const computedClass = computed(() => {
 }
 .checkbox__input--video::before {
   background-image: url("@/assets/img/video_icon.png");
-  width: 20px;
   height: 32px;
   top: -6px;
   left: -1px;
@@ -97,36 +110,16 @@ const computedClass = computed(() => {
 
 .checkbox__input--docx::before {
   background-color: $color-blue-word;
-  width: 20px;
-  height: 22px;
-  border-radius: 4px;
   content: "W";
-  text-align: center;
-  color: $color-white;
-  top: -1px;
-  left: -1px;
 }
 .checkbox__input--xlsx::before {
   background-color: $color-green-xls;
-  width: 20px;
-  height: 22px;
-  border-radius: 4px;
   content: "X";
-  text-align: center;
-  color: $color-white;
-  top: -1px;
-  left: -1px;
 }
 .checkbox__input--other::before {
   background-color: $color-grey-other;
-  width: 20px;
-  height: 22px;
   border-radius: 4px;
   content: "=";
-  text-align: center;
-  color: $color-white;
-  top: -1px;
-  left: -1px;
 }
 
 .checkbox__input.checked::before {

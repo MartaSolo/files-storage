@@ -35,6 +35,7 @@ const toggleMenu = () => {
 .menu__list {
   width: 100px;
   height: 200px;
+  right: 20px;
   position: absolute;
   z-index: 9999;
   background-color: palevioletred;
