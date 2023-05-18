@@ -1,32 +1,32 @@
 <script setup lang="ts">
-const client = useSupabaseClient();
+import { FileObject } from "@supabase/storage-js";
 
-const listAllFiles = async () => {
-  const { data, error } = await client.storage.from("files").list("public", {
-    limit: 100,
-    offset: 0,
-    sortBy: { column: "name", order: "asc" },
-  });
-  if (error) throw error;
-  return data;
-};
+const sortColumn = useSortColumn();
+const sortOrder = useSortOrder();
 
 const {
   data: fileList,
-  pending: fileListPending,
+  refresh,
   error: fileListError,
-} = await useAsyncData(listAllFiles, { server: false });
+} = await useFetch<FileObject[]>(`/api/files`, {
+  query: { key: sortColumn, order: sortOrder },
+});
+
+const sortFiles = () => {
+  refresh();
+};
 </script>
 
 <template>
   <section class="files">
-    <BaseLoader v-if="fileListPending" />
+    <BaseLoader v-if="!fileList" />
     <ErrorMessage
       v-else-if="fileListError"
       title="Something went wrong"
       description="We are sorry, but your files cannot be displayed at the moment."
     />
     <template v-else>
+      <SortFileList @set-sort-options="sortFiles" />
       <h2 class="files__title">Your uploaded files:</h2>
       <ul class="files__list">
         <StorageFileListItem
