@@ -5,13 +5,13 @@ const XlsxFile = resolveComponent("XlsxFile");
 const SomeFile = resolveComponent("SomeFile");
 const DocxFile = resolveComponent("DocxFile");
 
-const client = useSupabaseClient();
-
-const layoutType = useLayoutType();
-
 const props = defineProps<{
   file: FileObject;
 }>();
+
+const layoutType = useLayoutType();
+
+const getUrl = useRetrievePublicUrl(props.file.name, props.file.id);
 
 const fileName = computed(() => {
   return props.file.name;
@@ -69,17 +69,6 @@ const fileComponent = computed(() => {
   if (previewFileType.value === "xlsx") return XlsxFile;
   if (previewFileType.value === "other") return SomeFile;
 });
-
-const retrievePublicUrl = async () => {
-  const { data } = await client.storage
-    .from("files/public")
-    .getPublicUrl(`${props.file.name}`);
-  return data;
-};
-
-const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
-  server: false,
-});
 </script>
 
 <template>
@@ -93,7 +82,7 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
-      <FileMenu class="file__details--actions" />
+      <FileMenu class="file__details--actions" :file-name="fileName" />
     </div>
     <div v-if="layoutType === 'grid'" class="file__preview">
       <video
@@ -101,13 +90,14 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
         class="file__preview--video"
         controls
       >
-        <source :src="data?.publicUrl" />
+        <!-- <source :src="data?.publicUrl" /> -->
+        <source :src="getUrl.url.value?.publicUrl" />
         Your browser does not support HTML video.
       </video>
       <embed
         v-else-if="previewFileType === 'pdf'"
         class="file__preview--embed"
-        :src="data?.publicUrl"
+        :src="getUrl.url.value?.publicUrl"
         type="application/pdf"
         frameBorder="0"
       />
@@ -116,7 +106,11 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
         v-else-if="filePreviewComponent"
         class="file__preview--component"
       />
-      <img v-else class="file__preview--image" :src="data?.publicUrl" />
+      <img
+        v-else
+        class="file__preview--image"
+        :src="getUrl.url.value?.publicUrl"
+      />
     </div>
   </div>
 </template>
