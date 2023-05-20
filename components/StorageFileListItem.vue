@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const layoutType = useLayoutType();
 
-const getUrl = useRetrievePublicUrl(props.file.name, props.file.id);
+const getUrl = useRetrievePublicUrl(props.file.name);
 
 const fileName = computed(() => {
   return props.file.name;
