@@ -1,4 +1,4 @@
-export const useRetrievePublicUrl = (fileName: String, fileId: string) => {
+export const useRetrievePublicUrl = (fileName: string) => {
   const client = useSupabaseClient();
 
   const getPublicUrl = async () => {
@@ -8,7 +8,7 @@ export const useRetrievePublicUrl = (fileName: String, fileId: string) => {
     return data;
   };
 
-  const { data: url } = useAsyncData(fileId, getPublicUrl, {
+  const { data: url } = useAsyncData(fileName, getPublicUrl, {
     server: false,
   });
 
