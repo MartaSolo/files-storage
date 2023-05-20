@@ -1,7 +1,15 @@
 <script setup lang="ts">
+// const client = useSupabaseClient();
+
+const props = defineProps<{
+  fileName: String;
+}>();
+
 const isMenuOpen = ref(false);
 
 const root = ref<HTMLElement | null>(null);
+
+const copyFile = useCopyFile(props.fileName);
 
 useClickOutside(root, () => {
   isMenuOpen.value = false;
@@ -19,7 +27,22 @@ const toggleMenu = () => {
         <MoreActions />
       </template>
     </IconButton>
-    <div v-if="isMenuOpen" class="menu__list"></div>
+    <template v-if="isMenuOpen">
+      <ul class="menu__list">
+        <li class="menu__list--item">
+          <button class="menu__item--button" @click="copyFile.copy">
+            Copy file
+            <div class="menu__item--icon"><CopyFile /></div>
+          </button>
+        </li>
+        <li class="menu__list--item">
+          <button class="menu__item--button">
+            Copy link
+            <div class="menu__item--icon"><CopyLink /></div>
+          </button>
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 
@@ -36,6 +59,6 @@ const toggleMenu = () => {
   right: 20px;
   position: absolute;
   z-index: 9999;
-  background-color: palevioletred;
+  background-color: $color_white;
 }
 </style>
