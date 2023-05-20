@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import GridLayout from "@/components/svg/GridLayout.vue";
-import ListLayout from "@/components/svg/ListLayout.vue";
+const GridLayout = resolveComponent("GridLayout");
+const ListLayout = resolveComponent("ListLayout");
 
 const layoutType = useLayoutType();
 
