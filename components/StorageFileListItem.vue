@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
-import XlsxFile from "@/components/svg/XlsxFile.vue";
-import SomeFile from "@/components/svg/SomeFile.vue";
-import DocxFile from "@/components/svg/DocxFile.vue";
+
+const XlsxFile = resolveComponent("XlsxFile");
+const SomeFile = resolveComponent("SomeFile");
+const DocxFile = resolveComponent("DocxFile");
 
 const client = useSupabaseClient();
 

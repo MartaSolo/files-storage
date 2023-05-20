@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import MoreActions from "@/components/svg/MoreActions.vue";
-
 const isMenuOpen = ref(false);
 
 const root = ref<HTMLElement | null>(null);

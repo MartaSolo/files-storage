@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SortOption } from "@/types/SortOptions";
-import SortUp from "@/components/svg/SortUp.vue";
-import SortDown from "@/components/svg/SortDown.vue";
+const SortUp = resolveComponent("SortUp");
+const SortDown = resolveComponent("SortDown");
 
 const sortOptions: SortOption[] = [
   { label: "name ascending", column: "name", order: "asc" },
