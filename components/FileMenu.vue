@@ -2,7 +2,7 @@
 // const client = useSupabaseClient();
 
 const props = defineProps<{
-  fileName: String;
+  fileName: string;
 }>();
 
 const isMenuOpen = ref(false);
@@ -10,6 +10,8 @@ const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
 
 const copyFile = useCopyFile(props.fileName);
+
+const copyLink = useCopyLink(props.fileName);
 
 useClickOutside(root, () => {
   isMenuOpen.value = false;
@@ -36,7 +38,7 @@ const toggleMenu = () => {
           </button>
         </li>
         <li class="menu__list--item">
-          <button class="menu__item--button">
+          <button class="menu__item--button" @click="copyLink.copy">
             Copy link
             <div class="menu__item--icon"><CopyLink /></div>
           </button>
