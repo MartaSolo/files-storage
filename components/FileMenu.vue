@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// const client = useSupabaseClient();
-
 const props = defineProps<{
   fileName: string;
 }>();
@@ -12,6 +10,14 @@ const root = ref<HTMLElement | null>(null);
 const copyFile = useCopyFile(props.fileName);
 
 const copyLink = useCopyLink(props.fileName);
+
+const deleteFile = useDeleteFile(props.fileName);
+
+const getUrl = useRetrievePublicUrl(props.fileName);
+
+const downloadLink = computed(() => {
+  return `${getUrl.url.value?.publicUrl}?download=""`;
+});
 
 useClickOutside(root, () => {
   isMenuOpen.value = false;
@@ -43,6 +49,23 @@ const toggleMenu = () => {
             <div class="menu__item--icon"><CopyLink /></div>
           </button>
         </li>
+        <li class="menu__list--item">
+          <button class="menu__item--button" @click="deleteFile.remove">
+            Delete file
+            <div class="menu__item--icon"><DeleteFile /></div>
+          </button>
+        </li>
+        <li class="menu__list--item">
+          <a
+            class="menu__item--link"
+            :href="downloadLink"
+            download="name"
+            :title="fileName"
+          >
+            Download file
+            <div class="menu__item--icon"><DownloadFile /></div>
+          </a>
+        </li>
       </ul>
     </template>
   </div>
@@ -56,11 +79,20 @@ const toggleMenu = () => {
 }
 
 .menu__list {
-  width: 100px;
+  width: 150px;
   height: 200px;
   right: 20px;
   position: absolute;
   z-index: 9999;
   background-color: $color_white;
+}
+
+.menu__item--button {
+  display: flex;
+}
+
+.menu__item--icon {
+  height: 40px;
+  width: 40px;
 }
 </style>
