@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   description: String;
-  theme: String;
+  theme: "green" | "grey";
 }>();
 
 const isTextDisplayed = ref(false);
