@@ -13,6 +13,13 @@ const layoutType = useLayoutType();
 
 const getUrl = useRetrievePublicUrl(props.file.name);
 
+// this is to prevent automatic download of pdf files cuz composable has
+// download: true, so we cut from the link '?download='
+const previewUrl = computed(() => {
+  const link = getUrl.url.value?.publicUrl;
+  return link?.slice(0, -10);
+});
+
 const fileName = computed(() => {
   return props.file.name;
 });
@@ -90,14 +97,13 @@ const fileComponent = computed(() => {
         class="file__preview--video"
         controls
       >
-        <!-- <source :src="data?.publicUrl" /> -->
-        <source :src="getUrl.url.value?.publicUrl" />
+        <source :src="previewUrl" />
         Your browser does not support HTML video.
       </video>
       <embed
         v-else-if="previewFileType === 'pdf'"
         class="file__preview--embed"
-        :src="getUrl.url.value?.publicUrl"
+        :src="previewUrl"
         type="application/pdf"
         frameBorder="0"
       />
@@ -106,11 +112,7 @@ const fileComponent = computed(() => {
         v-else-if="filePreviewComponent"
         class="file__preview--component"
       />
-      <img
-        v-else
-        class="file__preview--image"
-        :src="getUrl.url.value?.publicUrl"
-      />
+      <img v-else class="file__preview--image" :src="previewUrl" />
     </div>
   </div>
 </template>
