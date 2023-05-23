@@ -2,9 +2,7 @@
 
 <template>
   <header class="header">
-    <h1 class="header__title font-mono text-2xl">
-      Your personal files storage
-    </h1>
+    <h1 class="header__title">Your personal files storage</h1>
   </header>
 </template>
 
@@ -13,7 +11,15 @@
   padding: 0 1rem;
 }
 .header__title {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 2px;
   text-align: center;
-  padding: 1.5rem 0 2rem 0;
+  padding: 0.75rem 0 1rem 0;
+  color: $text-color-secondary;
+  @include mediumScreen {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
 }
 </style>

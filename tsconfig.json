@@ -1,9 +1,7 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
-   "compilerOptions": {
-        "lib": [
-            "es5", "es6", "dom", "dom.iterable"
-        ]
-    }
+  "compilerOptions": {
+    "lib": ["es5", "es6", "dom", "dom.iterable"]
+  }
 }

@@ -3,6 +3,13 @@ import { FileObject } from "@supabase/storage-js";
 
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
+const layoutType = useLayoutType();
+
+const computedClass = computed(() => {
+  return layoutType.value === "grid"
+    ? "files__list--grid"
+    : "files__list--list";
+});
 
 const {
   data: fileList,
@@ -26,17 +33,60 @@ const sortFiles = () => {
       description="We are sorry, but your files cannot be displayed at the moment."
     />
     <template v-else>
-      <SortFileList @set-sort-options="sortFiles" />
-      <h2 class="files__title">Your uploaded files:</h2>
-      <ul class="files__list">
+      <div class="files__menu">
+        <SortFileList @set-sort-options="sortFiles" />
+        <LayoutSwitcher />
+      </div>
+      <div class="files__list" :class="computedClass">
         <StorageFileListItem
           v-for="file in fileList"
           :key="file.id"
           :file="file"
         />
-      </ul>
+      </div>
     </template>
   </section>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.files__menu {
+  padding: 0 1rem 1rem 1rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2rem;
+}
+.files__list {
+  overflow-y: scroll;
+  height: calc(100vh - 230px);
+  padding: 0 1rem 1rem 0;
+  @include mediumScreen {
+    height: calc(100vh - 222px);
+  }
+}
+
+.files__list--grid {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 1.5rem;
+  @include xsmallScreen {
+  }
+  @include smallScreen {
+    grid-template-columns: 1fr 1fr;
+  }
+  @include mediumScreen {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  @include largeScreen {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  @include xlargeScreen {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  @include xxlargeScreen {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+}
+</style>
