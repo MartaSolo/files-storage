@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   name: string;
-  type: string;
+  type: "image" | "video" | "docx" | "xlsx" | "pdf";
 }>();
 
 const isChecked = ref(false);
