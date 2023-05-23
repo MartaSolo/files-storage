@@ -37,7 +37,7 @@ const previewFileType = computed(() => {
   const explicitTypes = type.split("/")[0];
 
   const splitName = props.file.name.split(".");
-  const fileExtension = splitName[splitName.length - 1];
+  const fileExtension = splitName.at(-1);
 
   if (explicitTypes === "image" || explicitTypes === "video") {
     return explicitTypes;
