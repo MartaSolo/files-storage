@@ -8,16 +8,9 @@ const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
 
 const copyFile = useCopyFile(props.fileName);
-
 const copyLink = useCopyLink(props.fileName);
-
 const deleteFile = useDeleteFile(props.fileName);
-
-const getUrl = useRetrievePublicUrl(props.fileName);
-
-const downloadLink = computed(() => {
-  return `${getUrl.url.value?.publicUrl}?download=""`;
-});
+const downloadFile = useDownloadFile(props.fileName);
 
 useClickOutside(root, () => {
   isMenuOpen.value = false;
@@ -56,15 +49,10 @@ const toggleMenu = () => {
           </button>
         </li>
         <li class="menu__list--item">
-          <a
-            class="menu__item--link"
-            :href="downloadLink"
-            download="name"
-            :title="fileName"
-          >
+          <button class="menu__item--button" @click="downloadFile.download">
             Download file
             <div class="menu__item--icon"><DownloadFile /></div>
-          </a>
+          </button>
         </li>
       </ul>
     </template>
