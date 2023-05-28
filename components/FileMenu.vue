@@ -8,8 +8,8 @@ const emit = defineEmits<{
 }>();
 
 const isMenuOpen = ref(false);
-
 const root = ref<HTMLElement | null>(null);
+const showModal = ref(false);
 
 const copyFile = useCopyFile(props.fileName);
 const copyLink = useCopyLink(props.fileName);
@@ -45,6 +45,11 @@ const handleDeleteFile = async () => {
   toggleMenu();
   emit("fileAction");
 };
+
+const handleRenameFile = () => {
+  showModal.value = true;
+  toggleMenu();
+};
 </script>
 
 <template>
@@ -54,34 +59,47 @@ const handleDeleteFile = async () => {
         <MoreActions />
       </template>
     </IconButton>
-    <template v-if="isMenuOpen">
-      <ul class="menu__list">
-        <li class="menu__list--item">
-          <button class="menu__item--button" @click="handleCopyLink">
-            Copy link
-            <div class="menu__item--icon"><CopyLink /></div>
-          </button>
-        </li>
-        <li class="menu__list--item">
-          <button class="menu__item--button" @click="handleCopyFile">
-            Copy file
-            <div class="menu__item--icon"><CopyFile /></div>
-          </button>
-        </li>
-        <li class="menu__list--item">
-          <button class="menu__item--button" @click="handleDownloadFile">
-            Download file
-            <div class="menu__item--icon"><DownloadFile /></div>
-          </button>
-        </li>
-        <li class="menu__list--item">
-          <button class="menu__item--button" @click="handleDeleteFile">
-            Delete file
-            <div class="menu__item--icon"><DeleteFile /></div>
-          </button>
-        </li>
-      </ul>
-    </template>
+    <Transition name="menu">
+      <template v-if="isMenuOpen">
+        <ul class="menu__list">
+          <li class="menu__list--item">
+            <button class="menu__item--button" @click="handleCopyLink">
+              Copy link
+              <div class="menu__item--icon"><CopyLink /></div>
+            </button>
+          </li>
+          <li class="menu__list--item">
+            <button class="menu__item--button" @click="handleCopyFile">
+              Copy file
+              <div class="menu__item--icon"><CopyFile /></div>
+            </button>
+          </li>
+          <li class="menu__list--item">
+            <button class="menu__item--button" @click="handleDownloadFile">
+              Download file
+              <div class="menu__item--icon"><DownloadFile /></div>
+            </button>
+          </li>
+          <li class="menu__list--item">
+            <button class="menu__item--button" @click="handleDeleteFile">
+              Delete file
+              <div class="menu__item--icon"><DeleteFile /></div>
+            </button>
+          </li>
+          <li class="menu__list--item">
+            <button class="menu__item--button" @click="handleRenameFile">
+              Rename file
+              <div class="menu__item--icon"><RenameFile /></div>
+            </button>
+          </li>
+        </ul>
+      </template>
+    </Transition>
+    <RenameFileModal
+      v-if="showModal"
+      :file-name="fileName"
+      @close-rename-file-modal="showModal = false"
+    />
   </div>
 </template>
 
@@ -108,5 +126,15 @@ const handleDeleteFile = async () => {
 .menu__item--icon {
   height: 40px;
   width: 40px;
+}
+
+.menu-enter-active,
+.menu-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
 }
 </style>
