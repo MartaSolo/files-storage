@@ -22,6 +22,10 @@ const {
 const sortFiles = () => {
   refresh();
 };
+
+const updateList = () => {
+  refresh();
+};
 </script>
 
 <template>
@@ -42,6 +46,7 @@ const sortFiles = () => {
           v-for="file in fileList"
           :key="file.id"
           :file="file"
+          @update-file-list="updateList"
         />
       </div>
     </template>

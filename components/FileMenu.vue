@@ -3,6 +3,10 @@ const props = defineProps<{
   fileName: string;
 }>();
 
+const emit = defineEmits<{
+  (e: "fileAction"): void;
+}>();
+
 const isMenuOpen = ref(false);
 
 const root = ref<HTMLElement | null>(null);
@@ -19,6 +23,28 @@ useClickOutside(root, () => {
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
+
+const handleCopyLink = () => {
+  copyLink.copy();
+  toggleMenu();
+};
+
+const handleCopyFile = async () => {
+  await copyFile.copy();
+  toggleMenu();
+  emit("fileAction");
+};
+
+const handleDownloadFile = () => {
+  downloadFile.download();
+  toggleMenu();
+};
+
+const handleDeleteFile = async () => {
+  await deleteFile.remove();
+  toggleMenu();
+  emit("fileAction");
+};
 </script>
 
 <template>
@@ -31,27 +57,27 @@ const toggleMenu = () => {
     <template v-if="isMenuOpen">
       <ul class="menu__list">
         <li class="menu__list--item">
-          <button class="menu__item--button" @click="copyFile.copy">
-            Copy file
-            <div class="menu__item--icon"><CopyFile /></div>
-          </button>
-        </li>
-        <li class="menu__list--item">
-          <button class="menu__item--button" @click="copyLink.copy">
+          <button class="menu__item--button" @click="handleCopyLink">
             Copy link
             <div class="menu__item--icon"><CopyLink /></div>
           </button>
         </li>
         <li class="menu__list--item">
-          <button class="menu__item--button" @click="deleteFile.remove">
-            Delete file
-            <div class="menu__item--icon"><DeleteFile /></div>
+          <button class="menu__item--button" @click="handleCopyFile">
+            Copy file
+            <div class="menu__item--icon"><CopyFile /></div>
           </button>
         </li>
         <li class="menu__list--item">
-          <button class="menu__item--button" @click="downloadFile.download">
+          <button class="menu__item--button" @click="handleDownloadFile">
             Download file
             <div class="menu__item--icon"><DownloadFile /></div>
+          </button>
+        </li>
+        <li class="menu__list--item">
+          <button class="menu__item--button" @click="handleDeleteFile">
+            Delete file
+            <div class="menu__item--icon"><DeleteFile /></div>
           </button>
         </li>
       </ul>

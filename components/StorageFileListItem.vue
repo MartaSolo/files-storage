@@ -9,6 +9,10 @@ const props = defineProps<{
   file: FileObject;
 }>();
 
+const emit = defineEmits<{
+  (e: "updateFileList"): void;
+}>();
+
 const layoutType = useLayoutType();
 
 const getUrl = useRetrievePublicUrl(props.file.name);
@@ -76,6 +80,10 @@ const fileComponent = computed(() => {
   if (previewFileType.value === "xlsx") return XlsxFile;
   if (previewFileType.value === "other") return SomeFile;
 });
+
+const updatedFile = () => {
+  emit("updateFileList");
+};
 </script>
 
 <template>
@@ -89,7 +97,11 @@ const fileComponent = computed(() => {
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
-      <FileMenu class="file__details--actions" :file-name="fileName" />
+      <FileMenu
+        class="file__details--actions"
+        :file-name="fileName"
+        @file-action="updatedFile"
+      />
     </div>
     <div v-if="layoutType === 'grid'" class="file__preview">
       <video
