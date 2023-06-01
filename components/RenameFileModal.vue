@@ -9,14 +9,19 @@ const emit = defineEmits<{
 
 const newFileName = ref(props.fileName);
 
+const errorMessage = ref("");
+
 const close = () => {
   emit("closeRenameFileModal");
 };
 
-const handleRename = () => {
+const handleRename = async () => {
   const renameFile = useRenameFile(props.fileName, newFileName.value);
-  renameFile.rename();
-  console.log("renameFile fired");
+  await renameFile.rename();
+  console.log("component composable error", renameFile.renameError.value);
+  if (renameFile.renameError.value) {
+    errorMessage.value = renameFile.renameError.value;
+  }
 };
 </script>
 
@@ -29,6 +34,7 @@ const handleRename = () => {
       <template #body>
         <label for="rename-file"></label>
         <input id="rename-file" v-model="newFileName" class="rename__input" />
+        <p class="rename__error">{{ errorMessage }}</p>
       </template>
       <template #footer>
         <div class="rename__buttons">
@@ -51,5 +57,12 @@ const handleRename = () => {
   display: flex;
   gap: 1rem;
   justify-content: center;
+}
+
+.rename__error {
+  font-size: 1rem;
+  color: $text-color-error;
+  text-align: center;
+  padding: 0.5rem 0;
 }
 </style>
