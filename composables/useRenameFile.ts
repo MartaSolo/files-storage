@@ -1,18 +1,19 @@
-export const useRenameFile = (fileName: String, newFileName: String) => {
+export const useRenameFile = () => {
   const client = useSupabaseClient();
 
-  const renameError = ref("");
+  // const renameError = ref("");
 
-  const rename = async () => {
+  const rename = async (fileName: String, newFileName: String) => {
     const { data, error } = await client.storage
       .from("files")
       .move(`public/${fileName}`, `public/${newFileName}`);
     if (error) {
-      renameError.value = error?.message;
-      console.log("composable error", renameError.value);
+      // renameError.value = error?.message;
+      throw new Error(error.message);
     }
     return data;
   };
 
-  return { rename, renameError };
+  // return { rename, renameError };
+  return { rename };
 };

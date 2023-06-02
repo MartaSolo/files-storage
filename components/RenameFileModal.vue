@@ -15,13 +15,18 @@ const close = () => {
   emit("closeRenameFileModal");
 };
 
+const renameFile = useRenameFile();
+
 const handleRename = async () => {
-  const renameFile = useRenameFile(props.fileName, newFileName.value);
-  await renameFile.rename();
-  console.log("component composable error", renameFile.renameError.value);
-  if (renameFile.renameError.value) {
-    errorMessage.value = renameFile.renameError.value;
+  try {
+    await renameFile.rename(props.fileName, newFileName.value);
+  } catch (e: any) {
+    errorMessage.value = e.message;
   }
+  // console.log("component composable error", renameFile.renameError.value);
+  // if (renameFile.renameError.value) {
+  //   errorMessage.value = renameFile.renameError.value;
+  // }
 };
 </script>
 
