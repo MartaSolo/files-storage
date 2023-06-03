@@ -99,6 +99,7 @@ const handleRenameFile = () => {
       v-if="showModal"
       :file-name="fileName"
       @close-rename-file-modal="showModal = false"
+      @file-name-updated="emit('fileAction')"
     />
   </div>
 </template>
