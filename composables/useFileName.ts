@@ -1,4 +1,4 @@
-export const useFileName = (fileName: String) => {
+export const useFileName = (fileName: string) => {
   const indexToSplitFileName = fileName.lastIndexOf(".");
 
   const name = fileName.substring(0, indexToSplitFileName);

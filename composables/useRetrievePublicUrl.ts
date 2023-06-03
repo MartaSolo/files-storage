@@ -4,7 +4,6 @@ export const useRetrievePublicUrl = (fileName: string) => {
   const getPublicUrl = async () => {
     const { data } = await client.storage
       .from("files/public")
-      // .getPublicUrl(`${fileName}`);
       .getPublicUrl(`${fileName}`, { download: true });
     return data;
   };

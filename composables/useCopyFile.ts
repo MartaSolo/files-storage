@@ -1,4 +1,4 @@
-export const useCopyFile = (fileName: String) => {
+export const useCopyFile = (fileName: string) => {
   const client = useSupabaseClient();
 
   const copyName = useFileName(fileName);
