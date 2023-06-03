@@ -14,11 +14,9 @@ const emit = defineEmits<{
         <div class="modal__header">
           <slot name="header" />
         </div>
-
         <div class="modal__body">
           <slot name="body" />
         </div>
-
         <div class="modal__footer">
           <slot name="footer" />
         </div>
@@ -45,7 +43,7 @@ const emit = defineEmits<{
   margin: auto;
   padding: 20px 30px;
   background-color: $color-white;
-  border-radius: 2px;
+  border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
 }
@@ -54,6 +52,7 @@ const emit = defineEmits<{
   margin-top: 0;
   color: $color-green-dark;
 }
+
 .modal__body {
   margin: 20px 0;
 }
