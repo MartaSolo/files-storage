@@ -19,10 +19,6 @@ const {
   query: { key: sortColumn, order: sortOrder },
 });
 
-const sortFiles = () => {
-  refresh();
-};
-
 const updateList = () => {
   refresh();
 };
@@ -38,7 +34,7 @@ const updateList = () => {
     />
     <template v-else>
       <div class="files__menu">
-        <SortFileList @set-sort-options="sortFiles" />
+        <SortFileList @set-sort-options="updateList" />
         <LayoutSwitcher />
       </div>
       <div class="files__list" :class="computedClass">
