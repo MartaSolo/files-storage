@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  description: String;
+  description: string;
   theme: "green" | "grey";
 }>();
 
