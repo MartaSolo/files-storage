@@ -64,32 +64,32 @@ const handleRenameFile = () => {
         <ul class="menu__list">
           <li class="menu__list--item">
             <button class="menu__item--button" @click="handleCopyLink">
-              Copy link
               <div class="menu__item--icon"><CopyLink /></div>
+              Copy link
             </button>
           </li>
           <li class="menu__list--item">
             <button class="menu__item--button" @click="handleCopyFile">
-              Copy file
               <div class="menu__item--icon"><CopyFile /></div>
+              Copy file
             </button>
           </li>
           <li class="menu__list--item">
             <button class="menu__item--button" @click="handleDownloadFile">
-              Download file
               <div class="menu__item--icon"><DownloadFile /></div>
+              Download file
             </button>
           </li>
           <li class="menu__list--item">
             <button class="menu__item--button" @click="handleDeleteFile">
-              Delete file
               <div class="menu__item--icon"><DeleteFile /></div>
+              Delete file
             </button>
           </li>
           <li class="menu__list--item">
             <button class="menu__item--button" @click="handleRenameFile">
-              Rename file
               <div class="menu__item--icon"><RenameFile /></div>
+              Rename file
             </button>
           </li>
         </ul>
@@ -112,21 +112,40 @@ const handleRenameFile = () => {
 }
 
 .menu__list {
-  width: 150px;
-  height: 200px;
-  right: 20px;
+  top: 41px;
+  right: 0px;
   position: absolute;
   z-index: 9999;
   background-color: $color_white;
+  border-radius: 4px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 
 .menu__item--button {
+  width: 160px;
   display: flex;
+  align-items: center;
+  &:hover {
+    background-color: grey;
+  }
 }
 
+.menu__list--item:first-child .menu__item--button {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.menu__list--item:last-child .menu__item--button {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
 .menu__item--icon {
   height: 40px;
-  width: 40px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0.3rem;
 }
 
 .menu-enter-active,
