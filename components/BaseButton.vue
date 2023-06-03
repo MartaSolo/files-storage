@@ -1,11 +1,12 @@
 <script setup lang="ts">
 const props = defineProps<{
-  label: String;
+  label: string;
   theme: "white" | "green";
+  disabled?: boolean;
 }>();
 
 const computedClass = computed(() => {
-  return ["button", `button--${props.theme}`];
+  return ["button", `button--${props.theme}`, props.disabled ? "disabled" : ""];
 });
 </script>
 
@@ -35,6 +36,13 @@ const computedClass = computed(() => {
   color: $color-white;
   &:hover {
     background-color: $color-green-dark-hover;
+  }
+}
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  &:hover {
+    opacity: 0.4;
   }
 }
 </style>
