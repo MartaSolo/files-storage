@@ -26,29 +26,29 @@ const toggleMenu = () => {
 
 const handleCopyLink = () => {
   copyLink.copy();
-  toggleMenu();
+  isMenuOpen.value = false;
 };
 
 const handleCopyFile = async () => {
   await copyFile.copy();
-  toggleMenu();
+  isMenuOpen.value = false;
   emit("fileAction");
 };
 
 const handleDownloadFile = () => {
   downloadFile.download();
-  toggleMenu();
+  isMenuOpen.value = false;
 };
 
 const handleDeleteFile = async () => {
   await deleteFile.remove();
-  toggleMenu();
+  isMenuOpen.value = false;
   emit("fileAction");
 };
 
 const handleRenameFile = () => {
   showModal.value = true;
-  toggleMenu();
+  isMenuOpen.value = false;
 };
 </script>
 
@@ -59,7 +59,7 @@ const handleRenameFile = () => {
         <MoreActions />
       </template>
     </IconButton>
-    <Transition name="menu">
+    <Transition name="menu" :duration="300">
       <template v-if="isMenuOpen">
         <ul class="menu__list">
           <li class="menu__list--item">
