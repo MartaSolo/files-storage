@@ -17,11 +17,8 @@ const layoutType = useLayoutType();
 
 const getUrl = useRetrievePublicUrl(props.file.name);
 
-// this is to prevent automatic download of pdf files cuz composable has
-// download: true, so we cut from the link '?download='
 const previewUrl = computed(() => {
-  const link = getUrl.url.value?.publicUrl;
-  return link?.slice(0, -10);
+  return getUrl.url.value?.publicUrl;
 });
 
 const fileName = computed(() => {
