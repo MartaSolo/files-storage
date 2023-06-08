@@ -14,7 +14,7 @@ const showModal = ref(false);
 const copyFile = useCopyFile(props.fileName);
 const copyLink = useCopyLink(props.fileName);
 const deleteFile = useDeleteFile(props.fileName);
-const downloadFile = useDownloadFile(props.fileName);
+const downloadFile = useDownloadFile();
 
 useClickOutside(root, () => {
   isMenuOpen.value = false;
@@ -36,7 +36,7 @@ const handleCopyFile = async () => {
 };
 
 const handleDownloadFile = () => {
-  downloadFile.download();
+  downloadFile.download(props.fileName);
   isMenuOpen.value = false;
 };
 
