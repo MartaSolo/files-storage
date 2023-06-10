@@ -94,16 +94,11 @@ const updatedFile = () => {
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
-      <FileMenuEdited
+      <FileMenu
         class="file__details--actions"
         :file-name="fileName"
         @file-action="updatedFile"
       />
-      <!-- <FileMenu
-        class="file__details--actions"
-        :file-name="fileName"
-        @file-action="updatedFile"
-      /> -->
     </div>
     <div v-if="layoutType === 'grid'" class="file__preview">
       <video
