@@ -27,20 +27,25 @@ const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
 const showModal = ref(false);
 const highlightedIndex = ref(0);
+const menuListPosition = ref("bottom");
 
 const copyFile = useCopyFile(props.fileName);
 const copyLink = useCopyLink(props.fileName);
 const deleteFile = useDeleteFile(props.fileName);
 const downloadFile = useDownloadFile();
 
-useClickOutside(root, () => {
-  isMenuOpen.value = false;
+onMounted(() => {
+  const windowInnerHeight = window.innerHeight;
+  const rectBottom = root.value?.getBoundingClientRect().bottom || 0;
+  const bottomDistance = windowInnerHeight - rectBottom;
+  if (bottomDistance < 200) {
+    menuListPosition.value = "top";
+  }
 });
 
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
-  highlightedIndex.value = 0;
-};
+const computedMenuListClass = computed(() => {
+  return `menu__list--${menuListPosition.value}`;
+});
 
 const prevIndex = computed(() => {
   return highlightedIndex.value === 0
@@ -60,6 +65,15 @@ const highlightPrev = () => {
 
 const highlightNext = () => {
   highlightedIndex.value = nextIndex.value;
+};
+
+useClickOutside(root, () => {
+  isMenuOpen.value = false;
+});
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+  highlightedIndex.value = 0;
 };
 
 const handleCopyLink = () => {
@@ -134,7 +148,7 @@ const handleActionByKeyboard = () => {
     </IconButton>
     <Transition name="menu" :duration="300">
       <template v-if="isMenuOpen">
-        <ul class="menu__list">
+        <ul class="menu__list" :class="computedMenuListClass">
           <li
             v-for="(action, index) in actions"
             :key="action.id"
@@ -174,14 +188,20 @@ const handleActionByKeyboard = () => {
 }
 
 .menu__list {
-  top: 41px;
-  right: 0px;
   position: absolute;
+  right: 0px;
   z-index: 9999;
   background-color: $color_white;
   border-radius: 4px;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.menu__list--bottom {
+  top: 41px;
+}
+.menu__list--top {
+  top: -202px;
 }
 
 .menu__list--item--highlighted .menu__item--button {
