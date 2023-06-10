@@ -1,4 +1,20 @@
 <script setup lang="ts">
+import { FileActions } from "@/types/FileActions";
+
+const CopyLink = resolveComponent("CopyLink");
+const CopyFile = resolveComponent("CopyFile");
+const DownloadFile = resolveComponent("DownloadFile");
+const DeleteFile = resolveComponent("DeleteFile");
+const RenameFile = resolveComponent("RenameFile");
+
+const actions: FileActions[] = [
+  { id: "copyLink", label: "Copy link", svg: CopyLink },
+  { id: "copyFile", label: "Copy file", svg: CopyFile },
+  { id: "downloadFile", label: "Download file", svg: DownloadFile },
+  { id: "deleteFile", label: "Delete file", svg: DeleteFile },
+  { id: "renameFile", label: "Rename file", svg: RenameFile },
+];
+
 const props = defineProps<{
   fileName: string;
 }>();
@@ -10,6 +26,7 @@ const emit = defineEmits<{
 const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
 const showModal = ref(false);
+const highlightedIndex = ref(0);
 
 const copyFile = useCopyFile(props.fileName);
 const copyLink = useCopyLink(props.fileName);
@@ -22,6 +39,27 @@ useClickOutside(root, () => {
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
+  highlightedIndex.value = 0;
+};
+
+const prevIndex = computed(() => {
+  return highlightedIndex.value === 0
+    ? actions.length - 1
+    : highlightedIndex.value - 1;
+});
+
+const nextIndex = computed(() => {
+  return highlightedIndex.value === actions.length - 1
+    ? 0
+    : highlightedIndex.value + 1;
+});
+
+const highlightPrev = () => {
+  highlightedIndex.value = prevIndex.value;
+};
+
+const highlightNext = () => {
+  highlightedIndex.value = nextIndex.value;
 };
 
 const handleCopyLink = () => {
@@ -31,8 +69,8 @@ const handleCopyLink = () => {
 
 const handleCopyFile = async () => {
   await copyFile.copy();
-  isMenuOpen.value = false;
   emit("fileAction");
+  isMenuOpen.value = false;
 };
 
 const handleDownloadFile = () => {
@@ -42,19 +80,54 @@ const handleDownloadFile = () => {
 
 const handleDeleteFile = async () => {
   await deleteFile.remove();
-  isMenuOpen.value = false;
   emit("fileAction");
+  isMenuOpen.value = false;
 };
 
 const handleRenameFile = () => {
   showModal.value = true;
   isMenuOpen.value = false;
 };
+
+const handleAction = (i: number) => {
+  switch (i) {
+    case 0:
+      return handleCopyLink();
+    case 1:
+      return handleCopyFile();
+    case 2:
+      return handleDownloadFile();
+    case 3:
+      return handleDeleteFile();
+    case 4:
+      return handleRenameFile();
+  }
+};
+
+const handleActionByKeyboard = () => {
+  if (isMenuOpen.value) {
+    handleAction(highlightedIndex.value);
+  } else {
+    isMenuOpen.value = true;
+  }
+};
 </script>
 
 <template>
   <div ref="root" class="menu">
-    <IconButton description="More actions" theme="grey" @click="toggleMenu">
+    <IconButton
+      description="More actions"
+      theme="grey"
+      @click="toggleMenu"
+      @keyup.down.prevent="highlightedIndex = 0"
+      @keyup.left.prevent="highlightPrev()"
+      @keyup.right.prevent="highlightNext()"
+      @keyup.enter.prevent="handleActionByKeyboard"
+      @keyup.space.prevent="handleActionByKeyboard"
+      @keyup.esc="isMenuOpen = false"
+      @keydown.tab="isMenuOpen = false"
+      @keydown.enter.prevent
+    >
       <template #icon>
         <MoreActions />
       </template>
@@ -62,34 +135,23 @@ const handleRenameFile = () => {
     <Transition name="menu" :duration="300">
       <template v-if="isMenuOpen">
         <ul class="menu__list">
-          <li class="menu__list--item">
-            <button class="menu__item--button" @click="handleCopyLink">
-              <div class="menu__item--icon"><CopyLink /></div>
-              Copy link
-            </button>
-          </li>
-          <li class="menu__list--item">
-            <button class="menu__item--button" @click="handleCopyFile">
-              <div class="menu__item--icon"><CopyFile /></div>
-              Copy file
-            </button>
-          </li>
-          <li class="menu__list--item">
-            <button class="menu__item--button" @click="handleDownloadFile">
-              <div class="menu__item--icon"><DownloadFile /></div>
-              Download file
-            </button>
-          </li>
-          <li class="menu__list--item">
-            <button class="menu__item--button" @click="handleDeleteFile">
-              <div class="menu__item--icon"><DeleteFile /></div>
-              Delete file
-            </button>
-          </li>
-          <li class="menu__list--item">
-            <button class="menu__item--button" @click="handleRenameFile">
-              <div class="menu__item--icon"><RenameFile /></div>
-              Rename file
+          <li
+            v-for="(action, index) in actions"
+            :key="action.id"
+            class="menu__list--item"
+            :class="{
+              'menu__list--item--highlighted': highlightedIndex === index,
+            }"
+          >
+            <button
+              class="menu__item--button"
+              @click="handleAction(index)"
+              @mouseover="highlightedIndex = index"
+            >
+              <div class="menu__item--icon">
+                <component :is="action.svg" />
+              </div>
+              {{ action.label }}
             </button>
           </li>
         </ul>
@@ -122,12 +184,15 @@ const handleRenameFile = () => {
     rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 
+.menu__list--item--highlighted .menu__item--button {
+  background-color: $color-green-light-hover;
+}
 .menu__item--button {
   width: 160px;
   display: flex;
   align-items: center;
   &:hover {
-    background-color: grey;
+    background-color: $color-green-light-hover;
   }
 }
 
@@ -135,10 +200,12 @@ const handleRenameFile = () => {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
+
 .menu__list--item:last-child .menu__item--button {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
+
 .menu__item--icon {
   height: 40px;
   width: 30px;
