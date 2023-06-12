@@ -2,15 +2,18 @@
 const props = defineProps<{
   name: string;
   type: "image" | "video" | "docx" | "xlsx" | "pdf";
+  modelValue: boolean;
 }>();
 
-const isChecked = ref(false);
+const emit = defineEmits<{
+  (e: "update:modelValue", payload: boolean): void;
+}>();
 
 const computedClass = computed(() => {
   return [
     "checkbox__input",
     `checkbox__input--${props.type}`,
-    isChecked.value ? "checked" : "",
+    props.modelValue ? "checked" : "",
   ];
 });
 </script>
@@ -20,10 +23,13 @@ const computedClass = computed(() => {
     <label class="checkbox__label" :for="props.name" :aria-label="props.name">
       <input
         :id="props.name"
-        v-model="isChecked"
         type="checkbox"
         :name="props.name"
         :class="computedClass"
+        :value="modelValue"
+        @input="
+          emit('update:modelValue', ($event.target as HTMLInputElement).checked)
+        "
       />
     </label>
   </div>
