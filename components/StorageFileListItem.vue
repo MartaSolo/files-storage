@@ -13,9 +13,11 @@ const emit = defineEmits<{
   (e: "updateFileList"): void;
 }>();
 
-const layoutType = useLayoutType();
+const isFileChecked = ref(false);
 
+const layoutType = useLayoutType();
 const getUrl = useRetrievePublicUrl(props.file.name);
+// const selectedFiles = useSelectedFiles();
 
 const previewUrl = computed(() => {
   return getUrl.url.value?.publicUrl;
@@ -81,12 +83,25 @@ const fileComponent = computed(() => {
 const updatedFile = () => {
   emit("updateFileList");
 };
+
+// const updateSelectedFiles = () => {
+//   if (isFileChecked.value) {
+//     selectedFiles.value.push(fileName.value);
+//   } else {
+//     selectedFiles.value.splice(selectedFiles.value.indexOf(fileName.value), 1);
+//   }
+// };
+
+// watch(isFileChecked, (newValue) => {
+//   updateSelectedFiles();
+// });
 </script>
 
 <template>
   <div ref="root" class="file" :class="computedClass">
     <div class="file__details">
       <FileCheckbox
+        v-model="isFileChecked"
         :name="fileName"
         :type="previewFileType"
         class="file__details--checkbox"
