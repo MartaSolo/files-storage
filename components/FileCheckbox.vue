@@ -2,18 +2,17 @@
 const props = defineProps<{
   name: string;
   type: "image" | "video" | "docx" | "xlsx" | "pdf";
-  modelValue: boolean;
 }>();
 
-const emit = defineEmits<{
-  (e: "update:modelValue", payload: boolean): void;
-}>();
+const selectedFiles = useSelectedFiles();
+
+const isChecked = ref(false);
 
 const computedClass = computed(() => {
   return [
     "checkbox__input",
     `checkbox__input--${props.type}`,
-    props.modelValue ? "checked" : "",
+    isChecked.value ? "checked" : "",
   ];
 });
 </script>
@@ -23,13 +22,12 @@ const computedClass = computed(() => {
     <label class="checkbox__label" :for="props.name" :aria-label="props.name">
       <input
         :id="props.name"
+        v-model="selectedFiles"
+        :value="props.name"
         type="checkbox"
-        :name="props.name"
+        name="file-checkbox"
         :class="computedClass"
-        :value="modelValue"
-        @input="
-          emit('update:modelValue', ($event.target as HTMLInputElement).checked)
-        "
+        @change="isChecked = !isChecked"
       />
     </label>
   </div>
