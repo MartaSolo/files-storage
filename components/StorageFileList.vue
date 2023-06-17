@@ -34,8 +34,9 @@ const updateList = () => {
     />
     <template v-else>
       <div class="files__menu">
-        <SortFileList @set-sort-options="updateList" />
+        <MultipleFilesMenu />
         <LayoutSwitcher />
+        <SortFileList @set-sort-options="updateList" />
       </div>
       <div class="files__list" :class="computedClass">
         <StorageFileListItem
@@ -51,9 +52,9 @@ const updateList = () => {
 
 <style lang="scss" scoped>
 .files__menu {
-  padding: 0 1rem 1rem 1rem;
+  padding: 0 2rem 1rem 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: 2rem;
 }
