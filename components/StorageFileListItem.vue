@@ -86,6 +86,7 @@ const updatedFile = () => {
 <template>
   <div ref="root" class="file" :class="computedClass">
     <div class="file__details">
+      <!-- v-if="selectedFiles" added to get rid of hydration errors caused by useSelectedFiles composable -->
       <FileCheckbox
         v-if="selectedFiles"
         :name="fileName"
