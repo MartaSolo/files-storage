@@ -146,6 +146,7 @@ const selectOptionByKeyboard = () => {
 <style lang="scss" scoped>
 .sort {
   position: relative;
+  width: 300px;
 }
 
 .sort__select {
