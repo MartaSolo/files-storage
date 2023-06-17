@@ -2,6 +2,7 @@
 const props = defineProps<{
   description: string;
   theme: "green" | "grey";
+  disabled?: boolean;
 }>();
 
 const isTextDisplayed = ref(false);
@@ -32,6 +33,7 @@ const hideText = () => {
     <button
       class="button__btn"
       :class="computedClass"
+      :disabled="disabled"
       aria-labelledby="description"
       @mouseenter="showText"
       @mouseleave="hideText"
@@ -64,17 +66,20 @@ const hideText = () => {
   justify-content: center;
   align-items: center;
   transition: background-color 0.2s;
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
 .button__btn--green {
   background-color: $color-green-light;
-  &:hover {
+  &:hover:not([disabled]) {
     background-color: $color-green-medium;
   }
 }
 .button__btn--grey {
   background-color: $color-grey-lightest;
-  &:hover {
+  &:hover:not([disabled]) {
     background-color: $color-grey-light;
   }
 }
