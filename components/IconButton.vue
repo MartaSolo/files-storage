@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { defineProps } from "vue";
+
 const props = defineProps<{
   description: string;
   theme: "green" | "grey";
-  disabled?: boolean;
 }>();
 
 const isTextDisplayed = ref(false);
@@ -28,12 +29,18 @@ const hideText = () => {
 };
 </script>
 
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+};
+</script>
+
 <template>
   <div class="button">
     <button
       class="button__btn"
       :class="computedClass"
-      :disabled="disabled"
+      v-bind="$attrs"
       aria-labelledby="description"
       @mouseenter="showText"
       @mouseleave="hideText"
@@ -66,9 +73,10 @@ const hideText = () => {
   justify-content: center;
   align-items: center;
   transition: background-color 0.2s;
-  &:disabled {
-    cursor: not-allowed;
-  }
+}
+
+.button__btn:disabled {
+  cursor: not-allowed;
 }
 
 .button__btn--green {
