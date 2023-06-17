@@ -5,4 +5,4 @@ export const useSortOrder = () => useState("sort-order", () => "asc");
 export const useLayoutType = () => useState("layout-type", () => "grid");
 
 export const useSelectedFiles = () =>
-  useState<string[]>("selected-files", () => ["aaa"]);
+  useState<string[]>("selected-files", () => []);

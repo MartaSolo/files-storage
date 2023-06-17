@@ -1,38 +1,21 @@
 <script setup>
-const checkedFiles = useCheckedFiles();
+const selectedFiles = useSelectedFiles();
 
 const computedWrapperClass = computed(() => {
-  return checkedFiles.files.value.length === 0 ? "inactive" : "";
+  return selectedFiles.value.length === 0 ? "inactive" : "";
 });
 
 const isDisabled = computed(() => {
-  return checkedFiles.files.value.length === 0;
+  return selectedFiles.value.length === 0;
 });
 
 const numberOfFiles = computed(() => {
-  if (checkedFiles.files.value.length === 1) {
-    return `${checkedFiles.files.value.length} file selected`;
+  if (selectedFiles.value.length === 1) {
+    return `${selectedFiles.value.length} file selected`;
   } else {
-    return `${checkedFiles.files.value.length} files selected`;
+    return `${selectedFiles.value.length} files selected`;
   }
 });
-// const selectedFiles = useSelectedFiles();
-
-// const computedWrapperClass = computed(() => {
-//   return selectedFiles.value.length === 0 ? "inactive" : "";
-// });
-
-// const isDisabled = computed(() => {
-//   return selectedFiles.value.length === 0;
-// });
-
-// const numberOfFiles = computed(() => {
-//   if (selectedFiles.value.length === 1) {
-//     return `${selectedFiles.value.length} file selected`;
-//   } else {
-//     return `${selectedFiles.value.length} files selected`;
-//   }
-// });
 </script>
 
 <template>
