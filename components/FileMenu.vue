@@ -31,7 +31,7 @@ const menuListPosition = ref("bottom");
 
 const copyFile = useCopyFile(props.fileName);
 const copyLink = useCopyLink(props.fileName);
-const deleteFile = useDeleteFile(props.fileName);
+const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
 
 onMounted(() => {
@@ -93,7 +93,7 @@ const handleDownloadFile = () => {
 };
 
 const handleDeleteFile = async () => {
-  await deleteFile.remove();
+  await deleteFile.remove(props.fileName);
   emit("fileAction");
   isMenuOpen.value = false;
 };

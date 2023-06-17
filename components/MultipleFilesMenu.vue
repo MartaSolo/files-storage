@@ -1,5 +1,6 @@
 <script setup>
 const selectedFiles = useSelectedFiles();
+const deleteFile = useDeleteFile();
 
 const computedWrapperClass = computed(() => {
   return selectedFiles.value.length === 0 ? "inactive" : "";
@@ -16,6 +17,24 @@ const numberOfFiles = computed(() => {
     return `${selectedFiles.value.length} files selected`;
   }
 });
+
+const handleClearSelection = () => {
+  selectedFiles.value = [];
+};
+
+const handleCopyFiles = () => {
+  console.log("handleCopyFiles");
+};
+
+const handleDownloadFiles = () => {
+  console.log("handleDownloadFiles");
+};
+
+const handleDeleteFiles = () => {
+  selectedFiles.value.forEach(async (file) => {
+    await deleteFile.remove(file);
+  });
+};
 </script>
 
 <template>
@@ -24,13 +43,19 @@ const numberOfFiles = computed(() => {
       description="Clear selection"
       theme="grey"
       :disabled="isDisabled"
+      @click="handleClearSelection"
     >
       <template #icon>
         <CloseIcon />
       </template>
     </IconButton>
     <p class="menu__files--label">{{ numberOfFiles }}</p>
-    <IconButton description="Copy files" theme="grey" :disabled="isDisabled">
+    <IconButton
+      description="Copy files"
+      theme="grey"
+      :disabled="isDisabled"
+      @click="handleCopyFiles"
+    >
       <template #icon>
         <CopyFile />
       </template>
@@ -39,12 +64,18 @@ const numberOfFiles = computed(() => {
       description="Download files"
       theme="grey"
       :disabled="isDisabled"
+      @click="handleDownloadFiles"
     >
       <template #icon>
         <DownloadFile />
       </template>
     </IconButton>
-    <IconButton description="Delete files" theme="grey" :disabled="isDisabled">
+    <IconButton
+      description="Delete files"
+      theme="grey"
+      :disabled="isDisabled"
+      @click="handleDeleteFiles"
+    >
       <template #icon>
         <DeleteFile />
       </template>
@@ -54,14 +85,12 @@ const numberOfFiles = computed(() => {
 
 <style lang="scss" scoped>
 .menu__files {
-  // border: 1px solid red;
   height: 50px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 .menu__files.inactive {
-  cursor: not-allowed;
   opacity: 0.5;
 }
 
