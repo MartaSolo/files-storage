@@ -15,6 +15,7 @@ const emit = defineEmits<{
 
 const layoutType = useLayoutType();
 const getUrl = useRetrievePublicUrl(props.file.name);
+const selectedFiles = useSelectedFiles();
 
 const previewUrl = computed(() => {
   return getUrl.url.value?.publicUrl;
@@ -86,6 +87,7 @@ const updatedFile = () => {
   <div ref="root" class="file" :class="computedClass">
     <div class="file__details">
       <FileCheckbox
+        v-if="selectedFiles"
         :name="fileName"
         :type="previewFileType"
         class="file__details--checkbox"

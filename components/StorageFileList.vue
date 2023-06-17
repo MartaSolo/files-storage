@@ -4,6 +4,7 @@ import { FileObject } from "@supabase/storage-js";
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
 const layoutType = useLayoutType();
+const selectedFiles = useSelectedFiles();
 
 const computedClass = computed(() => {
   return layoutType.value === "grid"
@@ -34,7 +35,7 @@ const updateList = () => {
     />
     <template v-else>
       <div class="files__menu">
-        <MultipleFilesMenu />
+        <MultipleFilesMenu v-if="selectedFiles" />
         <LayoutSwitcher />
         <SortFileList @set-sort-options="updateList" />
       </div>
