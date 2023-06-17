@@ -6,7 +6,9 @@ const props = defineProps<{
 
 const selectedFiles = useSelectedFiles();
 
-const isChecked = ref(false);
+const isChecked = computed(() => {
+  return selectedFiles.value.includes(props.name);
+});
 
 const computedClass = computed(() => {
   return [
@@ -27,7 +29,6 @@ const computedClass = computed(() => {
         type="checkbox"
         name="file-checkbox"
         :class="computedClass"
-        @change="isChecked = !isChecked"
       />
     </label>
   </div>
