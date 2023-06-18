@@ -36,7 +36,7 @@ const updateList = () => {
     <template v-else>
       <div class="files__menu">
         <!-- v-if="selectedFiles" added to get rid of hydration errors caused by useSelectedFiles composable -->
-        <MultipleFilesMenu v-if="selectedFiles" />
+        <MultipleFilesMenu v-if="selectedFiles" @files-action="updateList" />
         <LayoutSwitcher />
         <SortFileList @set-sort-options="updateList" />
       </div>
