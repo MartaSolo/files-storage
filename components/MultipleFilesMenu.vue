@@ -1,6 +1,11 @@
-<script setup>
+<script setup lang="ts">
 const selectedFiles = useSelectedFiles();
 const deleteFile = useDeleteFile();
+const downloadFile = useDownloadFile();
+
+const emit = defineEmits<{
+  (e: "filesAction"): void;
+}>();
 
 const computedWrapperClass = computed(() => {
   return selectedFiles.value.length === 0 ? "inactive" : "";
@@ -23,17 +28,29 @@ const handleClearSelection = () => {
 };
 
 const handleCopyFiles = () => {
-  console.log("handleCopyFiles");
+  selectedFiles.value.forEach(async (file) => {
+    const copyFile = useCopyFile(file);
+    await copyFile.copy();
+  });
+  emit("filesAction");
+  handleClearSelection();
 };
 
 const handleDownloadFiles = () => {
-  console.log("handleDownloadFiles");
+  selectedFiles.value.forEach((file, index) => {
+    const download = () => {
+      downloadFile.download(file);
+    };
+    setTimeout(download, Number(`${index}000`));
+  });
+  handleClearSelection();
 };
 
 const handleDeleteFiles = () => {
   selectedFiles.value.forEach(async (file) => {
     await deleteFile.remove(file);
   });
+  emit("filesAction");
 };
 </script>
 
