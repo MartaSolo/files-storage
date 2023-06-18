@@ -1,12 +1,77 @@
 <script setup lang="ts">
+const root = ref<HTMLElement | null>(null);
+
 const emit = defineEmits<{
   (e: "closeModal"): void;
 }>();
+
+const handleKeydownEscape = () => {
+  console.log("keydown escape");
+};
+
+const focusableNodes = computed(() => {
+  return root.value?.querySelectorAll<HTMLInputElement>(
+    "a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type='text']:not([disabled]), input[type='radio']:not([disabled]), input[type='checkbox']:not([disabled]), select:not([disabled])"
+  );
+});
+
+const firstFocusableNode = () => {
+  // console.log("firstFocusableNode", focusableNodes.value[0]);
+  if (focusableNodes.value) return focusableNodes.value[0];
+};
+
+const lastFocusableNode = () => {
+  if (focusableNodes.value) {
+    return focusableNodes.value[focusableNodes.value.length - 1];
+  }
+};
+
+const handleFocusTrap = (e: KeyboardEvent) => {
+  if (focusableNodes.value) {
+    if (e.shiftKey) {
+      // tab + shift
+      if (document.activeElement === firstFocusableNode()) {
+        lastFocusableNode()?.focus();
+        e.preventDefault();
+      }
+    }
+    if (document.activeElement === lastFocusableNode()) {
+      firstFocusableNode()?.focus();
+      e.preventDefault();
+    }
+  }
+};
+
+// const handleFocusTrap = (e: KeyboardEvent) => {
+//   if (focusableNodes.value) {
+//     if (e.shiftKey) {
+//       // tab + shift
+//       if (document.activeElement === firstFocusableNode()) {
+//         lastFocusableNode()?.focus();
+//         e.preventDefault();
+//       }
+//     } else {
+//       if (document.activeElement === lastFocusableNode()) {
+//         firstFocusableNode()?.focus();
+//         e.preventDefault();
+//       }
+//     }
+//   }
+// };
+
+onMounted(() => {
+  firstFocusableNode()?.focus();
+});
 </script>
 
 <template>
   <Transition name="modal">
-    <div class="modal__mask">
+    <div
+      ref="root"
+      class="modal__mask"
+      @keydown.esc="handleKeydownEscape"
+      @keydown.tab="handleFocusTrap"
+    >
       <div class="modal__container">
         <button class="modal__button" @click="emit('closeModal')">
           <CloseIcon />
@@ -59,6 +124,9 @@ const emit = defineEmits<{
 
 .modal__button {
   float: right;
+  &:focus {
+    outline-style: auto;
+  }
 }
 
 .modal-enter-active,
