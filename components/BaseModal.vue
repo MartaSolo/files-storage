@@ -5,10 +5,6 @@ const emit = defineEmits<{
   (e: "closeModal"): void;
 }>();
 
-const handleKeydownEscape = () => {
-  console.log("keydown escape");
-};
-
 const focusableNodes = computed(() => {
   return root.value?.querySelectorAll<HTMLInputElement>(
     "a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type='text']:not([disabled]), input[type='radio']:not([disabled]), input[type='checkbox']:not([disabled]), select:not([disabled])"
@@ -16,7 +12,6 @@ const focusableNodes = computed(() => {
 });
 
 const firstFocusableNode = () => {
-  // console.log("firstFocusableNode", focusableNodes.value[0]);
   if (focusableNodes.value) return focusableNodes.value[0];
 };
 
@@ -28,12 +23,9 @@ const lastFocusableNode = () => {
 
 const handleFocusTrap = (e: KeyboardEvent) => {
   if (focusableNodes.value) {
-    if (e.shiftKey) {
-      // tab + shift
-      if (document.activeElement === firstFocusableNode()) {
-        lastFocusableNode()?.focus();
-        e.preventDefault();
-      }
+    if (e.shiftKey && document.activeElement === firstFocusableNode()) {
+      lastFocusableNode()?.focus();
+      e.preventDefault();
     }
     if (document.activeElement === lastFocusableNode()) {
       firstFocusableNode()?.focus();
@@ -42,22 +34,9 @@ const handleFocusTrap = (e: KeyboardEvent) => {
   }
 };
 
-// const handleFocusTrap = (e: KeyboardEvent) => {
-//   if (focusableNodes.value) {
-//     if (e.shiftKey) {
-//       // tab + shift
-//       if (document.activeElement === firstFocusableNode()) {
-//         lastFocusableNode()?.focus();
-//         e.preventDefault();
-//       }
-//     } else {
-//       if (document.activeElement === lastFocusableNode()) {
-//         firstFocusableNode()?.focus();
-//         e.preventDefault();
-//       }
-//     }
-//   }
-// };
+const handleKeydownEscape = () => {
+  emit("closeModal");
+};
 
 onMounted(() => {
   firstFocusableNode()?.focus();
@@ -125,6 +104,9 @@ onMounted(() => {
 .modal__button {
   float: right;
   &:focus {
+    outline-style: auto;
+  }
+  &:focus-visible {
     outline-style: auto;
   }
 }

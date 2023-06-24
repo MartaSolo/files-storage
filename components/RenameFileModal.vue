@@ -60,6 +60,7 @@ const handleRename = async () => {
           <input
             id="rename-file"
             v-model="newFileName"
+            type="text"
             class="rename__input--input"
             @blur="inputTouched = true"
             @focus="handleInputFocus"
