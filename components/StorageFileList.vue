@@ -36,9 +36,16 @@ const updateList = () => {
     <template v-else>
       <div class="files__menu">
         <!-- v-if="selectedFiles" added to get rid of hydration errors caused by useSelectedFiles composable -->
-        <MultipleFilesMenu v-if="selectedFiles" @files-action="updateList" />
-        <LayoutSwitcher />
-        <SortFileList @set-sort-options="updateList" />
+        <MultipleFilesMenu
+          v-if="selectedFiles"
+          class="files__menu--multiple"
+          @files-action="updateList"
+        />
+        <SortFileList
+          class="files__menu--sort"
+          @set-sort-options="updateList"
+        />
+        <LayoutSwitcher class="files__menu--switcher" />
       </div>
       <div class="files__list" :class="computedClass">
         <StorageFileListItem
@@ -54,12 +61,32 @@ const updateList = () => {
 
 <style lang="scss" scoped>
 .files__menu {
-  padding: 0 2rem 1rem 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
+  padding: 0 0 1rem 0;
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "multiple multiple"
+    "sort switcher";
+  gap: 1rem;
+  @include mediumScreen {
+    grid-template-columns: 1fr 300px 40px;
+    grid-template-rows: auto;
+    grid-template-areas: "multiple sort switcher";
+    padding: 0 2rem 1rem 2rem;
+  }
 }
+
+.files__menu--multiple {
+  grid-area: multiple;
+}
+.files__menu--sort {
+  grid-area: sort;
+}
+.files__menu--switcher {
+  grid-area: switcher;
+}
+
 .files__list {
   overflow-y: scroll;
   height: calc(100vh - 230px);
