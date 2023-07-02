@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import { FileObject } from "@supabase/storage-js";
+
 const selectedFiles = useSelectedFiles();
 const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
 const copyFile = useCopyFile();
+
+const props = defineProps<{
+  fileList: FileObject[];
+}>();
 
 const emit = defineEmits<{
   (e: "filesAction"): void;
@@ -28,17 +34,13 @@ const handleClearSelection = () => {
   selectedFiles.value = [];
 };
 
-// option 1: timeout cuz when we copy couple of files that laready has some copies the emit fires too early - after class with errors not after successfull calls to supabase
 const handleCopyFiles = async () => {
   await Promise.all(
     selectedFiles.value.map((file) => {
-      return copyFile.copy(file, 1);
+      return copyFile.copy(file, props.fileList);
     })
   );
-  setTimeout(
-    () => emit("filesAction"),
-    Number(`${selectedFiles.value.length}000`)
-  );
+  emit("filesAction");
   handleClearSelection();
 };
 
@@ -60,7 +62,6 @@ const handleDeleteFiles = async () => {
 </script>
 
 <template>
-  <!-- te zrobić pętlę i wyrenderować iconbuttons? -->
   <div>
     <div class="menu__files" :class="computedWrapperClass">
       <IconButton
@@ -104,11 +105,6 @@ const handleDeleteFiles = async () => {
           <DeleteFile />
         </template>
       </IconButton>
-    </div>
-    <div v-if="copyErrorMessages.length > 0">
-      <div v-for="(error, index) in copyErrorMessages" :key="index">
-        {{ error }}
-      </div>
     </div>
   </div>
 </template>
