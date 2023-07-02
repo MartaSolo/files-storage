@@ -2,6 +2,7 @@
 const selectedFiles = useSelectedFiles();
 const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
+const copyFile = useCopyFile();
 
 const emit = defineEmits<{
   (e: "filesAction"): void;
@@ -27,12 +28,17 @@ const handleClearSelection = () => {
   selectedFiles.value = [];
 };
 
-const handleCopyFiles = () => {
-  selectedFiles.value.forEach(async (file) => {
-    const copyFile = useCopyFile(file);
-    await copyFile.copy();
-  });
-  emit("filesAction");
+// option 1: timeout cuz when we copy couple of files that laready has some copies the emit fires too early - after class with errors not after successfull calls to supabase
+const handleCopyFiles = async () => {
+  await Promise.all(
+    selectedFiles.value.map((file) => {
+      return copyFile.copy(file, 1);
+    })
+  );
+  setTimeout(
+    () => emit("filesAction"),
+    Number(`${selectedFiles.value.length}000`)
+  );
   handleClearSelection();
 };
 
@@ -46,57 +52,64 @@ const handleDownloadFiles = () => {
   handleClearSelection();
 };
 
-const handleDeleteFiles = () => {
-  selectedFiles.value.forEach(async (file) => {
-    await deleteFile.remove(file);
-  });
+const handleDeleteFiles = async () => {
+  await deleteFile.remove(selectedFiles.value);
   emit("filesAction");
+  handleClearSelection();
 };
 </script>
 
 <template>
-  <div class="menu__files" :class="computedWrapperClass">
-    <IconButton
-      description="Clear selection"
-      theme="grey"
-      :disabled="isDisabled"
-      @click="handleClearSelection"
-    >
-      <template #icon>
-        <CloseIcon />
-      </template>
-    </IconButton>
-    <p class="menu__files--label">{{ numberOfFiles }}</p>
-    <IconButton
-      description="Copy files"
-      theme="grey"
-      :disabled="isDisabled"
-      @click="handleCopyFiles"
-    >
-      <template #icon>
-        <CopyFile />
-      </template>
-    </IconButton>
-    <IconButton
-      description="Download files"
-      theme="grey"
-      :disabled="isDisabled"
-      @click="handleDownloadFiles"
-    >
-      <template #icon>
-        <DownloadFile />
-      </template>
-    </IconButton>
-    <IconButton
-      description="Delete files"
-      theme="grey"
-      :disabled="isDisabled"
-      @click="handleDeleteFiles"
-    >
-      <template #icon>
-        <DeleteFile />
-      </template>
-    </IconButton>
+  <!-- te zrobić pętlę i wyrenderować iconbuttons? -->
+  <div>
+    <div class="menu__files" :class="computedWrapperClass">
+      <IconButton
+        description="Clear selection"
+        theme="grey"
+        :disabled="isDisabled"
+        @click="handleClearSelection"
+      >
+        <template #icon>
+          <CloseIcon />
+        </template>
+      </IconButton>
+      <p class="menu__files--label">{{ numberOfFiles }}</p>
+      <IconButton
+        description="Copy files"
+        theme="grey"
+        :disabled="isDisabled"
+        @click="handleCopyFiles"
+      >
+        <template #icon>
+          <CopyFile />
+        </template>
+      </IconButton>
+      <IconButton
+        description="Download files"
+        theme="grey"
+        :disabled="isDisabled"
+        @click="handleDownloadFiles"
+      >
+        <template #icon>
+          <DownloadFile />
+        </template>
+      </IconButton>
+      <IconButton
+        description="Delete files"
+        theme="grey"
+        :disabled="isDisabled"
+        @click="handleDeleteFiles"
+      >
+        <template #icon>
+          <DeleteFile />
+        </template>
+      </IconButton>
+    </div>
+    <div v-if="copyErrorMessages.length > 0">
+      <div v-for="(error, index) in copyErrorMessages" :key="index">
+        {{ error }}
+      </div>
+    </div>
   </div>
 </template>
 

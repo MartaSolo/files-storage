@@ -29,7 +29,7 @@ const showModal = ref(false);
 const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
 
-const copyFile = useCopyFile(props.fileName);
+const copyFile = useCopyFile();
 const copyLink = useCopyLink(props.fileName);
 const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
@@ -82,7 +82,8 @@ const handleCopyLink = () => {
 };
 
 const handleCopyFile = async () => {
-  await copyFile.copy();
+  // option 1
+  await copyFile.copy(props.fileName, 1);
   emit("fileAction");
   isMenuOpen.value = false;
 };
@@ -93,7 +94,7 @@ const handleDownloadFile = () => {
 };
 
 const handleDeleteFile = async () => {
-  await deleteFile.remove(props.fileName);
+  await deleteFile.remove([props.fileName]);
   emit("fileAction");
   isMenuOpen.value = false;
 };
