@@ -7,6 +7,7 @@ const DocxFile = resolveComponent("DocxFile");
 
 const props = defineProps<{
   file: FileObject;
+  fileList: FileObject[];
 }>();
 
 const emit = defineEmits<{
@@ -99,6 +100,7 @@ const updatedFile = () => {
       <FileMenu
         class="file__details--actions"
         :file-name="fileName"
+        :file-list="fileList"
         @file-action="updatedFile"
       />
     </div>

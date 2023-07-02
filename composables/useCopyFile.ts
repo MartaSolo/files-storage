@@ -1,20 +1,17 @@
-// option 1: recursion to have multiple api calls if the passed file name is already taken
+import { FileObject } from "@supabase/storage-js";
 
 export const useCopyFile = () => {
   const client = useSupabaseClient();
 
-  const copy = async (fileName: string, copyNumber: number) => {
-    const copyName = useFileName(fileName);
+  const copy = async (fileName: string, files: FileObject[]) => {
+    const copyName = useCopyName();
+    const newCopyName = copyName.copyName(fileName, files);
 
     const { data, error } = await client.storage
       .from("files")
-      .copy(
-        `public/${fileName}`,
-        `public/${copyName.name}_(${copyNumber})${copyName.extension}`
-      );
+      .copy(`public/${fileName}`, `public/${newCopyName}`);
     if (error) {
-      copyNumber = copyNumber + 1;
-      copy(fileName, copyNumber);
+      throw new Error(error.message);
     }
     return data;
   };

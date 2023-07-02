@@ -39,6 +39,7 @@ const updateList = () => {
         <MultipleFilesMenu
           v-if="selectedFiles"
           class="files__menu--multiple"
+          :file-list="fileList"
           @files-action="updateList"
         />
         <SortFileList
@@ -52,6 +53,7 @@ const updateList = () => {
           v-for="file in fileList"
           :key="file.id"
           :file="file"
+          :file-list="fileList"
           @update-file-list="updateList"
         />
       </div>
