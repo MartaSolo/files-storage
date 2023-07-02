@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { FileObject } from "@supabase/storage-js";
 import { FileActions } from "@/types/FileActions";
 
 const CopyLink = resolveComponent("CopyLink");
@@ -17,6 +18,7 @@ const actions: FileActions[] = [
 
 const props = defineProps<{
   fileName: string;
+  fileList: FileObject[];
 }>();
 
 const emit = defineEmits<{
@@ -82,8 +84,7 @@ const handleCopyLink = () => {
 };
 
 const handleCopyFile = async () => {
-  // option 1
-  await copyFile.copy(props.fileName, 1);
+  await copyFile.copy(props.fileName, props.fileList);
   emit("fileAction");
   isMenuOpen.value = false;
 };
