@@ -14,20 +14,38 @@ const emit = defineEmits<{
   (e: "filesAction"): void;
 }>();
 
+const showErrorModal = ref(false);
+const errorMessages = ref<string[]>([]);
+
+const openModal = () => {
+  if (errorMessages.value.length > 0) {
+    showErrorModal.value = true;
+  }
+};
+
+const closeModal = () => {
+  showErrorModal.value = false;
+  errorMessages.value = [];
+};
+
+watch(errorMessages, openModal);
+
+const numberOfSelectedFiles = computed(() => {
+  return selectedFiles.value.length;
+});
+
 const computedWrapperClass = computed(() => {
-  return selectedFiles.value.length === 0 ? "inactive" : "";
+  return numberOfSelectedFiles.value === 0 ? "inactive" : "";
 });
 
 const isDisabled = computed(() => {
-  return selectedFiles.value.length === 0;
+  return numberOfSelectedFiles.value === 0;
 });
 
-const numberOfFiles = computed(() => {
-  if (selectedFiles.value.length === 1) {
-    return `${selectedFiles.value.length} file selected`;
-  } else {
-    return `${selectedFiles.value.length} files selected`;
-  }
+const numbOfSelectedFilesLabel = computed(() => {
+  return numberOfSelectedFiles.value === 1
+    ? `${numberOfSelectedFiles.value} file selected`
+    : `${numberOfSelectedFiles.value} files selected`;
 });
 
 const handleClearSelection = () => {
@@ -35,11 +53,15 @@ const handleClearSelection = () => {
 };
 
 const handleCopyFiles = async () => {
-  await Promise.all(
-    selectedFiles.value.map((file) => {
-      return copyFile.copy(file, props.fileList);
-    })
-  );
+  try {
+    await Promise.all(
+      selectedFiles.value.map((file) => {
+        return copyFile.copy(file, props.fileList);
+      })
+    );
+  } catch (error: any) {
+    errorMessages.value.push(error.message);
+  }
   emit("filesAction");
   handleClearSelection();
 };
@@ -55,57 +77,64 @@ const handleDownloadFiles = () => {
 };
 
 const handleDeleteFiles = async () => {
-  await deleteFile.remove(selectedFiles.value);
+  try {
+    await deleteFile.remove(selectedFiles.value);
+  } catch (error: any) {
+    errorMessages.value.push(error.message);
+  }
   emit("filesAction");
   handleClearSelection();
 };
 </script>
 
 <template>
-  <div>
-    <div class="menu__files" :class="computedWrapperClass">
-      <IconButton
-        description="Clear selection"
-        theme="grey"
-        :disabled="isDisabled"
-        @click="handleClearSelection"
-      >
-        <template #icon>
-          <CloseIcon />
-        </template>
-      </IconButton>
-      <p class="menu__files--label">{{ numberOfFiles }}</p>
-      <IconButton
-        description="Copy files"
-        theme="grey"
-        :disabled="isDisabled"
-        @click="handleCopyFiles"
-      >
-        <template #icon>
-          <CopyFile />
-        </template>
-      </IconButton>
-      <IconButton
-        description="Download files"
-        theme="grey"
-        :disabled="isDisabled"
-        @click="handleDownloadFiles"
-      >
-        <template #icon>
-          <DownloadFile />
-        </template>
-      </IconButton>
-      <IconButton
-        description="Delete files"
-        theme="grey"
-        :disabled="isDisabled"
-        @click="handleDeleteFiles"
-      >
-        <template #icon>
-          <DeleteFile />
-        </template>
-      </IconButton>
-    </div>
+  <div class="menu__files" :class="computedWrapperClass">
+    <IconButton
+      description="Clear selection"
+      theme="grey"
+      :disabled="isDisabled"
+      @click="handleClearSelection"
+    >
+      <template #icon>
+        <CloseIcon />
+      </template>
+    </IconButton>
+    <p class="menu__files--label">{{ numbOfSelectedFilesLabel }}</p>
+    <IconButton
+      description="Copy files"
+      theme="grey"
+      :disabled="isDisabled"
+      @click="handleCopyFiles"
+    >
+      <template #icon>
+        <CopyFile />
+      </template>
+    </IconButton>
+    <IconButton
+      description="Download files"
+      theme="grey"
+      :disabled="isDisabled"
+      @click="handleDownloadFiles"
+    >
+      <template #icon>
+        <DownloadFile />
+      </template>
+    </IconButton>
+    <IconButton
+      description="Delete files"
+      theme="grey"
+      :disabled="isDisabled"
+      @click="handleDeleteFiles"
+    >
+      <template #icon>
+        <DeleteFile />
+      </template>
+    </IconButton>
+    <ErrorModal
+      v-if="showErrorModal"
+      :errors="errorMessages"
+      @close-rename-file-modal="closeModal"
+    />
   </div>
 </template>
 
