@@ -27,9 +27,11 @@ const emit = defineEmits<{
 
 const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
-const showModal = ref(false);
+const showRenameModal = ref(false);
 const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
+const showErrorModal = ref(false);
+const errorMessages = ref<string[]>([]);
 
 const copyFile = useCopyFile();
 const copyLink = useCopyLink(props.fileName);
@@ -84,7 +86,11 @@ const handleCopyLink = () => {
 };
 
 const handleCopyFile = async () => {
-  await copyFile.copy(props.fileName, props.fileList);
+  try {
+    await copyFile.copy(props.fileName, props.fileList);
+  } catch (error: any) {
+    errorMessages.value.push(error.message);
+  }
   emit("fileAction");
   isMenuOpen.value = false;
 };
@@ -95,13 +101,17 @@ const handleDownloadFile = () => {
 };
 
 const handleDeleteFile = async () => {
-  await deleteFile.remove([props.fileName]);
+  try {
+    await deleteFile.remove([props.fileName]);
+  } catch (error: any) {
+    errorMessages.value.push(error.message);
+  }
   emit("fileAction");
   isMenuOpen.value = false;
 };
 
 const handleRenameFile = () => {
-  showModal.value = true;
+  showRenameModal.value = true;
   isMenuOpen.value = false;
 };
 
@@ -127,6 +137,19 @@ const handleActionByKeyboard = () => {
     isMenuOpen.value = true;
   }
 };
+
+const openModal = () => {
+  if (errorMessages.value.length > 0) {
+    showErrorModal.value = true;
+  }
+};
+
+const closeModal = () => {
+  showErrorModal.value = false;
+  errorMessages.value = [];
+};
+
+watch(errorMessages, openModal);
 </script>
 
 <template>
@@ -174,10 +197,15 @@ const handleActionByKeyboard = () => {
       </template>
     </Transition>
     <RenameFileModal
-      v-if="showModal"
+      v-if="showRenameModal"
       :file-name="fileName"
-      @close-rename-file-modal="showModal = false"
+      @close-rename-file-modal="showRenameModal = false"
       @file-name-updated="emit('fileAction')"
+    />
+    <ErrorModal
+      v-if="showErrorModal"
+      :errors="errorMessages"
+      @close-rename-file-modal="closeModal"
     />
   </div>
 </template>
