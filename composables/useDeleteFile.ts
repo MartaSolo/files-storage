@@ -7,7 +7,11 @@ export const useDeleteFile = () => {
     });
 
     const { data, error } = await client.storage.from("files").remove(files);
-    if (error) throw error;
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
     return data;
   };
 
