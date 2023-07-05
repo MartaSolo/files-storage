@@ -42,6 +42,7 @@ const updateList = () => {
           :file-list="fileList"
           @files-action="updateList"
         />
+        <FileFilters class="files__menu--filters" />
         <SortFileList
           class="files__menu--sort"
           @set-sort-options="updateList"
@@ -68,25 +69,38 @@ const updateList = () => {
   grid-template-columns: 1fr 40px;
   grid-template-rows: auto auto;
   grid-template-areas:
-    "multiple multiple"
+    "multiple filters"
     "sort switcher";
   gap: 1rem;
-  @include mediumScreen {
-    grid-template-columns: 1fr 300px 40px;
+  @include mediumScreenPlus {
+    grid-template-columns: 330px 1fr 300px 40px;
     grid-template-rows: auto;
-    grid-template-areas: "multiple sort switcher";
+    grid-template-areas: "multiple filters sort switcher";
+    padding: 0 2rem 1rem 0rem;
+    gap: 0.6rem;
+  }
+  @include largeScreen {
     padding: 0 2rem 1rem 2rem;
+    gap: 1rem;
   }
 }
 
 .files__menu--multiple {
   grid-area: multiple;
 }
+
+.files__menu--filters {
+  grid-area: filters;
+  justify-self: center;
+  align-self: center;
+}
 .files__menu--sort {
   grid-area: sort;
+  align-self: center;
 }
 .files__menu--switcher {
   grid-area: switcher;
+  align-self: center;
 }
 
 .files__list {
