@@ -1,12 +1,16 @@
 <script setup lang="ts">
-const props = defineProps<{
-  label: string;
-  theme: "white" | "green";
-  disabled?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    label: string;
+    theme: "white" | "green";
+  }>(),
+  {
+    theme: "green",
+  }
+);
 
 const computedClass = computed(() => {
-  return ["button", `button--${props.theme}`, props.disabled ? "disabled" : ""];
+  return ["button", `button--${props.theme}`];
 });
 </script>
 
@@ -38,7 +42,7 @@ const computedClass = computed(() => {
     background-color: $color-green-dark-hover;
   }
 }
-.disabled {
+.button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
   &:hover {
