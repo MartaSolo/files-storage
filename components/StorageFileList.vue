@@ -4,6 +4,7 @@ import { FileObject } from "@supabase/storage-js";
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
 const layoutType = useLayoutType();
+const selectedFiles = useSelectedFiles();
 
 const computedClass = computed(() => {
   return layoutType.value === "grid"
@@ -19,7 +20,7 @@ const {
   query: { key: sortColumn, order: sortOrder },
 });
 
-const sortFiles = () => {
+const updateList = () => {
   refresh();
 };
 </script>
@@ -34,14 +35,26 @@ const sortFiles = () => {
     />
     <template v-else>
       <div class="files__menu">
-        <SortFileList @set-sort-options="sortFiles" />
-        <LayoutSwitcher />
+        <!-- v-if="selectedFiles" added to get rid of hydration errors caused by useSelectedFiles composable -->
+        <MultipleFilesMenu
+          v-if="selectedFiles"
+          class="files__menu--multiple"
+          :file-list="fileList"
+          @files-action="updateList"
+        />
+        <SortFileList
+          class="files__menu--sort"
+          @set-sort-options="updateList"
+        />
+        <LayoutSwitcher class="files__menu--switcher" />
       </div>
       <div class="files__list" :class="computedClass">
         <StorageFileListItem
           v-for="file in fileList"
           :key="file.id"
           :file="file"
+          :file-list="fileList"
+          @update-file-list="updateList"
         />
       </div>
     </template>
@@ -50,12 +63,32 @@ const sortFiles = () => {
 
 <style lang="scss" scoped>
 .files__menu {
-  padding: 0 1rem 1rem 1rem;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 2rem;
+  padding: 0 0 1rem 0;
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "multiple multiple"
+    "sort switcher";
+  gap: 1rem;
+  @include mediumScreen {
+    grid-template-columns: 1fr 300px 40px;
+    grid-template-rows: auto;
+    grid-template-areas: "multiple sort switcher";
+    padding: 0 2rem 1rem 2rem;
+  }
 }
+
+.files__menu--multiple {
+  grid-area: multiple;
+}
+.files__menu--sort {
+  grid-area: sort;
+}
+.files__menu--switcher {
+  grid-area: switcher;
+}
+
 .files__list {
   overflow-y: scroll;
   height: calc(100vh - 230px);

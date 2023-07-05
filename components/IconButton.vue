@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  description: String;
+  description: string;
   theme: "green" | "grey";
 }>();
 
@@ -27,11 +27,18 @@ const hideText = () => {
 };
 </script>
 
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+};
+</script>
+
 <template>
   <div class="button">
     <button
       class="button__btn"
       :class="computedClass"
+      v-bind="$attrs"
       aria-labelledby="description"
       @mouseenter="showText"
       @mouseleave="hideText"
@@ -66,15 +73,19 @@ const hideText = () => {
   transition: background-color 0.2s;
 }
 
+.button__btn:disabled {
+  cursor: not-allowed;
+}
+
 .button__btn--green {
   background-color: $color-green-light;
-  &:hover {
+  &:hover:not([disabled]) {
     background-color: $color-green-medium;
   }
 }
 .button__btn--grey {
   background-color: $color-grey-lightest;
-  &:hover {
+  &:hover:not([disabled]) {
     background-color: $color-grey-light;
   }
 }

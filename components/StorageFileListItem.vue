@@ -5,13 +5,22 @@ const XlsxFile = resolveComponent("XlsxFile");
 const SomeFile = resolveComponent("SomeFile");
 const DocxFile = resolveComponent("DocxFile");
 
-const client = useSupabaseClient();
-
-const layoutType = useLayoutType();
-
 const props = defineProps<{
   file: FileObject;
+  fileList: FileObject[];
 }>();
+
+const emit = defineEmits<{
+  (e: "updateFileList"): void;
+}>();
+
+const layoutType = useLayoutType();
+const getUrl = useRetrievePublicUrl(props.file.name);
+const selectedFiles = useSelectedFiles();
+
+const previewUrl = computed(() => {
+  return getUrl.url.value?.publicUrl;
+});
 
 const fileName = computed(() => {
   return props.file.name;
@@ -70,22 +79,17 @@ const fileComponent = computed(() => {
   if (previewFileType.value === "other") return SomeFile;
 });
 
-const retrievePublicUrl = async () => {
-  const { data } = await client.storage
-    .from("files/public")
-    .getPublicUrl(`${props.file.name}`);
-  return data;
+const updatedFile = () => {
+  emit("updateFileList");
 };
-
-const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
-  server: false,
-});
 </script>
 
 <template>
   <div ref="root" class="file" :class="computedClass">
     <div class="file__details">
+      <!-- v-if="selectedFiles" added to get rid of hydration errors caused by useSelectedFiles composable -->
       <FileCheckbox
+        v-if="selectedFiles"
         :name="fileName"
         :type="previewFileType"
         class="file__details--checkbox"
@@ -93,7 +97,12 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
       <h3 class="file__details--name">{{ fileName }}</h3>
       <p class="file__details--size">{{ fileSize }}</p>
       <p class="file__details--type">{{ sortFileType }}</p>
-      <FileMenu class="file__details--actions" />
+      <FileMenu
+        class="file__details--actions"
+        :file-name="fileName"
+        :file-list="fileList"
+        @file-action="updatedFile"
+      />
     </div>
     <div v-if="layoutType === 'grid'" class="file__preview">
       <video
@@ -101,13 +110,13 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
         class="file__preview--video"
         controls
       >
-        <source :src="data?.publicUrl" />
+        <source :src="previewUrl" />
         Your browser does not support HTML video.
       </video>
       <embed
         v-else-if="previewFileType === 'pdf'"
         class="file__preview--embed"
-        :src="data?.publicUrl"
+        :src="previewUrl"
         type="application/pdf"
         frameBorder="0"
       />
@@ -116,7 +125,7 @@ const { data } = useAsyncData(props.file.id, retrievePublicUrl, {
         v-else-if="filePreviewComponent"
         class="file__preview--component"
       />
-      <img v-else class="file__preview--image" :src="data?.publicUrl" />
+      <img v-else class="file__preview--image" :src="previewUrl" />
     </div>
   </div>
 </template>

@@ -4,7 +4,11 @@ const props = defineProps<{
   type: "image" | "video" | "docx" | "xlsx" | "pdf";
 }>();
 
-const isChecked = ref(false);
+const selectedFiles = useSelectedFiles();
+
+const isChecked = computed(() => {
+  return selectedFiles.value.includes(props.name);
+});
 
 const computedClass = computed(() => {
   return [
@@ -20,9 +24,10 @@ const computedClass = computed(() => {
     <label class="checkbox__label" :for="props.name" :aria-label="props.name">
       <input
         :id="props.name"
-        v-model="isChecked"
+        v-model="selectedFiles"
+        :value="props.name"
         type="checkbox"
-        :name="props.name"
+        name="file-checkbox"
         :class="computedClass"
       />
     </label>
