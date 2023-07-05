@@ -1,0 +1,235 @@
+<script setup lang="ts">
+const props = withDefaults(
+  defineProps<{
+    min: number;
+    max: number;
+    step: number;
+    minValue: number;
+    maxValue: number;
+  }>(),
+  {
+    step: 1,
+  }
+);
+
+const emit = defineEmits<{
+  (e: "update:minValue", sliderMinValue: number): void;
+  (e: "update:maxValue", sliderMaxValue: number): void;
+}>();
+
+const slider = ref<HTMLElement | null>(null);
+const inputMin = ref<HTMLElement | null>(null);
+const inputMax = ref<HTMLElement | null>(null);
+const sliderMinValue = ref(props.minValue);
+const sliderMaxValue = ref(props.maxValue);
+
+const getPercent = (value: number, min: number, max: number) => {
+  return ((value - min) / (max - min)) * 100;
+};
+
+const sliderDifference = computed(() => {
+  return Math.abs(sliderMaxValue.value - sliderMinValue.value);
+});
+
+// function to set the css variables for width, left and right
+const setCSSProps = (width: number, left: number, right: number) => {
+  slider.value?.style.setProperty("--width", `${width}%`);
+  slider.value?.style.setProperty("--progressLeft", `${left}%`);
+  slider.value?.style.setProperty("--progressRight", `${right}%`);
+};
+
+watchEffect(() => {
+  if (slider.value) {
+    emit("update:minValue", sliderMinValue.value);
+    emit("update:maxValue", sliderMaxValue.value);
+
+    const differencePercent = getPercent(
+      sliderDifference.value,
+      props.min,
+      props.max
+    );
+
+    const leftPercent = getPercent(sliderMinValue.value, props.min, props.max);
+
+    const rightPercent =
+      100 - getPercent(sliderMaxValue.value, props.min, props.max);
+
+    setCSSProps(differencePercent, leftPercent, rightPercent);
+  }
+});
+
+const onInput = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+
+  if (target.name === "min") {
+    target.value > sliderMaxValue.value.toString()
+      ? (target.value = sliderMaxValue.value.toString())
+      : (sliderMinValue.value = parseFloat(target.value));
+  }
+
+  if (target.name === "max") {
+    target.value < sliderMinValue.value.toString()
+      ? (target.value = sliderMinValue.value.toString())
+      : (sliderMaxValue.value = parseFloat(target.value));
+  }
+};
+</script>
+
+<template>
+  <div ref="slider" class="custom-slider minmax">
+    <input
+      id="min"
+      ref="inputMin"
+      type="range"
+      name="min"
+      :min="min"
+      :max="max"
+      :value="minValue"
+      :step="step"
+      @input="onInput"
+    />
+    <input
+      id="max"
+      ref="inputMax"
+      type="range"
+      name="max"
+      :min="min"
+      :max="max"
+      :value="maxValue"
+      :step="step"
+      @input="onInput"
+    />
+  </div>
+  <div class="minmax__inputs">
+    <div class="minmax__input">
+      <label for="sliderMinValue" class="minmax__input--label">MB</label>
+      <input
+        id="sliderMinValue"
+        v-model="sliderMinValue"
+        class="minmax__input--input"
+        type="number"
+        :step="step"
+      />
+    </div>
+    <div class="minmax__dash"></div>
+    <div class="minmax__input">
+      <label for="sliderMaxValue" class="minmax__input--label">MB</label>
+      <input
+        id="sliderMaxValue"
+        v-model="sliderMaxValue"
+        class="minmax__input--input"
+        type="number"
+        :step="step"
+      />
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.custom-slider {
+  --trackHeight: 0.5rem;
+  --thumbRadius: 1rem;
+}
+
+/* style for the input element with type "range" */
+.custom-slider input[type="range"] {
+  position: relative;
+  appearance: none;
+  background: none;
+  pointer-events: none;
+  border-radius: 999px;
+  z-index: 0;
+}
+
+/* ::before element to replace the slider track */
+.custom-slider input[type="range"]::before,
+.custom-slider.minmax::before {
+  content: "";
+  position: absolute;
+  width: var(--ProgressPercent, 100%);
+  height: 100%;
+  background: $color-green-dark;
+  pointer-events: none;
+  border-radius: 999px;
+}
+
+.custom-slider input[type="range"]::-webkit-slider-thumb {
+  position: relative;
+  width: var(--thumbRadius);
+  height: var(--thumbRadius);
+  margin-top: calc((var(--trackHeight) - var(--thumbRadius)) / 2);
+  background: $color-green-dark;
+  border-radius: 999px;
+  pointer-events: all;
+  appearance: none;
+  z-index: 1;
+}
+
+.custom-slider.minmax {
+  position: relative;
+  height: var(--trackHeight);
+  background: $color-green-medium;
+  border-radius: 999px;
+  margin: 0.5rem 0;
+  --progressLeft: 0%;
+  --progressRight: 0%;
+}
+
+.custom-slider.minmax input[type="range"] {
+  position: absolute;
+  pointer-events: none;
+  width: 100%;
+}
+
+.custom-slider.minmax input[type="range"]::-webkit-slider-runnable-track {
+  background: none;
+}
+
+.custom-slider.minmax::before {
+  left: var(--progressLeft);
+  right: var(--progressRight);
+  width: unset;
+}
+
+.custom-slider.minmax input[type="range"]::before {
+  display: none;
+}
+
+.minmax__inputs {
+  padding-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.minmax__dash {
+  width: 15px;
+  height: 2px;
+  border-radius: 8px;
+  background-color: $text-color-secondary;
+  @include smallScreen {
+    width: 30px;
+  }
+}
+
+.minmax__input {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.minmax__input--label {
+  padding: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.minmax__input--input {
+  width: 90px;
+  // width: 130px;
+  border: 1px solid $text-color-secondary;
+  border-radius: 4px;
+  padding: 0.25rem;
+  padding-left: 1rem;
+  @include smallScreen {
+    width: 130px;
+  }
+}
+</style>
