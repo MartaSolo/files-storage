@@ -36,12 +36,10 @@ const handleInputFocus = () => {
 const handleRename = async () => {
   try {
     await renameFile.rename(props.fileName, newFullFileName.value);
-  } catch (error: any) {
-    errorMessage.value = error.message;
-  }
-  if (!errorMessage.value) {
     emit("fileNameUpdated");
     close();
+  } catch (error: any) {
+    errorMessage.value = error.message;
   }
 };
 </script>
@@ -73,7 +71,6 @@ const handleRename = async () => {
         <BaseButton label="Cancel" theme="white" @click="close" />
         <BaseButton
           label="Confirm"
-          theme="green"
           :disabled="isDisabled"
           @click="handleRename"
         />
