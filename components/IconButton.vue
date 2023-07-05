@@ -101,6 +101,6 @@ export default {
   top: 40px;
   display: flex;
   justify-content: center;
-  z-index: 99999;
+  z-index: 999999;
 }
 </style>
