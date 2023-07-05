@@ -44,29 +44,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <Transition name="modal">
-    <div
-      ref="root"
-      class="modal__mask"
-      @keydown.esc="handleKeydownEscape"
-      @keydown.tab="handleFocusTrap"
-    >
-      <div class="modal__container">
-        <button class="modal__button" @click="emit('closeModal')">
-          <CloseIcon />
-        </button>
-        <div class="modal__header">
-          <slot name="header" />
-        </div>
-        <div class="modal__body">
-          <slot name="body" />
-        </div>
-        <div class="modal__footer">
-          <slot name="footer" />
+  <Teleport to="body">
+    <Transition name="modal">
+      <div
+        ref="root"
+        class="modal__mask"
+        @keydown.esc="handleKeydownEscape"
+        @keydown.tab="handleFocusTrap"
+      >
+        <div class="modal__container">
+          <button class="modal__button" @click="emit('closeModal')">
+            <CloseIcon />
+          </button>
+          <div class="modal__header">
+            <slot name="header" />
+          </div>
+          <div class="modal__body">
+            <slot name="body" />
+          </div>
+          <div class="modal__footer">
+            <slot name="footer" />
+          </div>
         </div>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <style lang="scss">

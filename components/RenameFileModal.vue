@@ -36,52 +36,47 @@ const handleInputFocus = () => {
 const handleRename = async () => {
   try {
     await renameFile.rename(props.fileName, newFullFileName.value);
-  } catch (error: any) {
-    errorMessage.value = error.message;
-  }
-  if (!errorMessage.value) {
     emit("fileNameUpdated");
     close();
+  } catch (error: any) {
+    errorMessage.value = error.message;
   }
 };
 </script>
 
 <template>
-  <Teleport to="body">
-    <BaseModal @close-modal="close">
-      <template #header>
-        <h3 class="rename__header">Rename file</h3>
-      </template>
-      <template #body>
-        <div
-          class="rename__input"
-          :class="{ 'rename__input--error': errorMessage }"
-        >
-          <input
-            id="rename-file"
-            v-model="newFileName"
-            type="text"
-            class="rename__input--input"
-            @blur="inputTouched = true"
-            @focus="handleInputFocus"
-          />
-          <span class="rename__input--extension">{{ file.extension }}</span>
-        </div>
-        <p class="rename__error">{{ errorMessage }}</p>
-      </template>
-      <template #footer>
-        <div class="rename__buttons">
-          <BaseButton label="Cancel" theme="white" @click="close" />
-          <BaseButton
-            label="Confirm"
-            theme="green"
-            :disabled="isDisabled"
-            @click="handleRename"
-          />
-        </div>
-      </template>
-    </BaseModal>
-  </Teleport>
+  <BaseModal @close-modal="close">
+    <template #header>
+      <h3 class="rename__header">Rename file</h3>
+    </template>
+    <template #body>
+      <div
+        class="rename__input"
+        :class="{ 'rename__input--error': errorMessage }"
+      >
+        <input
+          id="rename-file"
+          v-model="newFileName"
+          type="text"
+          class="rename__input--input"
+          @blur="inputTouched = true"
+          @focus="handleInputFocus"
+        />
+        <span class="rename__input--extension">{{ file.extension }}</span>
+      </div>
+      <p class="rename__error">{{ errorMessage }}</p>
+    </template>
+    <template #footer>
+      <div class="rename__buttons">
+        <BaseButton label="Cancel" theme="white" @click="close" />
+        <BaseButton
+          label="Confirm"
+          :disabled="isDisabled"
+          @click="handleRename"
+        />
+      </div>
+    </template>
+  </BaseModal>
 </template>
 
 <style lang="scss" scoped>
