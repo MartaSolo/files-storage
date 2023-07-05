@@ -1,10 +1,7 @@
-// import ConcreteComponent from "nuxt";
-
-// type concreteComponent = typeof ConcreteComponent;
+import type { ConcreteComponent } from "nuxt/dist/app/compat/capi";
 
 export interface FileActions {
   id: string;
   label: string;
-  svg: string | any;
-  // svg: string | concreteComponent;
+  svg: string | ConcreteComponent;
 }
