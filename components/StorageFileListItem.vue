@@ -17,6 +17,7 @@ const emit = defineEmits<{
 const layoutType = useLayoutType();
 const getUrl = useRetrievePublicUrl(props.file.name);
 const selectedFiles = useSelectedFiles();
+const sortType = useSortType(props.file);
 
 const previewUrl = computed(() => {
   return getUrl.url.value?.publicUrl;
@@ -37,8 +38,7 @@ const fileSize = computed(() => {
 });
 
 const sortFileType = computed(() => {
-  const type = props.file.metadata.mimetype.split("/")[0];
-  return `type: ${type}`;
+  return `type: ${sortType.type}`;
 });
 
 const previewFileType = computed(() => {
