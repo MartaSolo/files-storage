@@ -102,25 +102,26 @@ const onInput = (e: Event) => {
   </div>
   <div class="minmax__inputs">
     <div class="minmax__input">
-      <label for="sliderMinValue" class="minmax__input--label">MB</label>
-      <input
-        id="sliderMinValue"
+      <BaseInput
         v-model="sliderMinValue"
-        class="minmax__input--input"
+        name="min-size"
         type="number"
         :step="step"
-      />
+      >
+        <span class="minmax__input--unit">MB</span>
+      </BaseInput>
     </div>
     <div class="minmax__dash"></div>
     <div class="minmax__input">
-      <label for="sliderMaxValue" class="minmax__input--label">MB</label>
-      <input
-        id="sliderMaxValue"
+      <BaseInput
         v-model="sliderMaxValue"
-        class="minmax__input--input"
+        name="max-size"
         type="number"
         :step="step"
-      />
+        size="4"
+      >
+        <span class="minmax__input--unit">MB</span>
+      </BaseInput>
     </div>
   </div>
 </template>
@@ -212,24 +213,14 @@ const onInput = (e: Event) => {
   }
 }
 
-.minmax__input {
-  display: flex;
-  flex-direction: row-reverse;
-}
-
-.minmax__input--label {
+.minmax__input--unit {
   padding: 0.5rem 0 0.5rem 0.5rem;
 }
 
-.minmax__input--input {
-  width: 90px;
-  // width: 130px;
-  border: 1px solid $text-color-secondary;
-  border-radius: 4px;
-  padding: 0.25rem;
-  padding-left: 1rem;
+.minmax__input {
+  width: 100px;
   @include smallScreen {
-    width: 130px;
+    width: 150px;
   }
 }
 </style>
