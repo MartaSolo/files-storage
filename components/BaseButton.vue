@@ -2,7 +2,7 @@
 const props = withDefaults(
   defineProps<{
     label: string;
-    theme: "white" | "green";
+    theme?: "white" | "green";
   }>(),
   {
     theme: "green",
