@@ -42,7 +42,7 @@ const updateList = () => {
           :file-list="fileList"
           @files-action="updateList"
         />
-        <FileFilters class="files__menu--filters" />
+        <FileFilters class="files__menu--filters" :file-list="fileList" />
         <SortFileList
           class="files__menu--sort"
           @set-sort-options="updateList"
