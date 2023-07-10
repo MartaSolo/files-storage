@@ -6,9 +6,12 @@ const props = withDefaults(
     step: number;
     minValue: number;
     maxValue: number;
+    label: string;
+    unit?: string;
   }>(),
   {
     step: 1,
+    unit: "",
   }
 );
 
@@ -76,64 +79,70 @@ const onInput = (e: Event) => {
 </script>
 
 <template>
-  <div ref="slider" class="custom-slider minmax">
-    <input
-      id="min"
-      ref="inputMin"
-      type="range"
-      name="min"
-      :min="min"
-      :max="max"
-      :value="minValue"
-      :step="step"
-      @input="onInput"
-    />
-    <input
-      id="max"
-      ref="inputMax"
-      type="range"
-      name="max"
-      :min="min"
-      :max="max"
-      :value="maxValue"
-      :step="step"
-      @input="onInput"
-    />
-  </div>
-  <div class="minmax__inputs">
-    <div class="minmax__input">
-      <BaseInput
-        v-model="sliderMinValue"
-        name="min-size"
-        type="number"
+  <div class="slider">
+    <p class="slider__label">{{ label }}</p>
+    <div ref="slider" class="slider__range minmax">
+      <input
+        id="min"
+        ref="inputMin"
+        type="range"
+        name="min"
+        :min="min"
+        :max="max"
+        :value="minValue"
         :step="step"
-      >
-        <span class="minmax__input--unit">MB</span>
-      </BaseInput>
+        @input="onInput"
+      />
+      <input
+        id="max"
+        ref="inputMax"
+        type="range"
+        name="max"
+        :min="min"
+        :max="max"
+        :value="maxValue"
+        :step="step"
+        @input="onInput"
+      />
     </div>
-    <div class="minmax__dash"></div>
-    <div class="minmax__input">
-      <BaseInput
-        v-model="sliderMaxValue"
-        name="max-size"
-        type="number"
-        :step="step"
-        size="4"
-      >
-        <span class="minmax__input--unit">MB</span>
-      </BaseInput>
+    <div class="slider__inputs">
+      <div class="slider__input">
+        <BaseInput
+          v-model="sliderMinValue"
+          name="min-size"
+          type="number"
+          :step="step"
+        >
+          <span v-if="unit" class="slider__input--unit">MB</span>
+        </BaseInput>
+      </div>
+      <div class="minmax__dash"></div>
+      <div class="slider__input">
+        <BaseInput
+          v-model="sliderMaxValue"
+          name="max-size"
+          type="number"
+          :step="step"
+          size="4"
+        >
+          <span v-if="unit" class="slider__input--unit">MB</span>
+        </BaseInput>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.custom-slider {
+.slider__label {
+  padding-bottom: 0.75rem;
+}
+.slider__range {
   --trackHeight: 0.5rem;
   --thumbRadius: 1rem;
 }
 
 /* style for the input element with type "range" */
-.custom-slider input[type="range"] {
+.slider__range input[type="range"] {
   position: relative;
   appearance: none;
   background: none;
@@ -143,8 +152,8 @@ const onInput = (e: Event) => {
 }
 
 /* ::before element to replace the slider track */
-.custom-slider input[type="range"]::before,
-.custom-slider.minmax::before {
+.slider__range input[type="range"]::before,
+.slider__range.minmax::before {
   content: "";
   position: absolute;
   width: var(--ProgressPercent, 100%);
@@ -154,7 +163,7 @@ const onInput = (e: Event) => {
   border-radius: 999px;
 }
 
-.custom-slider input[type="range"]::-webkit-slider-thumb {
+.slider__range input[type="range"]::-webkit-slider-thumb {
   position: relative;
   width: var(--thumbRadius);
   height: var(--thumbRadius);
@@ -166,7 +175,7 @@ const onInput = (e: Event) => {
   z-index: 1;
 }
 
-.custom-slider.minmax {
+.slider__range.minmax {
   position: relative;
   height: var(--trackHeight);
   background: $color-green-medium;
@@ -176,27 +185,27 @@ const onInput = (e: Event) => {
   --progressRight: 0%;
 }
 
-.custom-slider.minmax input[type="range"] {
+.slider__range.minmax input[type="range"] {
   position: absolute;
   pointer-events: none;
   width: 100%;
 }
 
-.custom-slider.minmax input[type="range"]::-webkit-slider-runnable-track {
+.slider__range.minmax input[type="range"]::-webkit-slider-runnable-track {
   background: none;
 }
 
-.custom-slider.minmax::before {
+.slider__range.minmax::before {
   left: var(--progressLeft);
   right: var(--progressRight);
   width: unset;
 }
 
-.custom-slider.minmax input[type="range"]::before {
+.slider__range.minmax input[type="range"]::before {
   display: none;
 }
 
-.minmax__inputs {
+.slider__inputs {
   padding-top: 0.5rem;
   display: flex;
   justify-content: space-between;
@@ -213,11 +222,11 @@ const onInput = (e: Event) => {
   }
 }
 
-.minmax__input--unit {
+.slider__input--unit {
   padding: 0.5rem 0 0.5rem 0.5rem;
 }
 
-.minmax__input {
+.slider__input {
   width: 100px;
   @include smallScreen {
     width: 150px;
