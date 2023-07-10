@@ -41,6 +41,9 @@ const onInput = (e: Event) => {
   align-items: center;
 }
 
+.input__label {
+  padding-right: 0.5rem;
+}
 .input__input {
   border: 1px solid $color-grey-light;
   border-radius: 8px;
