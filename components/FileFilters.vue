@@ -1,9 +1,22 @@
 <script setup lang="ts">
+import { FileObject } from "@supabase/storage-js";
+
+const props = defineProps<{
+  fileList: FileObject[];
+}>();
+
+const root = ref<HTMLElement | null>(null);
 const isFilterOpen = ref(false);
 const sliderMin = ref(1.5);
 const sliderMax = ref(3.5);
-// const sliderMin = ref(1);
-// const sliderMax = ref(4);
+const nameFilter = ref("");
+const selectedTypes = ref<string[]>([]);
+
+const sortTypes = useSortType(undefined, props.fileList);
+
+useClickOutside(root, () => {
+  isFilterOpen.value = false;
+});
 
 const toggleFilters = () => {
   isFilterOpen.value = !isFilterOpen.value;
@@ -11,7 +24,7 @@ const toggleFilters = () => {
 </script>
 
 <template>
-  <div class="filters">
+  <div ref="root" class="filters">
     <div class="filters__menu">
       <IconButton
         description="File filters"
@@ -26,21 +39,29 @@ const toggleFilters = () => {
     </div>
     <div v-if="isFilterOpen" class="filters__selection">
       <div class="filter">
-        <label class="filter__label">Name includes:</label>
-        <input class="filter__param" type="text" />
+        <BaseInput
+          v-model="nameFilter"
+          type="text"
+          label="Name includes:"
+          name="name-filter"
+        />
       </div>
       <div class="filter">
-        <p class="filter__label">Type:</p>
+        <BaseMultiselect
+          v-model="selectedTypes"
+          :file-types="sortTypes.type"
+          label="File type:"
+        />
       </div>
       <div class="filter">
-        <p class="filter__label">Size range:</p>
-        <CustomMinMaxSlider
+        <BaseMinMaxSlider
           v-model:min-value="sliderMin"
           v-model:max-value="sliderMax"
-          class="filter__param"
           :min="0"
           :max="5"
           :step="0.01"
+          label="Size range:"
+          unit="MB"
         />
       </div>
       <div class="filter">
@@ -88,7 +109,5 @@ const toggleFilters = () => {
 }
 .filter__label {
   padding-bottom: 0.5rem;
-}
-.filter__param {
 }
 </style>
