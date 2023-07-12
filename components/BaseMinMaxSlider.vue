@@ -43,8 +43,8 @@ const setCSSProps = (width: number, left: number, right: number) => {
 
 watchEffect(() => {
   if (slider.value) {
-    emit("update:minValue", sliderMinValue.value);
-    emit("update:maxValue", sliderMaxValue.value);
+    emit("update:minValue", Number(sliderMinValue.value));
+    emit("update:maxValue", Number(sliderMaxValue.value));
 
     const differencePercent = getPercent(
       sliderDifference.value,
@@ -112,6 +112,8 @@ const onInput = (e: Event) => {
           name="min-size"
           type="number"
           :step="step"
+          :min="min"
+          :max="max"
         >
           <span v-if="unit" class="slider__input--unit">MB</span>
         </BaseInput>
@@ -123,7 +125,8 @@ const onInput = (e: Event) => {
           name="max-size"
           type="number"
           :step="step"
-          size="4"
+          :min="min"
+          :max="max"
         >
           <span v-if="unit" class="slider__input--unit">MB</span>
         </BaseInput>
