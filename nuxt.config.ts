@@ -13,4 +13,7 @@ export default defineNuxtConfig({
   },
   css: ["@/assets/scss/main.scss"],
   components: [{ path: "@/components/svg", pathPrefix: false }, "@/components"],
+  build: {
+    transpile: ["@vuepic/vue-datepicker"],
+  },
 });
