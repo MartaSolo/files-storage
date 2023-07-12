@@ -115,7 +115,7 @@ const onInput = (e: Event) => {
           :min="min"
           :max="max"
         >
-          <span v-if="unit" class="slider__input--unit">MB</span>
+          <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
         </BaseInput>
       </div>
       <div class="minmax__dash"></div>
@@ -128,7 +128,7 @@ const onInput = (e: Event) => {
           :min="min"
           :max="max"
         >
-          <span v-if="unit" class="slider__input--unit">MB</span>
+          <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
         </BaseInput>
       </div>
     </div>
