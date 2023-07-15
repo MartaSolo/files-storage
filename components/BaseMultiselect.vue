@@ -176,6 +176,7 @@ const checkByKeyboard = (index: number) => {
 
 .select__label {
   padding-right: 0.5rem;
+  flex-shrink: 0;
 }
 
 .select__dropdown {
