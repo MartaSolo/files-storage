@@ -20,116 +20,93 @@ const emit = defineEmits<{
   (e: "update:maxValue", sliderMaxValue: number): void;
 }>();
 
-const slider = ref<HTMLElement | null>(null);
-const inputMin = ref<HTMLElement | null>(null);
-const inputMax = ref<HTMLElement | null>(null);
-const sliderMinValue = ref(props.minValue);
-const sliderMaxValue = ref(props.maxValue);
-
-const getPercent = (value: number, min: number, max: number) => {
-  return ((value - min) / (max - min)) * 100;
-};
-
 const sliderDifference = computed(() => {
-  return Math.abs(sliderMaxValue.value - sliderMinValue.value);
+  return Math.abs(props.maxValue - props.minValue);
 });
 
-// function to set the css variables for width, left and right
-const setCSSProps = (width: number, left: number, right: number) => {
-  slider.value?.style.setProperty("--width", `${width}%`);
-  slider.value?.style.setProperty("--progressLeft", `${left}%`);
-  slider.value?.style.setProperty("--progressRight", `${right}%`);
+const differencePercent = computed(() => {
+  return ((sliderDifference.value - props.min) / (props.max - props.min)) * 100;
+});
+
+const leftPercent = computed(() => {
+  return ((props.minValue - props.min) / (props.max - props.min)) * 100;
+});
+
+const rightPercent = computed(() => {
+  return 100 - ((props.maxValue - props.min) / (props.max - props.min)) * 100;
+});
+
+const computedStyle = computed(() => {
+  return {
+    "--width": `${differencePercent.value}%`,
+    "--progressLeft": `${leftPercent.value}%`,
+    "--progressRight": `${rightPercent.value}%`,
+  };
+});
+
+const onInputMin = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  emit("update:minValue", Number(target.value));
 };
 
-watchEffect(() => {
-  if (slider.value) {
-    emit("update:minValue", Number(sliderMinValue.value));
-    emit("update:maxValue", Number(sliderMaxValue.value));
-
-    const differencePercent = getPercent(
-      sliderDifference.value,
-      props.min,
-      props.max
-    );
-
-    const leftPercent = getPercent(sliderMinValue.value, props.min, props.max);
-
-    const rightPercent =
-      100 - getPercent(sliderMaxValue.value, props.min, props.max);
-
-    setCSSProps(differencePercent, leftPercent, rightPercent);
-  }
-});
-
-const onInput = (e: Event) => {
+const onInputMax = (e: Event) => {
   const target = e.target as HTMLInputElement;
-
-  if (target.name === "min") {
-    target.value > sliderMaxValue.value.toString()
-      ? (target.value = sliderMaxValue.value.toString())
-      : (sliderMinValue.value = parseFloat(target.value));
-  }
-
-  if (target.name === "max") {
-    target.value < sliderMinValue.value.toString()
-      ? (target.value = sliderMinValue.value.toString())
-      : (sliderMaxValue.value = parseFloat(target.value));
-  }
+  emit("update:maxValue", Number(target.value));
 };
 </script>
 
 <template>
   <div class="slider">
     <p class="slider__label">{{ label }}</p>
-    <div ref="slider" class="slider__range minmax">
+    <div class="slider__range minmax" :style="computedStyle">
       <input
         id="min"
-        ref="inputMin"
         type="range"
         name="min"
         :min="min"
         :max="max"
         :value="minValue"
         :step="step"
-        @input="onInput"
+        @input="onInputMin"
       />
       <input
         id="max"
-        ref="inputMax"
         type="range"
         name="max"
         :min="min"
         :max="max"
         :value="maxValue"
         :step="step"
-        @input="onInput"
+        @input="onInputMax"
       />
     </div>
     <div class="slider__inputs">
       <div class="slider__input">
-        <BaseInput
-          v-model="sliderMinValue"
+        <input
           name="min-size"
           type="number"
-          :step="step"
+          class="slider__input--input"
           :min="min"
           :max="max"
-        >
-          <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
-        </BaseInput>
+          :value="minValue"
+          :step="step"
+          @input="onInputMin"
+        />
+        <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
       </div>
       <div class="minmax__dash"></div>
       <div class="slider__input">
-        <BaseInput
-          v-model="sliderMaxValue"
+        <input
           name="max-size"
           type="number"
-          :step="step"
+          class="slider__input--input"
           :min="min"
           :max="max"
-        >
-          <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
-        </BaseInput>
+          :value="maxValue"
+          :step="step"
+          @input="onInputMax"
+        />
+        <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
       </div>
     </div>
   </div>
@@ -139,6 +116,7 @@ const onInput = (e: Event) => {
 .slider__label {
   padding-bottom: 0.75rem;
 }
+
 .slider__range {
   --trackHeight: 0.5rem;
   --thumbRadius: 1rem;
@@ -159,7 +137,6 @@ const onInput = (e: Event) => {
 .slider__range.minmax::before {
   content: "";
   position: absolute;
-  width: var(--ProgressPercent, 100%);
   height: 100%;
   background: $color-green-dark;
   pointer-events: none;
@@ -229,10 +206,13 @@ const onInput = (e: Event) => {
   padding: 0.5rem 0 0.5rem 0.5rem;
 }
 
-.slider__input {
-  width: 100px;
+.slider__input--input {
+  border: 1px solid $color-grey-light;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  width: 80px;
   @include smallScreen {
-    width: 150px;
+    width: 120px;
   }
 }
 </style>
