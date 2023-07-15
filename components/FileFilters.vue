@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
 import type { ModelValue } from "@vuepic/vue-datepicker";
+import { FilterParams } from "@/types/FilterParams";
 
 const props = defineProps<{
   fileList: FileObject[];
+  modelValue: FilterParams;
+}>();
+
+const emit = defineEmits<{
+  (e: "update:modelValue", value: FilterParams): void;
 }>();
 
 const isFilterOpen = ref(false);
@@ -39,21 +45,36 @@ const activeFilters = computed(() => {
   return activeFilters;
 });
 
+const filters = computed(() => {
+  return {
+    name: nameFilter.value,
+    types: selectedTypes.value,
+    sizeMin: sliderMin.value,
+    sizeMax: sliderMax.value,
+    dates: dates.value,
+  };
+});
+
 const toggleFilters = () => {
   isFilterOpen.value = !isFilterOpen.value;
 };
 
-const handleCancel = () => {
+const resetFilters = () => {
   nameFilter.value = "";
   selectedTypes.value = [];
   sliderMin.value = 0;
   sliderMax.value = 5;
   dates.value = null;
+};
+
+const handleClear = () => {
+  resetFilters();
+  emit("update:modelValue", filters.value);
   isFilterOpen.value = false;
 };
 
 const handleConfirm = () => {
-  // emit filters
+  emit("update:modelValue", filters.value);
   isFilterOpen.value = false;
 };
 </script>
@@ -107,7 +128,11 @@ const handleConfirm = () => {
           <TimeCreatedDatepicker v-model="dates" />
         </div>
         <div class="actions">
-          <BaseButton theme="white" label="Cancel" @click="handleCancel" />
+          <BaseButton
+            theme="white"
+            label="Clear filters"
+            @click="handleClear"
+          />
           <BaseButton
             label="Confirm"
             :disabled="!isDateValid || activeFilters === 0"

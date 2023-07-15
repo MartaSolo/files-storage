@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
+import { FilterParams } from "@/types/FilterParams";
 
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
+
+const filters = ref<FilterParams>({
+  name: "",
+  types: [],
+  sizeMin: 0,
+  sizeMax: 0,
+  dates: null,
+});
 
 const computedClass = computed(() => {
   return layoutType.value === "grid"
@@ -42,7 +51,11 @@ const updateList = () => {
           :file-list="fileList"
           @files-action="updateList"
         />
-        <FileFilters class="files__menu--filters" :file-list="fileList" />
+        <FileFilters
+          v-model="filters"
+          class="files__menu--filters"
+          :file-list="fileList"
+        />
         <SortFileList
           class="files__menu--sort"
           @set-sort-options="updateList"
