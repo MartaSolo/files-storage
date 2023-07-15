@@ -2,7 +2,7 @@
 const props = withDefaults(
   defineProps<{
     name: string;
-    label?: string | boolean;
+    label?: string;
     modelValue: string | number;
   }>(),
   {
