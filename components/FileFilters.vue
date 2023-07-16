@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
-import type { ModelValue } from "@vuepic/vue-datepicker";
 import { FilterParams } from "@/types/FilterParams";
 
 const props = defineProps<{
@@ -10,6 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: FilterParams): void;
+  (e: "reset-filtered-list"): void;
 }>();
 
 const isFilterOpen = ref(false);
@@ -17,7 +17,7 @@ const nameFilter = ref("");
 const selectedTypes = ref<string[]>([]);
 const sliderMin = ref(0);
 const sliderMax = ref(5);
-const dates = ref<ModelValue>(null);
+const dates = ref<Date[] | null>(null);
 
 const sortTypes = useSortType(undefined, props.fileList);
 
@@ -70,6 +70,7 @@ const resetFilters = () => {
 const handleClear = () => {
   resetFilters();
   emit("update:modelValue", filters.value);
+  emit("reset-filtered-list");
   isFilterOpen.value = false;
 };
 
