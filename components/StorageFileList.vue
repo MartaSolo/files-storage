@@ -6,6 +6,7 @@ const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
+const filterFiles = useFilterFiles();
 
 const filters = ref<FilterParams>({
   name: "",
@@ -14,6 +15,8 @@ const filters = ref<FilterParams>({
   sizeMax: 0,
   dates: null,
 });
+
+const filteredFiles = ref<FileObject[] | null>([]);
 
 const computedClass = computed(() => {
   return layoutType.value === "grid"
@@ -32,6 +35,29 @@ const {
 const updateList = () => {
   refresh();
 };
+
+const filter = () => {
+  if (filteredFiles.value) {
+    filteredFiles.value = filterFiles.filter(
+      filteredFiles.value,
+      filters.value
+    );
+  }
+};
+
+const resetFilteredList = () => {
+  if (fileList.value) filteredFiles.value = fileList.value;
+};
+
+onMounted(() => {
+  resetFilteredList();
+});
+
+watchEffect(() => {
+  if (filters.value) {
+    filter();
+  }
+});
 </script>
 
 <template>
@@ -55,6 +81,7 @@ const updateList = () => {
           v-model="filters"
           class="files__menu--filters"
           :file-list="fileList"
+          @reset-filtered-list="resetFilteredList"
         />
         <SortFileList
           class="files__menu--sort"
@@ -64,12 +91,19 @@ const updateList = () => {
       </div>
       <div class="files__list" :class="computedClass">
         <StorageFileListItem
-          v-for="file in fileList"
+          v-for="file in filteredFiles"
           :key="file.id"
           :file="file"
           :file-list="fileList"
           @update-file-list="updateList"
         />
+        <!-- <StorageFileListItem
+          v-for="file in fileList"
+          :key="file.id"
+          :file="file"
+          :file-list="fileList"
+          @update-file-list="updateList"
+        /> -->
       </div>
     </template>
   </section>
