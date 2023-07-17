@@ -143,11 +143,7 @@ const checkByKeyboard = (index: number) => {
             @input="check(type, $event)"
           />
           <label
-            :ref="
-              (el) => {
-                if (el !== null) labelsRefs[index] = el;
-              }
-            "
+            :ref="(el) => el !== null && (labelsRefs[index] = el)"
             :for="type"
             class="select__listitem--label"
             :tabindex="highlightedIndex === index ? '0' : '-1'"
