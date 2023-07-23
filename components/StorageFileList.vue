@@ -16,7 +16,7 @@ const filters = ref<FilterParams>({
   dates: null,
 });
 
-const filteredFiles = ref<FileObject[] | null>([]);
+const filteredFiles = ref<FileObject[] | null>(null);
 
 const computedClass = computed(() => {
   return layoutType.value === "grid"
@@ -32,8 +32,20 @@ const {
   query: { key: sortColumn, order: sortOrder },
 });
 
-const updateList = () => {
-  refresh();
+const updateList = async () => {
+  await refresh();
+  sortFilteredFilesAsFileList();
+};
+
+const sortFilteredFilesAsFileList = () => {
+  if (fileList.value && filteredFiles.value) {
+    filteredFiles.value.sort((a, b) => {
+      return (
+        fileList.value.findIndex((p) => p.id === a.id) -
+        fileList.value.findIndex((p) => p.id === b.id)
+      );
+    });
+  }
 };
 
 const filter = () => {
@@ -97,13 +109,6 @@ watchEffect(() => {
           :file-list="fileList"
           @update-file-list="updateList"
         />
-        <!-- <StorageFileListItem
-          v-for="file in fileList"
-          :key="file.id"
-          :file="file"
-          :file-list="fileList"
-          @update-file-list="updateList"
-        /> -->
       </div>
     </template>
   </section>
