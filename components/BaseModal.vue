@@ -14,14 +14,16 @@ const focusableNodes = () => {
 };
 
 const firstFocusableNode = () => {
-  if (focusableNodes() !== undefined) {
-    return focusableNodes()[0];
+  const focusableNodesResult = focusableNodes();
+  if (focusableNodesResult) {
+    return focusableNodesResult[0];
   }
 };
 
 const lastFocusableNode = () => {
-  if (focusableNodes() !== undefined) {
-    return focusableNodes()[focusableNodes().length - 1];
+  const focusableNodesResult = focusableNodes();
+  if (focusableNodesResult) {
+    return focusableNodesResult[focusableNodesResult.length - 1];
   }
 };
 
