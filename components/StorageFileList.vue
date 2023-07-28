@@ -6,17 +6,34 @@ const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
-const filterFiles = useFilterFiles();
 
 const filters = ref<FilterParams>({
   name: "",
   types: [],
   sizeMin: 0,
-  sizeMax: 0,
+  sizeMax: 5,
   dates: null,
 });
 
-const filteredFiles = ref<FileObject[] | null>(null);
+const nameFilter = computed(() => {
+  return filters.value.name;
+});
+
+const typesFilter = computed(() => {
+  return filters.value.types.join(",");
+});
+
+const minSizeFilter = computed(() => {
+  return filters.value.sizeMin;
+});
+
+const maxSizeFilter = computed(() => {
+  return filters.value.sizeMax;
+});
+
+const datesFilter = computed(() => {
+  return filters.value.dates?.join(",");
+});
 
 const computedClass = computed(() => {
   return layoutType.value === "grid"
@@ -29,47 +46,20 @@ const {
   refresh,
   error: fileListError,
 } = await useFetch<FileObject[]>(`/api/files`, {
-  query: { key: sortColumn, order: sortOrder },
+  query: {
+    key: sortColumn,
+    order: sortOrder,
+    name: nameFilter,
+    type: typesFilter,
+    minSize: minSizeFilter,
+    maxSize: maxSizeFilter,
+    date: datesFilter,
+  },
 });
 
 const updateList = async () => {
   await refresh();
-  sortFilteredFilesAsFileList();
 };
-
-const sortFilteredFilesAsFileList = () => {
-  if (fileList.value && filteredFiles.value) {
-    filteredFiles.value.sort((a, b) => {
-      return (
-        fileList.value.findIndex((p) => p.id === a.id) -
-        fileList.value.findIndex((p) => p.id === b.id)
-      );
-    });
-  }
-};
-
-const filter = () => {
-  if (filteredFiles.value) {
-    filteredFiles.value = filterFiles.filter(
-      filteredFiles.value,
-      filters.value
-    );
-  }
-};
-
-const resetFilteredList = () => {
-  if (fileList.value) filteredFiles.value = fileList.value;
-};
-
-onMounted(() => {
-  resetFilteredList();
-});
-
-watchEffect(() => {
-  if (filters.value) {
-    filter();
-  }
-});
 </script>
 
 <template>
@@ -93,7 +83,7 @@ watchEffect(() => {
           v-model="filters"
           class="files__menu--filters"
           :file-list="fileList"
-          @reset-filtered-list="resetFilteredList"
+          @set-filters-options="updateList"
         />
         <SortFileList
           class="files__menu--sort"
@@ -103,7 +93,7 @@ watchEffect(() => {
       </div>
       <div class="files__list" :class="computedClass">
         <StorageFileListItem
-          v-for="file in filteredFiles"
+          v-for="file in fileList"
           :key="file.id"
           :file="file"
           :file-list="fileList"

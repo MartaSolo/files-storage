@@ -10,6 +10,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:modelValue", value: FilterParams): void;
   (e: "reset-filtered-list"): void;
+  (e: "set-filters-options"): void;
 }>();
 
 const isFilterOpen = ref(false);
@@ -70,12 +71,15 @@ const resetFilters = () => {
 const handleClear = () => {
   resetFilters();
   emit("update:modelValue", filters.value);
+  // do I need this reset to be emitted?
   emit("reset-filtered-list");
+  emit("set-filters-options");
   isFilterOpen.value = false;
 };
 
 const handleConfirm = () => {
   emit("update:modelValue", filters.value);
+  emit("set-filters-options");
   isFilterOpen.value = false;
 };
 </script>
