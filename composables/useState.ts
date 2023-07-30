@@ -1,8 +1,15 @@
-export const useSortColumn = () => useState("sort-column", () => "name");
+import { FileObjectKeys } from "@/types/FileObjectKeys";
+import { SortOrder } from "@/types/SortOrder";
+import { LayoutType } from "@/types/LayoutType";
 
-export const useSortOrder = () => useState("sort-order", () => "asc");
+export const useSortColumn = () =>
+  useState<FileObjectKeys>("sort-column", () => "name");
 
-export const useLayoutType = () => useState("layout-type", () => "grid");
+export const useSortOrder = () =>
+  useState<SortOrder>("sort-order", () => "asc");
+
+export const useLayoutType = () =>
+  useState<LayoutType>("layout-type", () => "grid");
 
 export const useSelectedFiles = () =>
   useState<string[]>("selected-files", () => []);
