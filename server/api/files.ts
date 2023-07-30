@@ -1,5 +1,6 @@
 import { FileObject } from "@supabase/storage-js";
-import { FileObjectKeys } from "~~/types/FileObjectKeys";
+import { FileObjectKeys } from "@/types/FileObjectKeys";
+import { SortOrder } from "@/types/SortOrder";
 import { serverSupabaseClient } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
@@ -18,14 +19,14 @@ export default defineEventHandler(async (event) => {
 
   const query = getQuery(event);
 
-  const { key, order, name, type, minSize, maxSize, date } = query as {
+  const { key, order, name, types, minSize, maxSize, dates } = query as {
     key: FileObjectKeys;
-    order: "asc" | "desc";
+    order: SortOrder;
     name: string;
-    type: string;
+    types: string;
     minSize: number;
     maxSize: number;
-    date: string | null;
+    dates: string;
   };
 
   // sort fetched data
@@ -41,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
   // filter fetched data
 
-  if (name !== "") {
+  if (name) {
     const nameFiltered = files.filter((file) => {
       const indexToSplitFileName = file.name.lastIndexOf(".");
       const fileName = file.name.substring(0, indexToSplitFileName);
@@ -51,13 +52,13 @@ export default defineEventHandler(async (event) => {
     files = nameFiltered;
   }
 
-  if (type) {
-    const types = type.split(",");
+  if (types) {
+    const typesArray = types.split(",");
 
     const typesFiltered = files.filter((file) => {
-      return types.some((el: string) => {
+      return typesArray.some((type: string) => {
         const fileType = file.metadata.mimetype.split("/")[0];
-        return fileType === el;
+        return fileType === type;
       });
     });
     files = typesFiltered;
@@ -74,10 +75,10 @@ export default defineEventHandler(async (event) => {
     files = sizeFiltered;
   }
 
-  if (date) {
-    const dates = date.split(",");
-    const minDate = new Date(dates[0]);
-    const maxDate = new Date(dates[1]);
+  if (dates) {
+    const datesArray = dates.split(",");
+    const minDate = new Date(datesArray[0]);
+    const maxDate = new Date(datesArray[1]);
 
     const datesFiltered = files.filter((file) => {
       return (

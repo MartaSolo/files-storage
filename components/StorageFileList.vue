@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
 import { FilterParams } from "@/types/FilterParams";
+import { QueryParams } from "@/types/QueryParams";
 
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
@@ -8,31 +9,11 @@ const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
 
 const filters = ref<FilterParams>({
-  name: "",
-  types: [],
-  sizeMin: 0,
-  sizeMax: 5,
+  name: null,
+  types: null,
+  sizeMin: null,
+  sizeMax: null,
   dates: null,
-});
-
-const nameFilter = computed(() => {
-  return filters.value.name;
-});
-
-const typesFilter = computed(() => {
-  return filters.value.types.join(",");
-});
-
-const minSizeFilter = computed(() => {
-  return filters.value.sizeMin;
-});
-
-const maxSizeFilter = computed(() => {
-  return filters.value.sizeMax;
-});
-
-const datesFilter = computed(() => {
-  return filters.value.dates?.join(",");
 });
 
 const computedClass = computed(() => {
@@ -41,20 +22,35 @@ const computedClass = computed(() => {
     : "files__list--list";
 });
 
+const queryParameters = computed(() => {
+  const queryObject: QueryParams = {
+    key: sortColumn.value,
+    order: sortOrder.value,
+  };
+  if (filters.value.name) {
+    queryObject.name = filters.value.name;
+  }
+  if (filters.value.types?.length) {
+    queryObject.types = filters.value.types.join(",");
+  }
+  if (filters.value.sizeMin) {
+    queryObject.minSize = filters.value.sizeMin;
+  }
+  if (filters.value.sizeMax && filters.value.sizeMax < 5) {
+    queryObject.maxSize = filters.value.sizeMax;
+  }
+  if (filters.value.dates?.length) {
+    queryObject.dates = filters.value.dates.join(",");
+  }
+  return queryObject;
+});
+
 const {
   data: fileList,
   refresh,
   error: fileListError,
 } = await useFetch<FileObject[]>(`/api/files`, {
-  query: {
-    key: sortColumn,
-    order: sortOrder,
-    name: nameFilter,
-    type: typesFilter,
-    minSize: minSizeFilter,
-    maxSize: maxSizeFilter,
-    date: datesFilter,
-  },
+  query: queryParameters,
 });
 
 const updateList = async () => {
