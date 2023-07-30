@@ -1,7 +1,7 @@
 export interface FilterParams {
-  name: string;
-  types: string[];
-  sizeMin: number;
-  sizeMax: number;
+  name: string | null;
+  types: string[] | null;
+  sizeMin: number | null;
+  sizeMax: number | null;
   dates: Date[] | null;
 }
