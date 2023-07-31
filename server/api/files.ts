@@ -65,15 +65,20 @@ export default defineEventHandler(async (event) => {
     files = typesFiltered;
   }
 
-  if (minSize || maxSize) {
+  if (minSize) {
     const minSizeBytes = minSize * 1000000;
-    const maxSizeBytes = maxSize * 1000000;
-    const sizeFiltered = files.filter((file) => {
-      return (
-        file.metadata.size >= minSizeBytes && file.metadata.size <= maxSizeBytes
-      );
+    const minSizeFiltered = files.filter((file) => {
+      return file.metadata.size >= minSizeBytes;
     });
-    files = sizeFiltered;
+    files = minSizeFiltered;
+  }
+
+  if (maxSize) {
+    const maxSizeBytes = maxSize * 1000000;
+    const maxSizeFiltered = files.filter((file) => {
+      return file.metadata.size <= maxSizeBytes;
+    });
+    files = maxSizeFiltered;
   }
 
   if (dates) {
