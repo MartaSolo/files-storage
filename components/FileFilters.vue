@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
+import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 import { FilterParams } from "@/types/FilterParams";
 
 const props = defineProps<{
@@ -17,7 +18,7 @@ const isFilterOpen = ref(false);
 const nameFilter = ref("");
 const selectedTypes = ref<string[]>([]);
 const sliderMin = ref(0);
-const sliderMax = ref(5);
+const sliderMax = ref(MAX_FILE_SIZE_MB);
 const dates = ref<Date[] | null>(null);
 
 const sortTypes = useSortType(undefined, props.fileList);
@@ -37,7 +38,7 @@ const activeFilters = computed(() => {
   if (selectedTypes.value.length >= 1) {
     activeFilters = activeFilters + 1;
   }
-  if (sliderMin.value !== 0 || sliderMax.value !== 5) {
+  if (sliderMin.value !== 0 || sliderMax.value !== MAX_FILE_SIZE_MB) {
     activeFilters = activeFilters + 1;
   }
   if (isDateValid.value && dates.value !== null) {
@@ -64,7 +65,7 @@ const resetFilters = () => {
   nameFilter.value = "";
   selectedTypes.value = [];
   sliderMin.value = 0;
-  sliderMax.value = 5;
+  sliderMax.value = MAX_FILE_SIZE_MB;
   dates.value = null;
 };
 
@@ -122,7 +123,7 @@ const handleConfirm = () => {
             v-model:min-value="sliderMin"
             v-model:max-value="sliderMax"
             :min="0"
-            :max="5"
+            :max="MAX_FILE_SIZE_MB"
             :step="0.01"
             label="Size range:"
             unit="MB"
