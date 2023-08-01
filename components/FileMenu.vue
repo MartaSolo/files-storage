@@ -38,15 +38,6 @@ const copyLink = useCopyLink(props.fileName);
 const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
 
-onMounted(() => {
-  const windowInnerHeight = window.innerHeight;
-  const rectBottom = root.value?.getBoundingClientRect().bottom || 0;
-  const bottomDistance = windowInnerHeight - rectBottom;
-  if (bottomDistance < 200) {
-    menuListPosition.value = "top";
-  }
-});
-
 const computedMenuListClass = computed(() => {
   return `menu__list--${menuListPosition.value}`;
 });
@@ -150,6 +141,28 @@ const closeModal = () => {
 };
 
 watch(errorMessages, openModal);
+
+const handleMenuPosition = () => {
+  const windowInnerHeight = window.innerHeight;
+  const rectBottom = root.value?.getBoundingClientRect().bottom || 0;
+  const bottomDistance = windowInnerHeight - rectBottom;
+  if (bottomDistance < 200) {
+    menuListPosition.value = "top";
+  } else {
+    menuListPosition.value = "bottom";
+  }
+};
+
+onMounted(() => {
+  handleMenuPosition();
+  const fileListElement = document.querySelector(".files__list");
+  fileListElement?.addEventListener("scroll", handleMenuPosition);
+});
+
+onUnmounted(() => {
+  const fileListElement = document.querySelector(".files__list");
+  fileListElement?.removeEventListener("scroll", handleMenuPosition);
+});
 </script>
 
 <template>
