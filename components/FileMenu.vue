@@ -197,6 +197,7 @@ onUnmounted(() => {
           >
             <button
               class="menu__item--button"
+              :aria-label="action.label"
               @click="handleAction(index)"
               @mouseover="highlightedIndex = index"
             >
