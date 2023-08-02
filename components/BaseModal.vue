@@ -5,37 +5,39 @@ const emit = defineEmits<{
   (e: "closeModal"): void;
 }>();
 
-const focusableNodes = computed(() => {
-  return root.value?.querySelectorAll<HTMLInputElement>(
-    "a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type='text']:not([disabled]), input[type='radio']:not([disabled]), input[type='checkbox']:not([disabled]), select:not([disabled])"
-  );
-});
+const focusableNodes = () => {
+  if (root.value) {
+    return root.value?.querySelectorAll<HTMLElement>(
+      "a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type='text']:not([disabled]), input[type='radio']:not([disabled]), input[type='checkbox']:not([disabled]), select:not([disabled])"
+    );
+  }
+};
 
 const firstFocusableNode = () => {
-  if (focusableNodes.value) return focusableNodes.value[0];
+  const focusableNodesResult = focusableNodes();
+  if (focusableNodesResult) {
+    return focusableNodesResult[0];
+  }
 };
 
 const lastFocusableNode = () => {
-  if (focusableNodes.value) {
-    return focusableNodes.value[focusableNodes.value.length - 1];
+  const focusableNodesResult = focusableNodes();
+  if (focusableNodesResult) {
+    return focusableNodesResult[focusableNodesResult.length - 1];
   }
 };
 
 const handleFocusTrap = (e: KeyboardEvent) => {
-  if (focusableNodes.value) {
-    if (e.shiftKey && document.activeElement === firstFocusableNode()) {
+  if (focusableNodes()) {
+    if (document.activeElement === firstFocusableNode() && e.shiftKey) {
       lastFocusableNode()?.focus();
       e.preventDefault();
     }
-    if (document.activeElement === lastFocusableNode()) {
+    if (document.activeElement === lastFocusableNode() && !e.shiftKey) {
       firstFocusableNode()?.focus();
       e.preventDefault();
     }
   }
-};
-
-const handleKeydownEscape = () => {
-  emit("closeModal");
 };
 
 onMounted(() => {
@@ -49,7 +51,7 @@ onMounted(() => {
       <div
         ref="root"
         class="modal__mask"
-        @keydown.esc="handleKeydownEscape"
+        @keydown.esc="emit('closeModal')"
         @keydown.tab="handleFocusTrap"
       >
         <div class="modal__container">
@@ -71,7 +73,7 @@ onMounted(() => {
   </Teleport>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .modal__mask {
   position: fixed;
   z-index: 99999;

@@ -16,6 +16,12 @@
   }
 }
 
+@mixin mediumScreenPlus {
+  @media (min-width: $screen-md-plus) {
+    @content;
+  }
+}
+
 @mixin largeScreen {
   @media (min-width: $screen-lg) {
     @content;

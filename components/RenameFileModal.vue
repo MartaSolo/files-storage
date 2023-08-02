@@ -54,15 +54,15 @@ const handleRename = async () => {
         class="rename__input"
         :class="{ 'rename__input--error': errorMessage }"
       >
-        <input
-          id="rename-file"
+        <BaseInput
           v-model="newFileName"
+          name="rename"
           type="text"
-          class="rename__input--input"
           @blur="inputTouched = true"
           @focus="handleInputFocus"
-        />
-        <span class="rename__input--extension">{{ file.extension }}</span>
+        >
+          <span class="rename__input--extension">{{ file.extension }}</span>
+        </BaseInput>
       </div>
       <p class="rename__error">{{ errorMessage }}</p>
     </template>
@@ -82,22 +82,15 @@ const handleRename = async () => {
 <style lang="scss" scoped>
 .rename__input {
   margin-bottom: 3rem;
+  width: 420px;
 }
 .rename__input--error {
   margin-bottom: 0.25rem;
 }
 
-.rename__input--input {
-  border: 1px solid $color-grey-light;
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
-  width: 420px;
-}
-
 .rename__error {
   font-size: 0.9rem;
   color: $text-color-error;
-  text-align: center;
 }
 
 .rename__buttons {

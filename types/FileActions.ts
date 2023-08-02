@@ -1,4 +1,4 @@
-import type { ConcreteComponent } from "nuxt/dist/app/compat/capi";
+import type { ConcreteComponent } from "vue";
 
 export interface FileActions {
   id: string;
