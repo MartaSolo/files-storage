@@ -53,8 +53,8 @@ const {
   query: queryParameters,
 });
 
-const updateList = async () => {
-  await refresh();
+const updateList = () => {
+  refresh();
 };
 </script>
 
