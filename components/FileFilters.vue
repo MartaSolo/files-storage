@@ -139,7 +139,7 @@ const handleConfirm = () => {
           />
           <BaseButton
             label="Confirm"
-            :disabled="!isDateValid || activeFilters === 0"
+            :disabled="!isDateValid"
             @click="handleConfirm"
           />
         </div>
