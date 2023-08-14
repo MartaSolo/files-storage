@@ -1,8 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const headerText = ref("Public files storage");
+</script>
 
 <template>
   <header class="header">
-    <h1 class="header__title">Your personal files storage</h1>
+    <h1 class="header__title">{{ headerText }}</h1>
   </header>
 </template>
 
