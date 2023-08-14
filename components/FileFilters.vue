@@ -10,7 +10,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: FilterParams): void;
-  (e: "reset-filtered-list"): void;
   (e: "set-filters-options"): void;
 }>();
 
