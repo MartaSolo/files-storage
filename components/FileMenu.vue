@@ -32,7 +32,6 @@ const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
 const showErrorModal = ref(false);
 const errorMessages = ref<string[]>([]);
-const wasFileDisplayed = ref(false);
 
 const copyFile = useCopyFile();
 const copyLink = useCopyLink(props.fileName);
@@ -143,71 +142,27 @@ const closeModal = () => {
 
 watch(errorMessages, openModal);
 
-const handleMenuPosition = () => {
-  if (wasFileDisplayed.value) {
-    const windowInnerHeight = window.innerHeight;
-    const rectBottom = root.value?.getBoundingClientRect().bottom || 0;
-    const bottomDistance = windowInnerHeight - rectBottom;
-    if (bottomDistance < 200) {
-      menuListPosition.value = "top";
-    } else {
-      menuListPosition.value = "bottom";
-    }
-  }
-};
-
-const throttle = (fn: Function, delay: number) => {
-  let time = Date.now();
-  return () => {
-    if (time + delay - Date.now() <= 0) {
-      fn();
-      time = Date.now();
-    }
-  };
-};
-
 onMounted(() => {
-  const fileListElement = document.querySelector(".files__list");
   const target = root.value as Element;
 
-  const createObserver = () => {
-    const observerOptions = {
-      root: fileListElement,
-      rootMargin: "0px",
-      threshold: [0, 0.5, 1],
-    };
-
-    const observer = new IntersectionObserver(
-      intersectionCallback,
-      observerOptions
-    );
-
-    observer.observe(target);
+  const observerOptions = {
+    rootMargin: "0px 0px -240px 0px",
+    threshold: [0, 0.25, 0.5, 0.75, 1],
   };
 
-  const intersectionCallback = (observer: IntersectionObserverEntry[]) => {
-    observer.forEach((target) => {
-      if (target.isIntersecting) {
-        wasFileDisplayed.value = true;
-        handleMenuPosition();
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.intersectionRatio < 1 && entry.boundingClientRect.top > 240) {
+        menuListPosition.value = "top";
+      } else if (!entry.isIntersecting && entry.boundingClientRect.top > 900) {
+        observer.unobserve(target);
+      } else {
+        menuListPosition.value = "bottom";
       }
     });
-  };
+  }, observerOptions);
 
-  createObserver();
-
-  fileListElement?.addEventListener(
-    "scroll",
-    throttle(handleMenuPosition, 500)
-  );
-});
-
-onUnmounted(() => {
-  const fileListElement = document.querySelector(".files__list");
-  fileListElement?.removeEventListener(
-    "scroll",
-    throttle(handleMenuPosition, 500)
-  );
+  observer.observe(target);
 });
 </script>
 
