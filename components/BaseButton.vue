@@ -3,19 +3,27 @@ const props = withDefaults(
   defineProps<{
     label: string;
     theme?: "white" | "green";
+    to?: string | null;
   }>(),
   {
     theme: "green",
+    to: null,
   }
 );
 
 const computedClass = computed(() => {
   return ["button", `button--${props.theme}`];
 });
+
+const component = computed(() => {
+  return props.to ? resolveComponent("NuxtLink") : "button";
+});
 </script>
 
 <template>
-  <button :class="computedClass">{{ label }}</button>
+  <component :is="component" :to="to" :class="computedClass">{{
+    label
+  }}</component>
 </template>
 
 <style lang="scss" scoped>
