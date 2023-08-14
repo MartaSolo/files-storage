@@ -13,3 +13,6 @@ export const useLayoutType = () =>
 
 export const useSelectedFiles = () =>
   useState<string[]>("selected-files", () => []);
+
+export const useIsUserLoggedIn = () =>
+  useState<boolean>("is-user-logged-in", () => false);
