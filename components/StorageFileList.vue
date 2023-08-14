@@ -53,8 +53,8 @@ const {
   query: queryParameters,
 });
 
-const updateList = async () => {
-  await refresh();
+const updateList = () => {
+  refresh();
 };
 </script>
 
@@ -144,9 +144,10 @@ const updateList = async () => {
 .files__list {
   overflow-y: scroll;
   height: calc(100vh - 230px);
-  padding: 0 1rem 1rem 0;
+  padding: 0 1rem 3rem 0;
   @include mediumScreen {
     height: calc(100vh - 222px);
+    padding: 0 1rem 1rem 0;
   }
 }
 

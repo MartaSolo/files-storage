@@ -20,15 +20,8 @@ export default defineEventHandler(async (event) => {
 
   const query = getQuery(event);
 
-  const { key, order, name, types, minSize, maxSize, dates } = query as {
-    key: FileObjectKeys;
-    order: SortOrder;
-    name: string;
-    types: string;
-    minSize: number;
-    maxSize: number;
-    dates: string;
-  };
+  const { key, order, name, types, minSize, maxSize, dates } =
+    query as unknown as QueryParams;
 
   // sort fetched data
   files.sort((e1: FileObject, e2: FileObject) => {

@@ -23,12 +23,15 @@ const computedClass = computed(() => {
 <style lang="scss" scoped>
 .tab {
   flex-basis: 50%;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
   display: flex;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   margin: 0 1px;
+  @include mediumScreen {
+    font-size: 1.5rem;
+  }
 }
 .tab__link {
   flex-basis: 100%;

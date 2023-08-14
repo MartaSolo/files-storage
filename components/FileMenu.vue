@@ -142,26 +142,27 @@ const closeModal = () => {
 
 watch(errorMessages, openModal);
 
-const handleMenuPosition = () => {
-  const windowInnerHeight = window.innerHeight;
-  const rectBottom = root.value?.getBoundingClientRect().bottom || 0;
-  const bottomDistance = windowInnerHeight - rectBottom;
-  if (bottomDistance < 200) {
-    menuListPosition.value = "top";
-  } else {
-    menuListPosition.value = "bottom";
-  }
-};
-
 onMounted(() => {
-  handleMenuPosition();
-  const fileListElement = document.querySelector(".files__list");
-  fileListElement?.addEventListener("scroll", handleMenuPosition);
-});
+  const target = root.value as Element;
 
-onUnmounted(() => {
-  const fileListElement = document.querySelector(".files__list");
-  fileListElement?.removeEventListener("scroll", handleMenuPosition);
+  const observerOptions = {
+    rootMargin: "0px 0px -240px 0px",
+    threshold: [0, 0.25, 0.5, 0.75, 1],
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.intersectionRatio < 1 && entry.boundingClientRect.top > 240) {
+        menuListPosition.value = "top";
+      } else if (!entry.isIntersecting && entry.boundingClientRect.top > 900) {
+        observer.unobserve(target);
+      } else {
+        menuListPosition.value = "bottom";
+      }
+    });
+  }, observerOptions);
+
+  observer.observe(target);
 });
 </script>
 
