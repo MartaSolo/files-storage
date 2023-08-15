@@ -2,7 +2,7 @@
 const props = withDefaults(
   defineProps<{
     label: string;
-    theme?: "white" | "green";
+    theme?: "white" | "green" | "light-green";
     to?: string | null;
   }>(),
   {
@@ -48,6 +48,13 @@ const component = computed(() => {
   color: $color-white;
   &:hover {
     background-color: $color-green-dark-hover;
+  }
+}
+.button--light-green {
+  background-color: $color-green-light;
+  color: $color-green-dark;
+  &:hover {
+    background-color: $color-green-light-hover;
   }
 }
 .button:disabled {
