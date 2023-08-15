@@ -148,9 +148,7 @@ const updateList = () => {
   align-self: center;
 }
 .files__menu--switcher {
-  display: none;
   @include smallScreen {
-    display: flex;
     grid-area: switcher;
     align-self: center;
   }
@@ -188,6 +186,15 @@ const updateList = () => {
   }
   @include xxlargeScreen {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+}
+</style>
+
+<style lang="scss">
+.button .files__menu--switcher {
+  display: none;
+  @include smallScreen {
+    display: flex;
   }
 }
 </style>
