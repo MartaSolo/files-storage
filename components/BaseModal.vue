@@ -87,7 +87,8 @@ onMounted(() => {
 }
 
 .modal__container {
-  width: auto;
+  width: 100%;
+  max-width: 500px;
   margin: auto;
   padding: 20px 30px;
   background-color: $color-white;
