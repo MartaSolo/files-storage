@@ -9,12 +9,12 @@ const headerText = computed(() => {
 });
 
 const link = computed(() => {
-  if (!isUserLoggedIn.value && route.path !== "/login") {
+  if (!isUserLoggedIn.value && route.path === "/") {
     return {
       text: "Login",
       to: "/login",
     };
-  } else if (!isUserLoggedIn.value && route.path === "/login") {
+  } else if (!isUserLoggedIn.value && route.path !== "/") {
     return {
       text: "Home",
       to: "/",
