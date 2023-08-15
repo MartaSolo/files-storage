@@ -54,4 +54,14 @@ const onInput = (e: Event) => {
 .input__input[type="number"] {
   width: 80%;
 }
+
+.login__email.input__input,
+.login__password.input__input {
+  width: 100%;
+}
+.register__name.input__input,
+.register__email.input__input,
+.register__password.input__input {
+  width: 100%;
+}
 </style>
