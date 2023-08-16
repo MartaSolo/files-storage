@@ -9,7 +9,7 @@ const password = ref<string>("");
 
 <template>
   <section class="login">
-    <h2 class="login__title">Log in to have access to your private files.</h2>
+    <h2 class="login__title">Login to have access to your private files.</h2>
     <div class="login__content">
       <div class="login__inputs">
         <BaseInput
@@ -86,6 +86,13 @@ const password = ref<string>("");
 }
 
 .login__redirect--link {
+  width: 100%;
+}
+</style>
+
+<style lang="scss">
+.login__email.input__input,
+.login__password.input__input {
   width: 100%;
 }
 </style>
