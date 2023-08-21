@@ -27,6 +27,7 @@ const emit = defineEmits<{
 
 const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
+const observer = ref<IntersectionObserver | null>(null);
 const showRenameModal = ref(false);
 const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
@@ -150,19 +151,22 @@ onMounted(() => {
     threshold: [0, 0.25, 0.5, 0.75, 1],
   };
 
-  const observer = new IntersectionObserver((entries) => {
+  observer.value = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio < 1 && entry.boundingClientRect.top > 240) {
         menuListPosition.value = "top";
-      } else if (!entry.isIntersecting && entry.boundingClientRect.top > 900) {
-        observer.unobserve(target);
       } else {
         menuListPosition.value = "bottom";
       }
     });
   }, observerOptions);
 
-  observer.observe(target);
+  observer.value.observe(target);
+});
+
+onBeforeUnmount(() => {
+  const target = root.value as Element;
+  observer.value?.unobserve(target);
 });
 </script>
 
