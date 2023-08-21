@@ -194,6 +194,8 @@ const handleKeydown = (e: KeyboardEvent) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .drag-and-drop__form {
