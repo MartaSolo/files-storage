@@ -11,7 +11,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: ModelValue): void;
 }>();
 
-const date = ref<ModelValue>(null);
+const date = ref<ModelValue>(props.modelValue);
 const root = ref<HTMLElement | null>(null);
 
 const isRangeValid = computed(() => {

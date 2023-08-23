@@ -27,6 +27,7 @@ const emit = defineEmits<{
 
 const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
+const observer = ref<IntersectionObserver | null>(null);
 const showRenameModal = ref(false);
 const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
@@ -37,15 +38,6 @@ const copyFile = useCopyFile();
 const copyLink = useCopyLink(props.fileName);
 const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
-
-onMounted(() => {
-  const windowInnerHeight = window.innerHeight;
-  const rectBottom = root.value?.getBoundingClientRect().bottom || 0;
-  const bottomDistance = windowInnerHeight - rectBottom;
-  if (bottomDistance < 200) {
-    menuListPosition.value = "top";
-  }
-});
 
 const computedMenuListClass = computed(() => {
   return `menu__list--${menuListPosition.value}`;
@@ -150,6 +142,32 @@ const closeModal = () => {
 };
 
 watch(errorMessages, openModal);
+
+onMounted(() => {
+  const target = root.value as Element;
+
+  const observerOptions = {
+    rootMargin: "0px 0px -240px 0px",
+    threshold: [0, 0.25, 0.5, 0.75, 1],
+  };
+
+  observer.value = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.intersectionRatio < 1 && entry.boundingClientRect.top > 240) {
+        menuListPosition.value = "top";
+      } else {
+        menuListPosition.value = "bottom";
+      }
+    });
+  }, observerOptions);
+
+  observer.value.observe(target);
+});
+
+onBeforeUnmount(() => {
+  const target = root.value as Element;
+  observer.value?.unobserve(target);
+});
 </script>
 
 <template>

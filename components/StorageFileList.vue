@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
+import { FilterParams } from "@/types/FilterParams";
+import { QueryParams } from "@/types/QueryParams";
 
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
+
+const filters = ref<FilterParams>({
+  name: null,
+  types: null,
+  sizeMin: null,
+  sizeMax: null,
+  dates: null,
+});
 
 const computedClass = computed(() => {
   return layoutType.value === "grid"
@@ -12,12 +22,35 @@ const computedClass = computed(() => {
     : "files__list--list";
 });
 
+const queryParameters = computed(() => {
+  const queryObject: QueryParams = {
+    key: sortColumn.value,
+    order: sortOrder.value,
+  };
+  if (filters.value.name) {
+    queryObject.name = filters.value.name;
+  }
+  if (filters.value.types?.length) {
+    queryObject.types = filters.value.types.join(",");
+  }
+  if (filters.value.sizeMin) {
+    queryObject.minSize = filters.value.sizeMin;
+  }
+  if (filters.value.sizeMax && filters.value.sizeMax < 5) {
+    queryObject.maxSize = filters.value.sizeMax;
+  }
+  if (filters.value.dates?.length) {
+    queryObject.dates = filters.value.dates.join(",");
+  }
+  return queryObject;
+});
+
 const {
   data: fileList,
   refresh,
   error: fileListError,
 } = await useFetch<FileObject[]>(`/api/files`, {
-  query: { key: sortColumn, order: sortOrder },
+  query: queryParameters,
 });
 
 const updateList = () => {
@@ -42,7 +75,12 @@ const updateList = () => {
           :file-list="fileList"
           @files-action="updateList"
         />
-        <FileFilters class="files__menu--filters" :file-list="fileList" />
+        <FileFilters
+          v-model="filters"
+          class="files__menu--filters"
+          :file-list="fileList"
+          @set-filters-options="updateList"
+        />
         <SortFileList
           class="files__menu--sort"
           @set-sort-options="updateList"
@@ -106,9 +144,10 @@ const updateList = () => {
 .files__list {
   overflow-y: scroll;
   height: calc(100vh - 230px);
-  padding: 0 1rem 1rem 0;
+  padding: 0 1rem 3rem 0;
   @include mediumScreen {
     height: calc(100vh - 222px);
+    padding: 0 1rem 1rem 0;
   }
 }
 
