@@ -14,11 +14,10 @@
   padding: 1rem;
   max-width: 1700px;
   margin: 0 auto;
-  overflow-y: hidden;
-  height: calc(100vh - 108px);
+  height: calc(100vh - 52px);
 
   @include mediumScreen {
-    height: calc(100vh - 132px);
+    height: calc(100vh - 64px);
   }
 }
 </style>
