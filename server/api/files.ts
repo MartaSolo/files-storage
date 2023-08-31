@@ -1,6 +1,4 @@
 import { FileObject } from "@supabase/storage-js";
-import { FileObjectKeys } from "@/types/FileObjectKeys";
-import { SortOrder } from "@/types/SortOrder";
 import { QueryParams } from "@/types/QueryParams";
 import { serverSupabaseClient } from "#supabase/server";
 
