@@ -16,3 +16,6 @@ export const useSelectedFiles = () =>
 
 export const useIsUserLoggedIn = () =>
   useState<boolean>("is-user-logged-in", () => false);
+
+export const useUserId = () =>
+  useState<string | undefined>("user-id", () => "");
