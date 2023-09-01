@@ -8,7 +8,9 @@ const EyeIcon = resolveComponent("EyeIcon");
 const { validateName, nameError } = useValidateName();
 const { validateEmail, emailError } = useValidateEmail();
 const { validatePassword, passwordError } = useValidatePassword();
+const { validateBucketName, bucketNameError } = useValidateBucketName();
 const { register } = useCreateUser();
+const { createBucket } = useCreateBucket();
 const isUserLoggedIn = useIsUserLoggedIn();
 
 const name = ref("");
@@ -17,14 +19,10 @@ const password = ref("");
 const bucket = ref("");
 const passwordInputType = ref("password");
 const registerError = ref("");
+const createBucketError = ref("");
 
 const handleNameFocus = () => {
   if (nameError.value) nameError.value = "";
-};
-
-const handleNameBlur = () => {
-  console.log("handleNameBlur fired");
-  validateName(name.value);
 };
 
 const handleEmailFocus = () => {
@@ -33,6 +31,10 @@ const handleEmailFocus = () => {
 
 const handlePasswordFocus = () => {
   if (passwordError.value) passwordError.value = "";
+};
+
+const handleBucketFocus = () => {
+  if (bucketNameError.value) bucketNameError.value = "";
 };
 
 const validationClasses = (error: string, inputValue: string) => {
@@ -57,8 +59,11 @@ const registerUser = async () => {
   try {
     await register(name.value, email.value, password.value);
     isUserLoggedIn.value = true;
+    // await createBucket(bucket.value);
+    // redirect to user page
   } catch (error: any) {
     registerError.value = error.message;
+    createBucketError.value = error.message;
   }
 };
 
@@ -86,7 +91,7 @@ const handleSubmit = () => {
           class="register__name"
           :class="validationClasses(nameError, name)"
           @focus="handleNameFocus"
-          @blur="handleNameBlur"
+          @blur="validateName(name)"
         />
         <span v-if="nameError" class="error__message">{{ nameError }}</span>
         <BaseInput
@@ -127,18 +132,20 @@ const handleSubmit = () => {
         }}</span>
         <BaseAccordion
           title="Storage name hint"
-          content="Storage name can contain lowercase and uppercase letters, numbers and some special characters: exclamation point (!), hyphen (-), underscore (_), period (.), asterisk (*), single quote ('), open parenthesis ((), close parenthesis ())."
+          content="Storage name must consist of 5 to 15 and can contain lowercase and uppercase letters, numbers and some special characters: exclamation point (!), hyphen (-), underscore (_), period (.), asterisk (*), single quote ('), open parenthesis ((), close parenthesis ())."
         />
-        <!-- <BaseInput
+        <BaseInput
           v-model="bucket"
           name="bucket"
           label="Private storage name"
           class="register__bucket"
-          :class="validationClasses(bucketError, bucket)"
+          :class="validationClasses(bucketNameError, bucket)"
           @focus="handleBucketFocus"
-          @blur="validateBucket(bucket)"
-        /> -->
-        <!-- <span v-if="nameError" class="error__message">{{ nameError }}</span> -->
+          @blur="validateBucketName(bucket)"
+        />
+        <span v-if="bucketNameError" class="error__message">{{
+          bucketNameError
+        }}</span>
       </div>
       <div class="register__actions">
         <BaseButton label="Cancel" theme="white" to="/" />
@@ -167,6 +174,7 @@ const handleSubmit = () => {
   width: 100%;
   max-width: 500px;
   padding: 0 2rem 0 2rem;
+  margin-bottom: 2rem;
 }
 
 .register__name,
