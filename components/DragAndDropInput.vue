@@ -194,6 +194,8 @@ const handleKeydown = (e: KeyboardEvent) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .drag-and-drop__form {
@@ -209,7 +211,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 }
 
 .drag-and-drop__info {
-  color: $text-color-secondary;
+  color: $text-color-primary;
   font-size: 1rem;
   font-weight: 400;
   text-align: center;

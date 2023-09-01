@@ -39,7 +39,7 @@ export default {
       class="button__btn"
       :class="computedClass"
       v-bind="$attrs"
-      aria-labelledby="description"
+      :aria-label="description"
       @mouseenter="showText"
       @mouseleave="hideText"
       @click="hideText"
@@ -48,7 +48,6 @@ export default {
     </button>
     <div
       v-show="isTextDisplayed"
-      id="description"
       class="button__description"
       :style="descriptionStyle"
     >

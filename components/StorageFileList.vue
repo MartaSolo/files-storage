@@ -104,12 +104,19 @@ const updateList = () => {
 .files__menu {
   padding: 0 0 1rem 0;
   display: grid;
-  grid-template-columns: 1fr 40px;
+  grid-template-columns: 1fr;
   grid-template-rows: auto auto;
   grid-template-areas:
-    "multiple filters"
-    "sort switcher";
+    "multiple"
+    "sort";
   gap: 1rem;
+  @include smallScreen {
+    grid-template-columns: 1fr 40px;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "multiple filters"
+      "sort switcher";
+  }
   @include mediumScreenPlus {
     grid-template-columns: 330px 1fr 300px 40px;
     grid-template-rows: auto;
@@ -128,17 +135,23 @@ const updateList = () => {
 }
 
 .files__menu--filters {
-  grid-area: filters;
-  justify-self: center;
-  align-self: center;
+  display: none;
+  @include smallScreen {
+    display: block;
+    grid-area: filters;
+    justify-self: center;
+    align-self: center;
+  }
 }
 .files__menu--sort {
   grid-area: sort;
   align-self: center;
 }
 .files__menu--switcher {
-  grid-area: switcher;
-  align-self: center;
+  @include smallScreen {
+    grid-area: switcher;
+    align-self: center;
+  }
 }
 
 .files__list {
@@ -173,6 +186,15 @@ const updateList = () => {
   }
   @include xxlargeScreen {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+}
+</style>
+
+<style lang="scss">
+.button .files__menu--switcher {
+  display: none;
+  @include smallScreen {
+    display: flex;
   }
 }
 </style>

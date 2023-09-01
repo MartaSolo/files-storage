@@ -94,9 +94,9 @@ const updatedFile = () => {
         :type="previewFileType"
         class="file__details--checkbox"
       />
-      <h3 class="file__details--name">{{ fileName }}</h3>
-      <p class="file__details--size">{{ fileSize }}</p>
-      <p class="file__details--type">{{ sortFileType }}</p>
+      <span class="file__details--name">{{ fileName }}</span>
+      <span class="file__details--size">{{ fileSize }}</span>
+      <span class="file__details--type">{{ sortFileType }}</span>
       <FileMenu
         class="file__details--actions"
         :file-name="fileName"
@@ -125,7 +125,12 @@ const updatedFile = () => {
         v-else-if="filePreviewComponent"
         class="file__preview--component"
       />
-      <img v-else class="file__preview--image" :src="previewUrl" />
+      <img
+        v-else
+        class="file__preview--image"
+        :src="previewUrl"
+        :alt="fileName"
+      />
     </div>
   </div>
 </template>

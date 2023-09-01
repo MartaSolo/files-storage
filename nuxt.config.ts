@@ -17,4 +17,18 @@ export default defineNuxtConfig({
   build: {
     transpile: ["@vuepic/vue-datepicker"],
   },
+  app: {
+    head: {
+      title: "Your files storage",
+      meta: [
+        {
+          name: "description",
+          content: "Upload your files to your online storage",
+        },
+      ],
+      htmlAttrs: {
+        lang: "en",
+      },
+    },
+  },
 });
