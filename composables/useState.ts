@@ -1,6 +1,7 @@
 import { FileObjectKeys } from "@/types/FileObjectKeys";
 import { SortOrder } from "@/types/SortOrder";
 import { LayoutType } from "@/types/LayoutType";
+import { UserData } from "@/types/UserData";
 
 export const useSortColumn = () =>
   useState<FileObjectKeys>("sort-column", () => "name");
@@ -14,8 +15,11 @@ export const useLayoutType = () =>
 export const useSelectedFiles = () =>
   useState<string[]>("selected-files", () => []);
 
-export const useIsUserLoggedIn = () =>
-  useState<boolean>("is-user-logged-in", () => false);
-
-export const useUserId = () =>
-  useState<string | undefined>("user-id", () => "");
+export const useUserData = () =>
+  useState<UserData>("user-data", () => ({
+    id: undefined,
+    name: undefined,
+    email: undefined,
+    lastSignIn: undefined,
+    created: undefined,
+  }));
