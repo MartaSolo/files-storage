@@ -1,37 +1,17 @@
 <script setup lang="ts">
-const isUserLoggedIn = useIsUserLoggedIn();
+const userData = useUserData();
 const route = useRoute();
 
 const headerText = computed(() => {
-  return isUserLoggedIn.value
-    ? "Your private files storage"
-    : "Public files storage";
-});
-
-const link = computed(() => {
-  if (!isUserLoggedIn.value && route.path === "/") {
-    return {
-      text: "Login",
-      to: "/login",
-    };
-  } else if (!isUserLoggedIn.value && route.path !== "/") {
-    return {
-      text: "Home",
-      to: "/",
-    };
-  } else {
-    return {
-      text: "Go to public",
-      to: "/",
-    };
-  }
+  return userData.value.id ? "Your private files" : "Public files";
 });
 </script>
 
 <template>
   <header class="header">
     <h1 class="header__title">{{ headerText }}</h1>
-    <BaseButton :label="link.text" :to="link.to" />
+    <BaseButton v-if="!userData.id" label="Login" to="/login" />
+    <UserMenu v-if="userData.id" />
   </header>
 </template>
 
@@ -40,7 +20,8 @@ const link = computed(() => {
   padding: 0 1rem;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  // align-items: baseline;
+  align-items: center;
 }
 
 .header__title {
