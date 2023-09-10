@@ -1,5 +1,5 @@
 export const useValidateEmail = () => {
-  const emailError = ref<string>("");
+  const emailError = ref("");
 
   const validateEmail = (email: string) => {
     const emailRegex =
