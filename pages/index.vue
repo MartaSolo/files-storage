@@ -2,6 +2,8 @@
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 import { MAX_FILES_NUMBER } from "@/utils/constants/maxFilesNumber";
 
+const userData = useUserData();
+
 const { retrieveSession } = useRetrieveSession();
 
 const getSessionError = ref("");
@@ -15,7 +17,7 @@ const getSession = async () => {
 };
 
 onMounted(() => {
-  getSession();
+  if (!userData.value.id) getSession();
 });
 </script>
 
