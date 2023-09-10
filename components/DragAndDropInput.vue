@@ -6,11 +6,27 @@ const props = defineProps<{
   maxFileSizeMB: number;
 }>();
 
+const userData = useUserData();
+
 const isDragActive = ref(false);
 const errorMessages = ref<string[]>([]);
 const uploadedFiles = ref<string[]>([]);
 const notUploadedFiles = ref<string[]>([]);
 const root = ref<HTMLElement | null>(null);
+
+const storage = computed(() => {
+  if (!userData.value.id) {
+    return {
+      bucket: "files",
+      folder: "public",
+    };
+  } else {
+    return {
+      bucket: "private",
+      folder: userData.value.id,
+    };
+  }
+});
 
 const maxFileSizeBytes = computed(() => {
   return props.maxFileSizeMB * 1000000;
@@ -47,8 +63,8 @@ const numberOfFilesExceeded = (
 
 const uploadFileToSupabase = async (file: File) => {
   const { error } = await client.storage
-    .from("files")
-    .upload(`public/${file.name}`, file);
+    .from(storage.value.bucket)
+    .upload(`${storage.value.folder}/${file.name}`, file);
   if (error) {
     errorMessages.value.push(`Error: ${error?.message}`);
     notUploadedFiles.value.push(file.name);
@@ -114,6 +130,8 @@ const handleKeydown = (e: KeyboardEvent) => {
     input?.click();
   }
 };
+
+watch(userData.value, resetState);
 </script>
 
 <template>
