@@ -1,16 +1,26 @@
 <script setup lang="ts">
 const userData = useUserData();
+const isStorgePublic = useIsStoragePublic();
 const route = useRoute();
 
 const headerText = computed(() => {
-  return userData.value.id ? "Your private files" : "Public files";
+  return userData.value.id ? "Private files" : "Public files";
+});
+
+const isButtonShown = computed(() => {
+  return !userData.value.id && route.matched[0].name !== "login";
 });
 </script>
 
 <template>
   <header class="header">
     <h1 class="header__title">{{ headerText }}</h1>
-    <BaseButton v-if="!userData.id" label="Login" to="/login" />
+    <BaseSwitch
+      v-model="isStorgePublic"
+      label-left="Public"
+      label-right="Private"
+    />
+    <BaseButton v-if="isButtonShown" label="Login" to="/login" />
     <UserMenu v-if="userData.id" />
   </header>
 </template>
@@ -20,7 +30,6 @@ const headerText = computed(() => {
   padding: 0 1rem;
   display: flex;
   justify-content: space-between;
-  // align-items: baseline;
   align-items: center;
 }
 
@@ -28,7 +37,6 @@ const headerText = computed(() => {
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 2px;
-  text-align: center;
   padding: 0.75rem 0 1rem 1rem;
   color: $text-color-secondary;
 
