@@ -5,36 +5,42 @@ definePageMeta({
 
 const EyeIcon = resolveComponent("EyeIcon");
 
+const router = useRouter();
 const { validateName, nameError } = useValidateName();
 const { validateEmail, emailError } = useValidateEmail();
 const { validatePassword, passwordError } = useValidatePassword();
-const { validateBucketName, bucketNameError } = useValidateBucketName();
 const { register } = useCreateUser();
-const { createBucket } = useCreateBucket();
-const isUserLoggedIn = useIsUserLoggedIn();
 
 const name = ref("");
 const email = ref("");
 const password = ref("");
-const bucket = ref("");
 const passwordInputType = ref("password");
 const registerError = ref("");
-const createBucketError = ref("");
 
-const handleNameFocus = () => {
-  if (nameError.value) nameError.value = "";
+const isFormValid = computed(() => {
+  return !!(
+    name.value &&
+    email.value &&
+    password.value &&
+    !nameError.value &&
+    !emailError.value &&
+    !passwordError.value
+  );
+});
+
+const handleNameInput = () => {
+  if (nameError.value) validateName(name.value);
+  if (validateName(name.value)) nameError.value = "";
 };
 
-const handleEmailFocus = () => {
-  if (emailError.value) emailError.value = "";
+const handleEmailInput = () => {
+  if (emailError.value) validateEmail(email.value);
+  if (validateEmail(email.value)) emailError.value = "";
 };
 
-const handlePasswordFocus = () => {
-  if (passwordError.value) passwordError.value = "";
-};
-
-const handleBucketFocus = () => {
-  if (bucketNameError.value) bucketNameError.value = "";
+const handlePasswordInput = () => {
+  if (passwordError.value) validatePassword(password.value);
+  if (validatePassword(password.value)) passwordError.value = "";
 };
 
 const validationClasses = (error: string, inputValue: string) => {
@@ -55,52 +61,46 @@ const validateForm = () => {
   );
 };
 
-const registerUser = async () => {
-  try {
-    await register(name.value, email.value, password.value);
-    isUserLoggedIn.value = true;
-    // await createBucket(bucket.value);
-    // redirect to user page
-  } catch (error: any) {
-    registerError.value = error.message;
-    createBucketError.value = error.message;
-  }
+const resetForm = () => {
+  name.value = "";
+  email.value = "";
+  password.value = "";
 };
 
-// utworzenie buycketa??
-
-const handleSubmit = () => {
+const registerUser = async () => {
   if (!validateForm()) return;
-  console.log("handleSubmit");
-  registerUser();
-  // if (!registerError.value) {
-    // createBucket();
-  // }
+  try {
+    await register(name.value, email.value, password.value);
+    resetForm();
+    router.push("/");
+  } catch (error: any) {
+    registerError.value = error.message;
+  }
 };
 </script>
 
 <template>
-  <form class="register" @submit.prevent="handleSubmit">
+  <form class="register" @submit.prevent="registerUser">
     <h2 class="register__title">Register and create your private storage.</h2>
     <div class="register__content">
       <div class="register__inputs">
         <BaseInput
-          v-model="name"
+          v-model.trim="name"
           name="name"
           label="Name"
           class="register__name"
           :class="validationClasses(nameError, name)"
-          @focus="handleNameFocus"
+          @input="handleNameInput"
           @blur="validateName(name)"
         />
         <span v-if="nameError" class="error__message">{{ nameError }}</span>
         <BaseInput
-          v-model="email"
+          v-model.trim="email"
           name="email"
           label="Email"
           class="register__email"
           :class="validationClasses(emailError, email)"
-          @focus="handleEmailFocus"
+          @input="handleEmailInput"
           @blur="validateEmail(email)"
         />
         <span v-if="emailError" class="error__message">{{ emailError }}</span>
@@ -111,13 +111,13 @@ const handleSubmit = () => {
           special character."
         />
         <BaseInput
-          v-model="password"
+          v-model.trim="password"
           :type="passwordInputType"
           name="password"
           label="Password"
           class="register__password"
           :class="validationClasses(passwordError, password)"
-          @focus="handlePasswordFocus"
+          @input="handlePasswordInput"
           @blur="validatePassword(password)"
           ><button
             type="button"
@@ -130,28 +130,14 @@ const handleSubmit = () => {
         <span v-if="passwordError" class="error__message">{{
           passwordError
         }}</span>
-        <BaseAccordion
-          title="Storage name hint"
-          content="Storage name must consist of 5 to 15 and can contain lowercase and uppercase letters, numbers and some special characters: exclamation point (!), hyphen (-), underscore (_), period (.), asterisk (*), single quote ('), open parenthesis ((), close parenthesis ())."
-        />
-        <BaseInput
-          v-model="bucket"
-          name="bucket"
-          label="Private storage name"
-          class="register__bucket"
-          :class="validationClasses(bucketNameError, bucket)"
-          @focus="handleBucketFocus"
-          @blur="validateBucketName(bucket)"
-        />
-        <span v-if="bucketNameError" class="error__message">{{
-          bucketNameError
-        }}</span>
       </div>
       <div class="register__actions">
         <BaseButton label="Cancel" theme="white" to="/" />
-        <BaseButton type="submit" label="Confirm" />
+        <BaseButton type="submit" label="Confirm" :disabled="!isFormValid" />
       </div>
-      <span v-if="registerError">{{ registerError }}</span>
+      <span v-if="registerError" class="error__message--action">{{
+        registerError
+      }}</span>
     </div>
   </form>
 </template>
@@ -217,6 +203,14 @@ const handleSubmit = () => {
   font-size: 0.8rem;
   color: $text-color-error;
   display: block;
+  padding-bottom: 0.6rem;
+}
+
+.error__message--action {
+  font-size: 1.3rem;
+  color: $text-color-error;
+  display: block;
+  text-align: center;
   padding-bottom: 0.6rem;
 }
 
