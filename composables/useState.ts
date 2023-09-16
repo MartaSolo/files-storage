@@ -23,3 +23,6 @@ export const useUserData = () =>
     lastSignIn: undefined,
     created: undefined,
   }));
+
+export const useIsStoragePublic = () =>
+  useState("is-storage-public", () => true);
