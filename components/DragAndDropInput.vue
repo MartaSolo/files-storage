@@ -6,6 +6,7 @@ const props = defineProps<{
   maxFileSizeMB: number;
 }>();
 
+const { storage } = useStorage();
 const userData = useUserData();
 
 const isDragActive = ref(false);
@@ -13,20 +14,6 @@ const errorMessages = ref<string[]>([]);
 const uploadedFiles = ref<string[]>([]);
 const notUploadedFiles = ref<string[]>([]);
 const root = ref<HTMLElement | null>(null);
-
-const storage = computed(() => {
-  if (!userData.value.id) {
-    return {
-      bucket: "files",
-      folder: "public",
-    };
-  } else {
-    return {
-      bucket: "private",
-      folder: userData.value.id,
-    };
-  }
-});
 
 const maxFileSizeBytes = computed(() => {
   return props.maxFileSizeMB * 1000000;
