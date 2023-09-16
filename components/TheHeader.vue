@@ -15,13 +15,11 @@ const isButtonShown = computed(() => {
 <template>
   <header class="header">
     <h1 class="header__title">{{ headerText }}</h1>
-    <BaseSwitch
-      v-model="isStorgePublic"
-      label-left="Public"
-      label-right="Private"
-    />
-    <BaseButton v-if="isButtonShown" label="Login" to="/login" />
-    <UserMenu v-if="userData.id" />
+    <div class="header__menu">
+      <StorageSwitcher v-if="userData.id" v-model="isStorgePublic" />
+      <BaseButton v-if="isButtonShown" label="Login" to="/login" />
+      <UserMenu v-if="userData.id" />
+    </div>
   </header>
 </template>
 
@@ -39,14 +37,18 @@ const isButtonShown = computed(() => {
   letter-spacing: 2px;
   padding: 0.75rem 0 1rem 1rem;
   color: $text-color-secondary;
-
   @include mediumScreen {
     font-size: 1.5rem;
     font-weight: 600;
   }
-
   @include largeScreen {
     flex-grow: 1;
   }
+}
+
+.header__menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 </style>
