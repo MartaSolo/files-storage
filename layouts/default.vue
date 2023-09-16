@@ -5,8 +5,8 @@ const tabs: { label: string; path: string }[] = [
     path: "/",
   },
   {
-    label: "All public files",
-    path: "/all-public-files",
+    label: "All files",
+    path: "/all-files",
   },
 ];
 </script>
