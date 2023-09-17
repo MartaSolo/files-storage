@@ -11,6 +11,6 @@ export const useRetrievePublicFileUrl = (fileName: string) => {
   const { data: url } = useAsyncData(fileName, getPublicUrl, {
     server: false,
   });
-  // console.log("public url.value", url.value);
+
   return { url };
 };
