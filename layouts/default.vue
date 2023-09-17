@@ -1,4 +1,16 @@
 <script setup lang="ts">
+const { isSessionLoading, retrieveSession } = useRetrieveSession();
+
+const getSessionError = ref("");
+
+const getSession = async () => {
+  try {
+    await retrieveSession();
+  } catch (error: any) {
+    getSessionError.value = error.message;
+  }
+};
+
 const tabs: { label: string; path: string }[] = [
   {
     label: "Add new files",
@@ -9,10 +21,15 @@ const tabs: { label: string; path: string }[] = [
     path: "/all-files",
   },
 ];
+
+onMounted(() => {
+  getSession();
+});
 </script>
 
 <template>
-  <div>
+  <BaseLoader v-if="isSessionLoading" />
+  <div v-else>
     <TheHeader />
     <BaseTabs :tabs="tabs" />
     <main class="content">
