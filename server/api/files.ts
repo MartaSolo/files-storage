@@ -5,21 +5,25 @@ import { serverSupabaseClient } from "#supabase/server";
 export default defineEventHandler(async (event) => {
   const client = serverSupabaseClient(event);
 
+  const query = getQuery(event);
+
+  const { key, order, name, types, minSize, maxSize, dates, storage } =
+    query as unknown as QueryParams;
+
+  const storageObject = JSON.parse(storage.toString());
+
   let files: FileObject[];
 
   // fetch data from supabase
-  const { data, error } = await client.storage.from("files").list("public", {
-    limit: 100,
-    offset: 0,
-  });
+  const { data, error } = await client.storage
+    .from(storageObject.bucket)
+    .list(storageObject.folder, {
+      limit: 100,
+      offset: 0,
+    });
   if (error) throw error;
 
   files = data;
-
-  const query = getQuery(event);
-
-  const { key, order, name, types, minSize, maxSize, dates } =
-    query as unknown as QueryParams;
 
   // sort fetched data
   files.sort((e1: FileObject, e2: FileObject) => {
