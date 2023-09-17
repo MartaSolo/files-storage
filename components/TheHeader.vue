@@ -4,7 +4,11 @@ const isStorgePublic = useIsStoragePublic();
 const route = useRoute();
 
 const headerText = computed(() => {
-  return userData.value.id ? "Private files" : "Public files";
+  if (!userData.value.id || (userData.value.id && isStorgePublic.value)) {
+    return "Public files";
+  } else {
+    return "Private files";
+  }
 });
 
 const isButtonShown = computed(() => {
@@ -15,11 +19,11 @@ const isButtonShown = computed(() => {
 <template>
   <header class="header">
     <h1 class="header__title">{{ headerText }}</h1>
-    <div class="header__menu">
+    <nav class="header__menu">
       <StorageSwitcher v-if="userData.id" v-model="isStorgePublic" />
       <BaseButton v-if="isButtonShown" label="Login" to="/login" />
       <UserMenu v-if="userData.id" />
-    </div>
+    </nav>
   </header>
 </template>
 
