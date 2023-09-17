@@ -1,7 +1,10 @@
 export const useRetrieveSession = () => {
-  const userData = useUserData();
-
   const client = useSupabaseClient();
+
+  const userData = useUserData();
+  const isStoragePublic = useIsStoragePublic();
+
+  const isSessionLoading = ref(true);
 
   const retrieveSession = async () => {
     const { data, error } = await client.auth.getSession();
@@ -13,9 +16,13 @@ export const useRetrieveSession = () => {
       userData.value.email = data.session?.user.email;
       userData.value.lastSignIn = data.session?.user.last_sign_in_at;
       userData.value.created = data.session?.user.created_at;
+
+      isStoragePublic.value = false;
+
+      isSessionLoading.value = false;
     }
     return data;
   };
 
-  return { retrieveSession };
+  return { isSessionLoading, retrieveSession };
 };
