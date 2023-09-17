@@ -7,6 +7,7 @@ const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
+const { storage } = useStorage();
 
 const filters = ref<FilterParams>({
   name: null,
@@ -26,6 +27,7 @@ const queryParameters = computed(() => {
   const queryObject: QueryParams = {
     key: sortColumn.value,
     order: sortOrder.value,
+    storage: storage.value,
   };
   if (filters.value.name) {
     queryObject.name = filters.value.name;
