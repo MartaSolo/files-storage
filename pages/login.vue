@@ -10,6 +10,7 @@ const { validateEmail, emailError } = useValidateEmail();
 const { validatePassword, passwordError } = useValidatePassword();
 const { login } = useLoginUser();
 const isStorgePublic = useIsStoragePublic();
+const userData = useUserData();
 
 const email = ref("");
 const password = ref("");
@@ -65,6 +66,12 @@ const loginUser = async () => {
     loginError.value = error.message;
   }
 };
+
+onMounted(() => {
+  if (userData.value.id) {
+    router.push({ path: "/" });
+  }
+});
 </script>
 
 <template>
