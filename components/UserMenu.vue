@@ -24,39 +24,6 @@ const handleLogOut = () => {
     throw new Error(e.message);
   }
 };
-
-const focusableNodes = computed(() => {
-  if (list.value) {
-    return list.value?.querySelectorAll<HTMLElement>(
-      "a[href]:not([disabled]), button:not([disabled])"
-    );
-  }
-});
-
-const firstFocusableNode = computed(() => {
-  const focusableNodesResult = focusableNodes.value;
-  if (focusableNodesResult) {
-    return focusableNodesResult[0] as HTMLElement;
-  }
-});
-
-const lastFocusableNode = computed(() => {
-  const focusableNodesResult = focusableNodes.value;
-  if (focusableNodesResult) {
-    return focusableNodesResult[focusableNodesResult.length - 1];
-  }
-});
-
-const handleFocus = (e: KeyboardEvent) => {
-  if (focusableNodes.value) {
-    if (document.activeElement === firstFocusableNode.value && e.shiftKey) {
-      isMenuOpen.value = false;
-    }
-    if (document.activeElement === lastFocusableNode.value && !e.shiftKey) {
-      isMenuOpen.value = false;
-    }
-  }
-};
 </script>
 
 <template>
@@ -71,7 +38,7 @@ const handleFocus = (e: KeyboardEvent) => {
   </button>
   <Transition name="menu" :duration="300">
     <template v-if="isMenuOpen">
-      <div ref="list" class="menu__list" @keydown.tab="handleFocus">
+      <div ref="list" class="menu__list">
         <button class="menu__item--button" @click="handleLogOut">
           Log out
         </button>
