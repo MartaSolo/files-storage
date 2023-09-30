@@ -9,7 +9,7 @@ const router = useRouter();
 const { validateEmail, emailError } = useValidateEmail();
 const { validatePassword, passwordError } = useValidatePassword();
 const { login } = useLoginUser();
-const isStorgePublic = useIsStoragePublic();
+const isStoragePublic = useIsStoragePublic();
 const userData = useUserData();
 
 const email = ref("");
@@ -60,7 +60,7 @@ const loginUser = async () => {
   try {
     await login(email.value, password.value);
     resetForm();
-    isStorgePublic.value = false;
+    isStoragePublic.value = false;
     router.push("/");
   } catch (error: any) {
     loginError.value = error.message;

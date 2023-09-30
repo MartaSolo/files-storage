@@ -2,10 +2,10 @@ import type { StoragePath } from "@/types/StoragePath";
 
 export const useStorage = () => {
   const userData = useUserData();
-  const isStorgePublic = useIsStoragePublic();
+  const isStoragePublic = useIsStoragePublic();
 
   const setStorage = (): StoragePath => {
-    if (!userData.value.id || (userData.value.id && isStorgePublic.value)) {
+    if (!userData.value.id || (userData.value.id && isStoragePublic.value)) {
       return {
         bucket: "files",
         folder: "public",
@@ -21,7 +21,7 @@ export const useStorage = () => {
   const storage = ref<StoragePath>(setStorage());
 
   const updateStorage = () => {
-    if (!userData.value.id || (userData.value.id && isStorgePublic.value)) {
+    if (!userData.value.id || (userData.value.id && isStoragePublic.value)) {
       storage.value.bucket = "files";
       storage.value.folder = "public";
     } else {
@@ -30,7 +30,7 @@ export const useStorage = () => {
     }
   };
 
-  watch(isStorgePublic, () => {
+  watch(isStoragePublic, () => {
     updateStorage();
   });
 
