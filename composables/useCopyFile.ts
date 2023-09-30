@@ -6,14 +6,19 @@ export const useCopyFile = () => {
   const copy = async (fileName: string, files: FileObject[]) => {
     const copyName = useCopyName();
     const newCopyName = copyName.copyName(fileName, files);
+    const { storage } = useStorage();
 
     const { data, error } = await client.storage
-      .from("files")
-      .copy(`public/${fileName}`, `public/${newCopyName}`);
-    if (error) {
-      throw new Error(error.message);
-    }
+      .from(storage.value.bucket)
+      .copy(
+        `${storage.value.folder}/${fileName}`,
+        `${storage.value.folder}/${newCopyName}`
+      );
+
+    if (error) throw new Error(error.message);
+
     return data;
   };
+
   return { copy };
 };
