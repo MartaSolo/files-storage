@@ -1,15 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "login-layout",
-});
-
-const router = useRouter();
-const user = useSupabaseUser();
-
-onMounted(() => {
-  if (!user.value?.id) {
-    router.push({ path: "/" });
-  }
+  middleware: "no-auth",
 });
 </script>
 
