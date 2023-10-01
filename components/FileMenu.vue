@@ -87,8 +87,12 @@ const handleCopyFile = async () => {
   isMenuOpen.value = false;
 };
 
-const handleDownloadFile = () => {
-  downloadFile.download(props.fileName);
+const handleDownloadFile = async () => {
+  try {
+    await downloadFile.download(props.fileName);
+  } catch (error: any) {
+    errorMessages.value.push(error.message);
+  }
   isMenuOpen.value = false;
 };
 
