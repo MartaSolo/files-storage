@@ -168,12 +168,10 @@ const updateList = () => {
 
 .files__list--grid {
   display: grid;
-  grid-template-rows: auto;
+  grid-template-rows: 200px;
   grid-template-columns: 1fr;
   justify-items: center;
   gap: 1.5rem;
-  @include xsmallScreen {
-  }
   @include smallScreen {
     grid-template-columns: 1fr 1fr;
   }
