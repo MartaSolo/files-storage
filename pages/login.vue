@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "login-layout",
+  middleware: "auth",
 });
 
 const EyeIcon = resolveComponent("EyeIcon");
@@ -10,7 +11,6 @@ const { validateEmail, emailError } = useValidateEmail();
 const { validatePassword, passwordError } = useValidatePassword();
 const { login } = useLoginUser();
 const isStoragePublic = useIsStoragePublic();
-const user = useSupabaseUser();
 
 const email = ref("");
 const password = ref("");
@@ -66,12 +66,6 @@ const loginUser = async () => {
     loginError.value = error.message;
   }
 };
-
-onMounted(() => {
-  if (user.value?.id) {
-    router.push({ path: "/" });
-  }
-});
 </script>
 
 <template>
