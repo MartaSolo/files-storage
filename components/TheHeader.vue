@@ -1,10 +1,10 @@
 <script setup lang="ts">
-const userData = useUserData();
+const user = useSupabaseUser();
 const isStoragePublic = useIsStoragePublic();
 const route = useRoute();
 
 const headerText = computed(() => {
-  if (!userData.value.id || (userData.value.id && isStoragePublic.value)) {
+  if (!user.value?.id || (user.value.id && isStoragePublic.value)) {
     return "Public files";
   } else {
     return "Private files";
@@ -12,7 +12,7 @@ const headerText = computed(() => {
 });
 
 const isButtonShown = computed(() => {
-  return !userData.value.id && route.matched[0].name !== "login";
+  return !user.value?.id && route.matched[0].name !== "login";
 });
 </script>
 
@@ -20,9 +20,9 @@ const isButtonShown = computed(() => {
   <header class="header">
     <h1 class="header__title">{{ headerText }}</h1>
     <nav class="header__menu">
-      <StorageSwitcher v-if="userData.id" v-model="isStoragePublic" />
+      <StorageSwitcher v-if="user?.id" v-model="isStoragePublic" />
       <BaseButton v-if="isButtonShown" label="Login" to="/login" />
-      <UserMenu v-if="userData.id" />
+      <UserMenu v-if="user?.id" />
     </nav>
   </header>
 </template>

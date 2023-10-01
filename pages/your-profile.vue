@@ -1,15 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "login-layout",
-});
-
-const router = useRouter();
-const userData = useUserData();
-
-onMounted(() => {
-  if (!userData.value.id) {
-    router.push({ path: "/" });
-  }
+  middleware: "no-auth",
 });
 </script>
 
