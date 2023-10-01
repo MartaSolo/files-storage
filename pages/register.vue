@@ -10,7 +10,7 @@ const { validateName, nameError } = useValidateName();
 const { validateEmail, emailError } = useValidateEmail();
 const { validatePassword, passwordError } = useValidatePassword();
 const { register } = useCreateUser();
-const userData = useUserData();
+const user = useSupabaseUser();
 
 const name = ref("");
 const email = ref("");
@@ -80,7 +80,7 @@ const registerUser = async () => {
 };
 
 onMounted(() => {
-  if (userData.value.id) {
+  if (user.value?.id) {
     router.push({ path: "/" });
   }
 });

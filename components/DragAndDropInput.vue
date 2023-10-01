@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 const { storage } = useStorage();
-const userData = useUserData();
+const user = useSupabaseUser();
 
 const isDragActive = ref(false);
 const errorMessages = ref<string[]>([]);
@@ -118,7 +118,7 @@ const handleKeydown = (e: KeyboardEvent) => {
   }
 };
 
-watch(userData.value, resetState);
+watch(user, resetState);
 </script>
 
 <template>

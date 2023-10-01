@@ -10,7 +10,7 @@ const { validateEmail, emailError } = useValidateEmail();
 const { validatePassword, passwordError } = useValidatePassword();
 const { login } = useLoginUser();
 const isStoragePublic = useIsStoragePublic();
-const userData = useUserData();
+const user = useSupabaseUser();
 
 const email = ref("");
 const password = ref("");
@@ -68,7 +68,7 @@ const loginUser = async () => {
 };
 
 onMounted(() => {
-  if (userData.value.id) {
+  if (user.value?.id) {
     router.push({ path: "/" });
   }
 });

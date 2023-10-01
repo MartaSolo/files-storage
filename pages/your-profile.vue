@@ -4,10 +4,10 @@ definePageMeta({
 });
 
 const router = useRouter();
-const userData = useUserData();
+const user = useSupabaseUser();
 
 onMounted(() => {
-  if (!userData.value.id) {
+  if (!user.value?.id) {
     router.push({ path: "/" });
   }
 });
