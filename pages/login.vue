@@ -7,13 +7,15 @@ definePageMeta({
 const EyeIcon = resolveComponent("EyeIcon");
 
 const router = useRouter();
-const { validateEmail, emailError } = useValidateEmail();
-const { validatePassword, passwordError } = useValidatePassword();
+const { validateEmail, emailError, emailTouched } = useValidateEmail();
+const { validatePassword, passwordError, passwordTouched } =
+  useValidatePassword();
 const { login } = useLoginUser();
 const isStoragePublic = useIsStoragePublic();
 
 const email = ref("");
 const password = ref("");
+
 const passwordInputType = ref("password");
 const loginError = ref("");
 
@@ -27,13 +29,15 @@ const isFormValid = computed(() => {
 });
 
 const handleEmailInput = () => {
-  if (emailError.value) validateEmail(email.value);
-  if (validateEmail(email.value)) emailError.value = "";
+  if (emailTouched.value && emailError.value) {
+    emailError.value = "";
+  }
 };
 
 const handlePasswordInput = () => {
-  if (passwordError.value) validatePassword(password.value);
-  if (validatePassword(password.value)) passwordError.value = "";
+  if (passwordTouched.value && passwordError.value) {
+    passwordError.value = "";
+  }
 };
 
 const validationClasses = (error: string, inputValue: string) => {

@@ -1,7 +1,10 @@
 export const useValidatePassword = () => {
-  const passwordError = ref<string>("");
+  const passwordError = ref("");
+  const passwordTouched = ref(false);
 
   const validatePassword = (password: string) => {
+    passwordTouched.value = true;
+
     const passwordRegex =
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
 
@@ -11,5 +14,5 @@ export const useValidatePassword = () => {
     return passwordRegex.test(password);
   };
 
-  return { validatePassword, passwordError };
+  return { validatePassword, passwordError, passwordTouched };
 };
