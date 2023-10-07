@@ -106,17 +106,17 @@ const loginUser = async () => {
         }}</span>
       </div>
       <div class="login__actions">
-        <BaseButton label="Cancel" theme="white" to="/" />
-        <BaseButton type="submit" label="Confirm" :disabled="!isFormValid" />
+        <BaseButton theme="white" to="">Cancel</BaseButton>
+        <BaseButton type="submit" :disabled="!isFormValid">Confirm</BaseButton>
       </div>
       <div class="login__redirect">
         <h3 class="login__redirect--title">Don't have an account yet?</h3>
         <BaseButton
-          label="Register"
           to="/register"
           class="login__redirect--link"
           theme="light-green"
-        />
+          >Register</BaseButton
+        >
       </div>
       <span v-if="loginError" class="error__message--action">{{
         loginError

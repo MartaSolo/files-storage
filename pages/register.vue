@@ -133,8 +133,8 @@ const registerUser = async () => {
         }}</span>
       </div>
       <div class="register__actions">
-        <BaseButton label="Cancel" theme="white" to="/" />
-        <BaseButton type="submit" label="Confirm" :disabled="!isFormValid" />
+        <BaseButton theme="white" to="/">Cancel</BaseButton>
+        <BaseButton type="submit" :disabled="!isFormValid">Confirm</BaseButton>
       </div>
       <span v-if="registerError" class="error__message--action">{{
         registerError
