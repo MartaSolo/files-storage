@@ -1,24 +1,16 @@
 <script setup lang="ts">
-const { isSessionLoading, retrieveSession } = useRetrieveSession();
-const getSessionError = ref("");
-
-const getSession = async () => {
-  try {
-    await retrieveSession();
-  } catch (error: any) {
-    getSessionError.value = error.message;
-  }
-};
+const { isSessionLoading, sessionError, retrieveSession } =
+  useRetrieveSession();
 
 onMounted(() => {
-  getSession();
+  retrieveSession();
 });
 </script>
 
 <template>
   <div>
     <BaseLoader v-if="isSessionLoading" />
-    <ErrorMessage v-else-if="getSessionError" :description="getSessionError" />
+    <ErrorMessage v-else-if="sessionError" :description="sessionError" />
     <NuxtLayout v-else>
       <NuxtPage />
     </NuxtLayout>
