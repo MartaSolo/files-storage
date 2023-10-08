@@ -61,7 +61,7 @@ const loginUser = async () => {
 
 <template>
   <form class="login" @submit.prevent="loginUser">
-    <h2 class="login__title">Login to have access to your private files.</h2>
+    <h1 class="login__title">Login to have access to your private files.</h1>
     <div class="login__content">
       <div class="login__inputs">
         <BaseInput

@@ -59,7 +59,7 @@ const registerUser = async () => {
   try {
     await register(name.value, email.value, password.value);
     resetForm();
-    router.push("/");
+    router.push("/success");
   } catch (error: any) {
     registerError.value = error.message;
   }
@@ -68,7 +68,7 @@ const registerUser = async () => {
 
 <template>
   <form class="register" @submit.prevent="registerUser">
-    <h2 class="register__title">Register and create your private storage.</h2>
+    <h1 class="register__title">Register and create your private storage.</h1>
     <div class="register__content">
       <div class="register__inputs">
         <BaseInput
