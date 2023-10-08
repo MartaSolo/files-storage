@@ -98,7 +98,7 @@ const registerUser = async () => {
           @input="handleNameInput"
           @blur="validateName(name)"
         />
-        <span v-if="nameError" class="error__message">{{ nameError }}</span>
+        <span v-if="nameError" class="register__error">{{ nameError }}</span>
         <BaseInput
           v-model.trim="email"
           name="email"
@@ -108,7 +108,7 @@ const registerUser = async () => {
           @input="handleEmailInput"
           @blur="validateEmail(email)"
         />
-        <span v-if="emailError" class="error__message">{{ emailError }}</span>
+        <span v-if="emailError" class="register__error">{{ emailError }}</span>
         <BaseAccordion
           title="Password hint"
           content="Password must consist of 8 to 15 characters and contain at least one
@@ -132,7 +132,7 @@ const registerUser = async () => {
             <EyeIcon />
           </button>
         </BaseInput>
-        <span v-if="passwordError" class="error__message">{{
+        <span v-if="passwordError" class="register__error">{{
           passwordError
         }}</span>
       </div>
@@ -140,7 +140,7 @@ const registerUser = async () => {
         <BaseButton theme="white" to="/">Cancel</BaseButton>
         <BaseButton type="submit" :disabled="!isFormValid">Confirm</BaseButton>
       </div>
-      <span v-if="registerError" class="error__message--action">{{
+      <span v-if="registerError" class="register__error--action">{{
         registerError
       }}</span>
     </div>
@@ -204,14 +204,14 @@ const registerUser = async () => {
   width: 100%;
 }
 
-.error__message {
+.register__error {
   font-size: 0.8rem;
   color: $text-color-error;
   display: block;
   padding-bottom: 0.6rem;
 }
 
-.error__message--action {
+.register__error--action {
   font-size: 1.3rem;
   color: $text-color-error;
   display: block;
