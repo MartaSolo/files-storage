@@ -156,6 +156,10 @@ const loginUser = async () => {
   padding-bottom: 2rem;
 }
 
+.login__password {
+  position: relative;
+}
+
 .login__password--button {
   border-radius: 8px;
   position: absolute;
@@ -177,6 +181,7 @@ const loginUser = async () => {
 .login__redirect {
   padding: 2rem 0;
 }
+
 .login__redirect--title {
   font-size: 1.5rem;
   padding-bottom: 1rem;
@@ -201,26 +206,5 @@ const loginUser = async () => {
   display: block;
   text-align: center;
   padding-bottom: 0.6rem;
-}
-</style>
-
-<style lang="scss">
-.login__email.input__input,
-.login__password.input__input {
-  width: 100%;
-}
-
-.error.login__email.input__input,
-.error.login__password.input__input {
-  border: 1px solid $text-color-error;
-}
-
-.success.login__email.input__input,
-.success.login__password.input__input {
-  border: 1px solid $text-color-success;
-}
-
-.login__password {
-  position: relative;
 }
 </style>

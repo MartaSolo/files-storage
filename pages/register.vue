@@ -170,8 +170,7 @@ const registerUser = async () => {
 
 .register__name,
 .register__email,
-.register__password,
-.register__bucket {
+.register__password {
   flex-direction: column;
   align-items: flex-start;
   padding-bottom: 2rem;
@@ -179,9 +178,12 @@ const registerUser = async () => {
 
 .error.register__name,
 .error.register__email,
-.error.register__password,
-.error.register__bucket {
+.error.register__password {
   padding-bottom: 0.2rem;
+}
+
+.register__password {
+  position: relative;
 }
 
 .register__actions {
@@ -230,32 +232,5 @@ const registerUser = async () => {
   position: absolute;
   right: 7px;
   top: 32px;
-}
-</style>
-
-<style lang="scss">
-.register__name.input__input,
-.register__email.input__input,
-.register__password.input__input,
-.register__bucket.input__input {
-  width: 100%;
-}
-
-.error.register__name.input__input,
-.error.register__email.input__input,
-.error.register__password.input__input,
-.error.register__bucket.input__input {
-  border: 1px solid $text-color-error;
-}
-
-.success.register__name.input__input,
-.success.register__email.input__input,
-.success.register__password.input__input,
-.success.register__bucket.input__input {
-  border: 1px solid $text-color-success;
-}
-
-.register__password {
-  position: relative;
 }
 </style>
