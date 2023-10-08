@@ -86,7 +86,7 @@ const loginUser = async () => {
           @input="handleEmailInput"
           @blur="validateEmail(email)"
         />
-        <span v-if="emailError" class="error__message">{{ emailError }}</span>
+        <span v-if="emailError" class="login__error">{{ emailError }}</span>
         <BaseInput
           v-model.trim="password"
           :type="passwordInputType"
@@ -105,7 +105,7 @@ const loginUser = async () => {
             <EyeIcon />
           </button>
         </BaseInput>
-        <span v-if="passwordError" class="error__message">{{
+        <span v-if="passwordError" class="login__error">{{
           passwordError
         }}</span>
       </div>
@@ -122,7 +122,7 @@ const loginUser = async () => {
           >Register</BaseButton
         >
       </div>
-      <span v-if="loginError" class="error__message--action">{{
+      <span v-if="loginError" class="login__error--action">{{
         loginError
       }}</span>
     </div>
@@ -188,13 +188,14 @@ const loginUser = async () => {
   width: 100%;
 }
 
-.error__message {
+.login__error {
   font-size: 0.8rem;
   color: $text-color-error;
   display: block;
   padding-bottom: 0.6rem;
 }
-.error__message--action {
+
+.login__error--action {
   font-size: 1.3rem;
   color: $text-color-error;
   display: block;
