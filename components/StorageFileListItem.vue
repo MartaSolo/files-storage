@@ -17,8 +17,6 @@ const emit = defineEmits<{
 const { storage } = useStorage();
 
 const layoutType = useLayoutType();
-const getPublicUrl = useRetrievePublicFileUrl(props.file.name);
-// const getPrivateUrl = useRetrievePrivateFileUrl(props.file.name);
 const selectedFiles = useSelectedFiles();
 const sortType = useSortType(props.file);
 
@@ -27,8 +25,8 @@ const previewUrl = computed(() => {
     const getPrivateUrl = useRetrievePrivateFileUrl(props.file.name);
     return getPrivateUrl.privateUrl.value;
   } else {
-    // const getPublicUrl = useRetrievePublicFileUrl(props.file.name);
-    return getPublicUrl.url.value?.publicUrl;
+    const getPublicUrl = useRetrievePublicFileUrl(props.file.name);
+    return getPublicUrl.url;
   }
 });
 

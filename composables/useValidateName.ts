@@ -1,7 +1,10 @@
 export const useValidateName = () => {
-  const nameError = ref<string>("");
+  const nameError = ref("");
+  const nameTouched = ref(false);
 
   const validateName = (name: string) => {
+    nameTouched.value = true;
+
     const nameRegex = /^(?!.* .* )[a-zA-Z ]{2,25}$/;
     if (!nameRegex.test(name)) {
       nameError.value =
@@ -10,5 +13,11 @@ export const useValidateName = () => {
     return nameRegex.test(name);
   };
 
-  return { validateName, nameError };
+  const handleNameInput = () => {
+    if (nameTouched.value && nameError.value) {
+      nameError.value = "";
+    }
+  };
+
+  return { validateName, handleNameInput, nameError };
 };

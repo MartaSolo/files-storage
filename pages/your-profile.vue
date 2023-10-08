@@ -10,7 +10,7 @@ definePageMeta({
     <div class="profile__content">
       <div>your profile - coming soon...</div>
       <div>
-        <BaseButton label="Go to your private storage" to="/" />
+        <BaseButton to="/">Go to your private storage</BaseButton>
       </div>
     </div>
   </section>

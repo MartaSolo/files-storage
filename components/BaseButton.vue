@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    label: string;
     theme?: "white" | "green" | "light-green";
     to?: string | null;
   }>(),
@@ -21,9 +20,9 @@ const component = computed(() => {
 </script>
 
 <template>
-  <component :is="component" :to="to" :class="computedClass">{{
-    label
-  }}</component>
+  <component :is="component" :to="to" :class="computedClass">
+    <slot></slot
+  ></component>
 </template>
 
 <style lang="scss" scoped>

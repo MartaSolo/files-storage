@@ -4,11 +4,12 @@ export const useRetrieveSession = () => {
   const isStoragePublic = useIsStoragePublic();
 
   const isSessionLoading = ref(true);
+  const sessionError = ref("");
 
   const retrieveSession = async () => {
     const { data, error } = await client.auth.getSession();
     if (error) {
-      throw new Error(error.message);
+      sessionError.value = error.message;
     } else {
       isStoragePublic.value = false;
       isSessionLoading.value = false;
@@ -16,5 +17,5 @@ export const useRetrieveSession = () => {
     return data;
   };
 
-  return { isSessionLoading, retrieveSession };
+  return { isSessionLoading, sessionError, retrieveSession };
 };

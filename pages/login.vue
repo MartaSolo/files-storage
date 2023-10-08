@@ -7,8 +7,9 @@ definePageMeta({
 const EyeIcon = resolveComponent("EyeIcon");
 
 const router = useRouter();
-const { validateEmail, emailError } = useValidateEmail();
-const { validatePassword, passwordError } = useValidatePassword();
+const { validateEmail, handleEmailInput, emailError } = useValidateEmail();
+const { validatePassword, handlePasswordInput, passwordError } =
+  useValidatePassword();
 const { login } = useLoginUser();
 const isStoragePublic = useIsStoragePublic();
 
@@ -25,16 +26,6 @@ const isFormValid = computed(() => {
     !passwordError.value
   );
 });
-
-const handleEmailInput = () => {
-  if (emailError.value) validateEmail(email.value);
-  if (validateEmail(email.value)) emailError.value = "";
-};
-
-const handlePasswordInput = () => {
-  if (passwordError.value) validatePassword(password.value);
-  if (validatePassword(password.value)) passwordError.value = "";
-};
 
 const validationClasses = (error: string, inputValue: string) => {
   return [error ? "error" : "", inputValue && !error ? "success" : ""];
@@ -70,7 +61,7 @@ const loginUser = async () => {
 
 <template>
   <form class="login" @submit.prevent="loginUser">
-    <h2 class="login__title">Login to have access to your private files.</h2>
+    <h1 class="login__title">Login to have access to your private files.</h1>
     <div class="login__content">
       <div class="login__inputs">
         <BaseInput
@@ -82,7 +73,7 @@ const loginUser = async () => {
           @input="handleEmailInput"
           @blur="validateEmail(email)"
         />
-        <span v-if="emailError" class="error__message">{{ emailError }}</span>
+        <span v-if="emailError" class="login__error">{{ emailError }}</span>
         <BaseInput
           v-model.trim="password"
           :type="passwordInputType"
@@ -101,24 +92,24 @@ const loginUser = async () => {
             <EyeIcon />
           </button>
         </BaseInput>
-        <span v-if="passwordError" class="error__message">{{
+        <span v-if="passwordError" class="login__error">{{
           passwordError
         }}</span>
       </div>
       <div class="login__actions">
-        <BaseButton label="Cancel" theme="white" to="/" />
-        <BaseButton type="submit" label="Confirm" :disabled="!isFormValid" />
+        <BaseButton theme="white" to="">Cancel</BaseButton>
+        <BaseButton type="submit" :disabled="!isFormValid">Confirm</BaseButton>
       </div>
       <div class="login__redirect">
         <h3 class="login__redirect--title">Don't have an account yet?</h3>
         <BaseButton
-          label="Register"
           to="/register"
           class="login__redirect--link"
           theme="light-green"
-        />
+          >Register</BaseButton
+        >
       </div>
-      <span v-if="loginError" class="error__message--action">{{
+      <span v-if="loginError" class="login__error--action">{{
         loginError
       }}</span>
     </div>
@@ -152,6 +143,10 @@ const loginUser = async () => {
   padding-bottom: 2rem;
 }
 
+.login__password {
+  position: relative;
+}
+
 .login__password--button {
   border-radius: 8px;
   position: absolute;
@@ -173,6 +168,7 @@ const loginUser = async () => {
 .login__redirect {
   padding: 2rem 0;
 }
+
 .login__redirect--title {
   font-size: 1.5rem;
   padding-bottom: 1rem;
@@ -184,38 +180,18 @@ const loginUser = async () => {
   width: 100%;
 }
 
-.error__message {
+.login__error {
   font-size: 0.8rem;
   color: $text-color-error;
   display: block;
   padding-bottom: 0.6rem;
 }
-.error__message--action {
+
+.login__error--action {
   font-size: 1.3rem;
   color: $text-color-error;
   display: block;
   text-align: center;
   padding-bottom: 0.6rem;
-}
-</style>
-
-<style lang="scss">
-.login__email.input__input,
-.login__password.input__input {
-  width: 100%;
-}
-
-.error.login__email.input__input,
-.error.login__password.input__input {
-  border: 1px solid $text-color-error;
-}
-
-.success.login__email.input__input,
-.success.login__password.input__input {
-  border: 1px solid $text-color-success;
-}
-
-.login__password {
-  position: relative;
 }
 </style>

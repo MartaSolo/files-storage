@@ -21,7 +21,7 @@ const isButtonShown = computed(() => {
     <h1 class="header__title">{{ headerText }}</h1>
     <nav class="header__menu">
       <StorageSwitcher v-if="user?.id" v-model="isStoragePublic" />
-      <BaseButton v-if="isButtonShown" label="Login" to="/login" />
+      <BaseButton v-if="isButtonShown" to="/login">Login</BaseButton>
       <UserMenu v-if="user?.id" />
     </nav>
   </header>

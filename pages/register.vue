@@ -7,9 +7,10 @@ definePageMeta({
 const EyeIcon = resolveComponent("EyeIcon");
 
 const router = useRouter();
-const { validateName, nameError } = useValidateName();
-const { validateEmail, emailError } = useValidateEmail();
-const { validatePassword, passwordError } = useValidatePassword();
+const { validateName, handleNameInput, nameError } = useValidateName();
+const { validateEmail, handleEmailInput, emailError } = useValidateEmail();
+const { validatePassword, handlePasswordInput, passwordError } =
+  useValidatePassword();
 const { register } = useCreateUser();
 
 const name = ref("");
@@ -28,21 +29,6 @@ const isFormValid = computed(() => {
     !passwordError.value
   );
 });
-
-const handleNameInput = () => {
-  if (nameError.value) validateName(name.value);
-  if (validateName(name.value)) nameError.value = "";
-};
-
-const handleEmailInput = () => {
-  if (emailError.value) validateEmail(email.value);
-  if (validateEmail(email.value)) emailError.value = "";
-};
-
-const handlePasswordInput = () => {
-  if (passwordError.value) validatePassword(password.value);
-  if (validatePassword(password.value)) passwordError.value = "";
-};
 
 const validationClasses = (error: string, inputValue: string) => {
   return [error ? "error" : "", inputValue && !error ? "success" : ""];
@@ -73,7 +59,7 @@ const registerUser = async () => {
   try {
     await register(name.value, email.value, password.value);
     resetForm();
-    router.push("/");
+    router.push("/success");
   } catch (error: any) {
     registerError.value = error.message;
   }
@@ -82,7 +68,7 @@ const registerUser = async () => {
 
 <template>
   <form class="register" @submit.prevent="registerUser">
-    <h2 class="register__title">Register and create your private storage.</h2>
+    <h1 class="register__title">Register and create your private storage.</h1>
     <div class="register__content">
       <div class="register__inputs">
         <BaseInput
@@ -94,7 +80,7 @@ const registerUser = async () => {
           @input="handleNameInput"
           @blur="validateName(name)"
         />
-        <span v-if="nameError" class="error__message">{{ nameError }}</span>
+        <span v-if="nameError" class="register__error">{{ nameError }}</span>
         <BaseInput
           v-model.trim="email"
           name="email"
@@ -104,7 +90,7 @@ const registerUser = async () => {
           @input="handleEmailInput"
           @blur="validateEmail(email)"
         />
-        <span v-if="emailError" class="error__message">{{ emailError }}</span>
+        <span v-if="emailError" class="register__error">{{ emailError }}</span>
         <BaseAccordion
           title="Password hint"
           content="Password must consist of 8 to 15 characters and contain at least one
@@ -128,15 +114,15 @@ const registerUser = async () => {
             <EyeIcon />
           </button>
         </BaseInput>
-        <span v-if="passwordError" class="error__message">{{
+        <span v-if="passwordError" class="register__error">{{
           passwordError
         }}</span>
       </div>
       <div class="register__actions">
-        <BaseButton label="Cancel" theme="white" to="/" />
-        <BaseButton type="submit" label="Confirm" :disabled="!isFormValid" />
+        <BaseButton theme="white" to="/">Cancel</BaseButton>
+        <BaseButton type="submit" :disabled="!isFormValid">Confirm</BaseButton>
       </div>
-      <span v-if="registerError" class="error__message--action">{{
+      <span v-if="registerError" class="register__error--action">{{
         registerError
       }}</span>
     </div>
@@ -166,8 +152,7 @@ const registerUser = async () => {
 
 .register__name,
 .register__email,
-.register__password,
-.register__bucket {
+.register__password {
   flex-direction: column;
   align-items: flex-start;
   padding-bottom: 2rem;
@@ -175,9 +160,12 @@ const registerUser = async () => {
 
 .error.register__name,
 .error.register__email,
-.error.register__password,
-.error.register__bucket {
+.error.register__password {
   padding-bottom: 0.2rem;
+}
+
+.register__password {
+  position: relative;
 }
 
 .register__actions {
@@ -200,14 +188,14 @@ const registerUser = async () => {
   width: 100%;
 }
 
-.error__message {
+.register__error {
   font-size: 0.8rem;
   color: $text-color-error;
   display: block;
   padding-bottom: 0.6rem;
 }
 
-.error__message--action {
+.register__error--action {
   font-size: 1.3rem;
   color: $text-color-error;
   display: block;
@@ -226,32 +214,5 @@ const registerUser = async () => {
   position: absolute;
   right: 7px;
   top: 32px;
-}
-</style>
-
-<style lang="scss">
-.register__name.input__input,
-.register__email.input__input,
-.register__password.input__input,
-.register__bucket.input__input {
-  width: 100%;
-}
-
-.error.register__name.input__input,
-.error.register__email.input__input,
-.error.register__password.input__input,
-.error.register__bucket.input__input {
-  border: 1px solid $text-color-error;
-}
-
-.success.register__name.input__input,
-.success.register__email.input__input,
-.success.register__password.input__input,
-.success.register__bucket.input__input {
-  border: 1px solid $text-color-success;
-}
-
-.register__password {
-  position: relative;
 }
 </style>

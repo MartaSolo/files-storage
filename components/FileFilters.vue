@@ -184,16 +184,12 @@ watch(storage.value, () => {
           <TimeCreatedDatepicker v-else v-model="publicFilters.dates" />
         </div>
         <div class="actions">
-          <BaseButton
-            theme="white"
-            label="Clear filters"
-            @click="handleClear"
-          />
-          <BaseButton
-            label="Confirm"
-            :disabled="!isDateValid"
-            @click="handleConfirm"
-          />
+          <BaseButton theme="white" @click="handleClear"
+            >Clear filters</BaseButton
+          >
+          <BaseButton :disabled="!isDateValid" @click="handleConfirm"
+            >Confirm</BaseButton
+          >
         </div>
       </div>
     </Transition>
