@@ -13,5 +13,11 @@ export const useValidateName = () => {
     return nameRegex.test(name);
   };
 
-  return { validateName, nameError, nameTouched };
+  const handleNameInput = () => {
+    if (nameTouched.value && nameError.value) {
+      nameError.value = "";
+    }
+  };
+
+  return { validateName, handleNameInput, nameError };
 };

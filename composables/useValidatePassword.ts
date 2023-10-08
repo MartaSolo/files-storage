@@ -14,5 +14,15 @@ export const useValidatePassword = () => {
     return passwordRegex.test(password);
   };
 
-  return { validatePassword, passwordError, passwordTouched };
+  const handlePasswordInput = () => {
+    if (passwordTouched.value && passwordError.value) {
+      passwordError.value = "";
+    }
+  };
+
+  return {
+    validatePassword,
+    handlePasswordInput,
+    passwordError,
+  };
 };

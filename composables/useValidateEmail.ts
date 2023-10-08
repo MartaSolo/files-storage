@@ -14,5 +14,11 @@ export const useValidateEmail = () => {
     return emailRegex.test(email);
   };
 
-  return { validateEmail, emailError, emailTouched };
+  const handleEmailInput = () => {
+    if (emailTouched.value && emailError.value) {
+      emailError.value = "";
+    }
+  };
+
+  return { validateEmail, handleEmailInput, emailError };
 };
