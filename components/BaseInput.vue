@@ -4,9 +4,11 @@ const props = withDefaults(
     name: string;
     label?: string;
     modelValue: string | number;
+    placeholder?: string;
   }>(),
   {
     label: "",
+    placeholder: "",
   }
 );
 
@@ -28,6 +30,7 @@ const onInput = (e: Event) => {
       v-bind="$attrs"
       class="input__input"
       :value="modelValue"
+      :placeholder="placeholder"
       @input="onInput"
     />
     <slot />
