@@ -88,13 +88,13 @@ const onUpdateName = async (name: string) => {
 const onUpdateEmail = async (email: string) => {
   resetFormMessages();
   await updateEmail(email);
-  if (!updateUserError.value) editName.value = false;
+  if (!updateUserError.value) editEmail.value = false;
 };
 
 const onUpdatePassword = async (password: string) => {
   resetFormMessages();
   await updatePassword(password);
-  if (!updateUserError.value) editName.value = false;
+  if (!updateUserError.value) editPassword.value = false;
 };
 </script>
 
@@ -109,6 +109,7 @@ const onUpdatePassword = async (password: string) => {
         <IconButton
           description="Edit name"
           theme="white"
+          type="button"
           @click="toggleEditName"
         >
           <template #icon>
@@ -132,12 +133,14 @@ const onUpdatePassword = async (password: string) => {
             <BaseButton
               class="profile__info--button"
               theme="white"
+              type="button"
               @click="hideNameInput"
               >Cancel</BaseButton
             >
             <BaseButton
               class="profile__info--button"
               theme="light-green"
+              type="button"
               @click="onUpdateName(newName)"
               >Update</BaseButton
             >
@@ -152,6 +155,7 @@ const onUpdatePassword = async (password: string) => {
         <IconButton
           description="Edit email"
           theme="white"
+          type="button"
           @click="toggleEditEmail"
         >
           <template #icon>
@@ -175,12 +179,14 @@ const onUpdatePassword = async (password: string) => {
             <BaseButton
               class="profile__info--button"
               theme="white"
+              type="button"
               @click="hideEmailInput"
               >Cancel</BaseButton
             >
             <BaseButton
               class="profile__info--button"
               theme="light-green"
+              type="button"
               @click="onUpdateEmail(newEmail)"
               >Update</BaseButton
             >
@@ -195,6 +201,7 @@ const onUpdatePassword = async (password: string) => {
         <IconButton
           description="Edit email"
           theme="white"
+          type="button"
           @click="toggleEditPassword"
         >
           <template #icon>
@@ -232,12 +239,14 @@ const onUpdatePassword = async (password: string) => {
             <BaseButton
               class="profile__info--button"
               theme="white"
+              type="button"
               @click="hidePasswordInput"
               >Cancel</BaseButton
             >
             <BaseButton
               class="profile__info--button"
               theme="light-green"
+              type="button"
               @click="onUpdatePassword(newPassword)"
               >Update</BaseButton
             >
@@ -246,12 +255,12 @@ const onUpdatePassword = async (password: string) => {
       </Transition>
     </div>
     <div class="profile__update">
-      <span v-if="updateUserError" class="profile__update--error">{{
+      <BaseNotification v-if="updateUserError" theme="error">{{
         updateUserError
-      }}</span>
-      <span v-if="updateUserSuccess" class="profile__update--success">{{
+      }}</BaseNotification>
+      <BaseNotification v-if="updateUserSuccess" theme="success">{{
         updateUserSuccess
-      }}</span>
+      }}</BaseNotification>
     </div>
   </form>
 </template>
@@ -316,22 +325,6 @@ const onUpdatePassword = async (password: string) => {
   line-height: 1.2;
   display: block;
   padding: 0.2rem 0.6rem 0.3rem 0.5rem;
-}
-
-.profile__update--error,
-.profile__update--success {
-  font-size: 1rem;
-  line-height: 1.2;
-  display: block;
-  padding: 0.2rem 0.6rem 0.3rem 0.5rem;
-}
-
-.profile__update--error {
-  color: $text-color-error;
-}
-
-.profile__update--success {
-  color: $text-color-success;
 }
 
 .profile__photo {

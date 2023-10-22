@@ -10,7 +10,7 @@ definePageMeta({
     <h1 class="profile__title">Your personal information</h1>
     <div class="profile__content">
       <ProfileUpdateForm />
-      <div class="profile__photo">Profile photo</div>
+      <ProfileUploadPhoto />
     </div>
     <!-- <BaseButton to="/">Go to your private storage</BaseButton> -->
   </section>
@@ -39,10 +39,10 @@ definePageMeta({
   }
 }
 
-.profile__photo {
-  background-color: palegreen;
-  @include mediumScreen {
-    flex-basis: 50%;
-  }
-}
+// .profile__photo {
+//   background-color: palegreen;
+//   @include mediumScreen {
+//     flex-basis: 50%;
+//   }
+// }
 </style>
