@@ -1,5 +1,5 @@
 export const useCopyLink = (fileName: string) => {
-  const getUrl = useRetrievePublicUrl(fileName);
+  const getUrl = useRetrievePublicFileUrl(fileName);
 
   const copy = async () => {
     const link = await getUrl.url.value?.publicUrl;

@@ -13,3 +13,6 @@ export const useLayoutType = () =>
 
 export const useSelectedFiles = () =>
   useState<string[]>("selected-files", () => []);
+
+export const useIsStoragePublic = () =>
+  useState("is-storage-public", () => true);

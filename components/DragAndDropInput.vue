@@ -6,6 +6,9 @@ const props = defineProps<{
   maxFileSizeMB: number;
 }>();
 
+const { storage } = useStorage();
+const user = useSupabaseUser();
+
 const isDragActive = ref(false);
 const errorMessages = ref<string[]>([]);
 const uploadedFiles = ref<string[]>([]);
@@ -47,8 +50,8 @@ const numberOfFilesExceeded = (
 
 const uploadFileToSupabase = async (file: File) => {
   const { error } = await client.storage
-    .from("files")
-    .upload(`public/${file.name}`, file);
+    .from(storage.value.bucket)
+    .upload(`${storage.value.folder}/${file.name}`, file);
   if (error) {
     errorMessages.value.push(`Error: ${error?.message}`);
     notUploadedFiles.value.push(file.name);
@@ -114,6 +117,8 @@ const handleKeydown = (e: KeyboardEvent) => {
     input?.click();
   }
 };
+
+watch(user, resetState);
 </script>
 
 <template>

@@ -1,21 +1,28 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    label: string;
-    theme?: "white" | "green";
+    theme?: "white" | "green" | "light-green";
+    to?: string | null;
   }>(),
   {
     theme: "green",
+    to: null,
   }
 );
 
 const computedClass = computed(() => {
   return ["button", `button--${props.theme}`];
 });
+
+const component = computed(() => {
+  return props.to ? resolveComponent("NuxtLink") : "button";
+});
 </script>
 
 <template>
-  <button :class="computedClass">{{ label }}</button>
+  <component :is="component" :to="to" :class="computedClass">
+    <slot></slot
+  ></component>
 </template>
 
 <style lang="scss" scoped>
@@ -40,6 +47,13 @@ const computedClass = computed(() => {
   color: $color-white;
   &:hover {
     background-color: $color-green-dark-hover;
+  }
+}
+.button--light-green {
+  background-color: $color-green-light;
+  color: $color-green-dark;
+  &:hover {
+    background-color: $color-green-light-hover;
   }
 }
 .button:disabled {

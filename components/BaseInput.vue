@@ -44,6 +44,7 @@ const onInput = (e: Event) => {
 .input__label {
   padding-right: 0.5rem;
 }
+
 .input__input {
   border: 1px solid $color-grey-light;
   border-radius: 8px;
@@ -53,5 +54,21 @@ const onInput = (e: Event) => {
 
 .input__input[type="number"] {
   width: 80%;
+}
+
+.login__email.input__input,
+.login__password.input__input,
+.register__name.input__input,
+.register__email.input__input,
+.register__password.input__input {
+  width: 100%;
+}
+
+.error.input__input {
+  border: 1px solid $text-color-error;
+}
+
+.success.input__input {
+  border: 1px solid $text-color-success;
 }
 </style>

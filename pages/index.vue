@@ -9,5 +9,3 @@ import { MAX_FILES_NUMBER } from "@/utils/constants/maxFilesNumber";
     :max-files-number="MAX_FILES_NUMBER"
   />
 </template>
-
-<style lang="css" scoped></style>

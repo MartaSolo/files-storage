@@ -14,13 +14,20 @@ const emit = defineEmits<{
   (e: "updateFileList"): void;
 }>();
 
+const { storage } = useStorage();
+
 const layoutType = useLayoutType();
-const getUrl = useRetrievePublicUrl(props.file.name);
 const selectedFiles = useSelectedFiles();
 const sortType = useSortType(props.file);
 
 const previewUrl = computed(() => {
-  return getUrl.url.value?.publicUrl;
+  if (storage.value.bucket === "private") {
+    const getPrivateUrl = useRetrievePrivateFileUrl(props.file.name);
+    return getPrivateUrl.privateUrl.value;
+  } else {
+    const getPublicUrl = useRetrievePublicFileUrl(props.file.name);
+    return getPublicUrl.url;
+  }
 });
 
 const fileName = computed(() => {
