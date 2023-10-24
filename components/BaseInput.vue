@@ -50,18 +50,11 @@ const onInput = (e: Event) => {
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   flex-grow: 2;
+  width: 100%;
 }
 
 .input__input[type="number"] {
   width: 80%;
-}
-
-.login__email.input__input,
-.login__password.input__input,
-.register__name.input__input,
-.register__email.input__input,
-.register__password.input__input {
-  width: 100%;
 }
 
 .error.input__input {
