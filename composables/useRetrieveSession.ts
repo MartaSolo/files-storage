@@ -12,8 +12,8 @@ export const useRetrieveSession = () => {
       sessionError.value = error.message;
     } else {
       isStoragePublic.value = false;
-      isSessionLoading.value = false;
     }
+    isSessionLoading.value = false;
     return data;
   };
 
