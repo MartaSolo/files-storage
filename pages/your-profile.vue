@@ -1,7 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "login-layout",
-  // middleware: "no-auth",
+  middleware: "no-auth",
+});
+
+onMounted(() => {
+  const isStoragePublic = useIsStoragePublic();
+  isStoragePublic.value = false;
 });
 </script>
 
@@ -12,7 +17,11 @@ definePageMeta({
       <ProfileUpdateForm />
       <ProfileUploadPhoto />
     </div>
-    <!-- <BaseButton to="/">Go to your private storage</BaseButton> -->
+    <div class="profile__action">
+      <BaseButton theme="light-green" to="/all-files"
+        >Go to your private storage</BaseButton
+      >
+    </div>
   </section>
 </template>
 
@@ -21,6 +30,8 @@ definePageMeta({
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .profile__title {
@@ -39,10 +50,10 @@ definePageMeta({
   }
 }
 
-// .profile__photo {
-//   background-color: palegreen;
-//   @include mediumScreen {
-//     flex-basis: 50%;
-//   }
-// }
+.profile__action {
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem 0;
+  align-self: center;
+}
 </style>
