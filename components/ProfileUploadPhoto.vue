@@ -1,28 +1,38 @@
 <script setup lang="ts">
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 
-const profileImageSource = useProfileImageSource();
-
-const imageSource = computed(() => {
-  return profileImageSource.value || "_nuxt/assets/img/avatar.png";
-});
-
 const {
   isDragActive,
   errorMessages,
-  uploadedFiles,
-  notUploadedFiles,
   root,
   handleDrag,
   handleDrop,
   handleKeydown,
   resetState,
   handleUpload,
+  uploadedFiles,
 } = useDragAndDrop(MAX_FILE_SIZE_MB, 1);
+
+const { upsertProfileImage, checkProfileImage, profileImageError } =
+  useProfileImage();
+
+const profileImageSource = useProfileImageSource();
+
+watch(
+  uploadedFiles,
+  () => {
+    upsertProfileImage(uploadedFiles.value[0]);
+  },
+  { deep: true }
+);
+
+onMounted(() => {
+  checkProfileImage();
+});
 </script>
 
 <template>
-  <section class="profile__photo">
+  <section ref="root" class="profile__photo">
     <span class="profile__photo--name">Photo</span>
     <div
       class="profile__photo--dropzone"
@@ -38,7 +48,7 @@ const {
       </p>
       <img
         class="profile__photo--image"
-        :src="imageSource"
+        :src="profileImageSource"
         width="400"
         height="400"
       />
@@ -75,6 +85,9 @@ const {
         >{{ error }}</BaseNotification
       >
     </template>
+    <BaseNotification v-if="profileImageError" theme="error">{{
+      profileImageError
+    }}</BaseNotification>
   </section>
 </template>
 
@@ -99,8 +112,10 @@ const {
 
 .profile__photo--dropzone {
   border: 4px dashed $color-grey-light;
-  height: 400px;
-  width: 400px;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -114,6 +129,9 @@ const {
   margin-bottom: 1rem;
   position: relative;
   z-index: 9999;
+  @include mediumScreen {
+    max-width: 400px;
+  }
 }
 
 .profile__photo__dropzone--active {
@@ -123,8 +141,8 @@ const {
 .profile__photo--image {
   border-radius: 50%;
   object-fit: cover;
-  height: 400px;
-  width: 400px;
+  height: 100%;
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
@@ -155,9 +173,6 @@ const {
   width: 50px;
   height: 50px;
 }
-// .file--label:hover {
-//   background-color: $color-green-dark-hover;
-// }
 
 .profile__photo__input {
   display: none;
