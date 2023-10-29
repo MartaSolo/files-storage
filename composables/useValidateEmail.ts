@@ -10,13 +10,15 @@ export const useValidateEmail = () => {
 
     if (!emailRegex.test(email)) {
       emailError.value = "Please enter valid email address";
+    } else {
+      emailError.value = "";
     }
     return emailRegex.test(email);
   };
 
-  const handleEmailInput = () => {
+  const handleEmailInput = (email: string) => {
     if (emailTouched.value && emailError.value) {
-      emailError.value = "";
+      validateEmail(email);
     }
   };
 

@@ -10,13 +10,15 @@ export const useValidatePassword = () => {
 
     if (!passwordRegex.test(password)) {
       passwordError.value = "Please enter valid password";
+    } else {
+      passwordError.value = "";
     }
     return passwordRegex.test(password);
   };
 
-  const handlePasswordInput = () => {
+  const handlePasswordInput = (password: string) => {
     if (passwordTouched.value && passwordError.value) {
-      passwordError.value = "";
+      validatePassword(password);
     }
   };
 

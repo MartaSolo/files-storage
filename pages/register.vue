@@ -77,7 +77,7 @@ const registerUser = async () => {
           label="Name"
           class="register__name"
           :class="validationClasses(nameError, name)"
-          @input="handleNameInput"
+          @input="handleNameInput(name)"
           @blur="validateName(name)"
         />
         <span v-if="nameError" class="register__error">{{ nameError }}</span>
@@ -87,7 +87,7 @@ const registerUser = async () => {
           label="Email"
           class="register__email"
           :class="validationClasses(emailError, email)"
-          @input="handleEmailInput"
+          @input="handleEmailInput(email)"
           @blur="validateEmail(email)"
         />
         <span v-if="emailError" class="register__error">{{ emailError }}</span>
@@ -104,7 +104,7 @@ const registerUser = async () => {
           label="Password"
           class="register__password"
           :class="validationClasses(passwordError, password)"
-          @input="handlePasswordInput"
+          @input="handlePasswordInput(password)"
           @blur="validatePassword(password)"
           ><button
             type="button"
