@@ -221,11 +221,6 @@ watch(storage.value, () => {
         <div class="filter">
           <p class="filter__label">Time created:</p>
           <TimeCreatedDatepicker v-model="datesModel" />
-          <!-- <TimeCreatedDatepicker
-            v-if="storage.bucket === 'private'"
-            v-model="privateFilters.dates"
-          />
-          <TimeCreatedDatepicker v-else v-model="publicFilters.dates" /> -->
         </div>
         <div class="actions">
           <BaseButton theme="white" @click="handleClear"
