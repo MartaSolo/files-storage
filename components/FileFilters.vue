@@ -14,7 +14,11 @@ const emit = defineEmits<{
 }>();
 
 const { storage } = useStorage();
-const sortTypes = useSortType(undefined, props.fileList);
+
+const fileTypes = computed(() => {
+  const { type } = useSortType(undefined, props.fileList);
+  return type;
+});
 
 const isFilterOpen = ref(false);
 
@@ -32,6 +36,71 @@ const privateFilters = reactive<FilterParams>({
   sizeMin: 0,
   sizeMax: MAX_FILE_SIZE_MB,
   dates: [],
+});
+
+const nameModel = computed({
+  get() {
+    return storage.value.bucket === "private"
+      ? privateFilters.name
+      : publicFilters.name;
+  },
+  set(newValue) {
+    return storage.value.bucket === "private"
+      ? (privateFilters.name = newValue)
+      : (publicFilters.name = newValue);
+  },
+});
+
+const typeModel = computed({
+  get() {
+    return storage.value.bucket === "private"
+      ? privateFilters.types
+      : publicFilters.types;
+  },
+  set(newValue) {
+    return storage.value.bucket === "private"
+      ? (privateFilters.types = newValue)
+      : (publicFilters.types = newValue);
+  },
+});
+
+const sizeMinModel = computed({
+  get() {
+    return storage.value.bucket === "private"
+      ? privateFilters.sizeMin
+      : publicFilters.sizeMin;
+  },
+  set(newValue) {
+    return storage.value.bucket === "private"
+      ? (privateFilters.sizeMin = newValue)
+      : (publicFilters.sizeMin = newValue);
+  },
+});
+
+const sizeMaxModel = computed({
+  get() {
+    return storage.value.bucket === "private"
+      ? privateFilters.sizeMax
+      : publicFilters.sizeMax;
+  },
+  set(newValue) {
+    return storage.value.bucket === "private"
+      ? (privateFilters.sizeMax = newValue)
+      : (publicFilters.sizeMax = newValue);
+  },
+});
+
+const datesModel = computed({
+  get() {
+    return storage.value.bucket === "private"
+      ? privateFilters.dates
+      : publicFilters.dates;
+  },
+  set(newValue) {
+    return storage.value.bucket === "private"
+      ? (privateFilters.dates = newValue)
+      : (publicFilters.dates = newValue);
+  },
 });
 
 const activeFilters = computed(() => {
@@ -125,15 +194,7 @@ watch(storage.value, () => {
       <div v-if="isFilterOpen" class="filters__selection">
         <div class="filter">
           <BaseInput
-            v-if="storage.bucket === 'private'"
-            v-model="privateFilters.name"
-            type="text"
-            label="Name includes:"
-            name="name-filter"
-          />
-          <BaseInput
-            v-else
-            v-model="publicFilters.name"
+            v-model="nameModel"
             type="text"
             label="Name includes:"
             name="name-filter"
@@ -141,33 +202,15 @@ watch(storage.value, () => {
         </div>
         <div class="filter">
           <BaseMultiselect
-            v-if="storage.bucket === 'private'"
-            v-model="privateFilters.types"
-            :file-types="sortTypes.type"
-            label="File type:"
-          />
-          <BaseMultiselect
-            v-else
-            v-model="publicFilters.types"
-            :file-types="sortTypes.type"
+            v-model="typeModel"
+            :file-types="fileTypes"
             label="File type:"
           />
         </div>
         <div class="filter">
           <BaseMinMaxSlider
-            v-if="storage.bucket === 'private'"
-            v-model:min-value="privateFilters.sizeMin"
-            v-model:max-value="privateFilters.sizeMax"
-            :min="0"
-            :max="MAX_FILE_SIZE_MB"
-            :step="0.01"
-            label="Size range:"
-            unit="MB"
-          />
-          <BaseMinMaxSlider
-            v-else
-            v-model:min-value="publicFilters.sizeMin"
-            v-model:max-value="publicFilters.sizeMax"
+            v-model:min-value="sizeMinModel"
+            v-model:max-value="sizeMaxModel"
             :min="0"
             :max="MAX_FILE_SIZE_MB"
             :step="0.01"
@@ -177,11 +220,7 @@ watch(storage.value, () => {
         </div>
         <div class="filter">
           <p class="filter__label">Time created:</p>
-          <TimeCreatedDatepicker
-            v-if="storage.bucket === 'private'"
-            v-model="privateFilters.dates"
-          />
-          <TimeCreatedDatepicker v-else v-model="publicFilters.dates" />
+          <TimeCreatedDatepicker v-model="datesModel" />
         </div>
         <div class="actions">
           <BaseButton theme="white" @click="handleClear"

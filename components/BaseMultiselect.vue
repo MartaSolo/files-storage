@@ -11,6 +11,12 @@ const props = defineProps<{
   modelValue: string[];
 }>();
 
+const types = ref<string[] | string>([]);
+
+onMounted(() => {
+  types.value = props.fileTypes;
+});
+
 const emit = defineEmits<{
   (e: "update:modelValue", modelValue: string[]): void;
 }>();
@@ -22,12 +28,12 @@ const highlightedIndex = ref(-1);
 
 const prevIndex = computed(() => {
   return highlightedIndex.value === 0
-    ? props.fileTypes.length - 1
+    ? types.value.length - 1
     : highlightedIndex.value - 1;
 });
 
 const nextIndex = computed(() => {
-  return highlightedIndex.value === props.fileTypes.length - 1
+  return highlightedIndex.value === types.value.length - 1
     ? 0
     : highlightedIndex.value + 1;
 });
@@ -80,11 +86,11 @@ const uncheckType = (sortType: string) => {
 const checkByKeyboard = (index: number) => {
   let updatedValue = [...props.modelValue];
 
-  if (index !== -1 && !updatedValue.includes(props.fileTypes[index])) {
-    updatedValue.push(props.fileTypes[index]);
+  if (index !== -1 && !updatedValue.includes(types.value[index])) {
+    updatedValue.push(types.value[index]);
   } else {
     const filteredValue = updatedValue.filter(
-      (value) => value !== props.fileTypes[index]
+      (value) => value !== types.value[index]
     );
     updatedValue = filteredValue;
   }
@@ -124,7 +130,7 @@ const checkByKeyboard = (index: number) => {
       </div>
       <ul v-if="isDropdownOpen" class="select__list" role="listbox">
         <li
-          v-for="(type, index) in fileTypes"
+          v-for="(type, index) in types"
           :key="type"
           class="select__listitem"
           :class="{
