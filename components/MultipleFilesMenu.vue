@@ -5,6 +5,7 @@ const selectedFiles = useSelectedFiles();
 const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
 const copyFile = useCopyFile();
+const { storage } = useStorage();
 
 const props = defineProps<{
   fileList: FileObject[];
@@ -85,6 +86,10 @@ const handleDeleteFiles = async () => {
   emit("filesAction");
   handleClearSelection();
 };
+
+watch(storage.value, () => {
+  selectedFiles.value = [];
+});
 </script>
 
 <template>

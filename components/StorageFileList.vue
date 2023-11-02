@@ -2,6 +2,7 @@
 import { FileObject } from "@supabase/storage-js";
 import { FilterParams } from "@/types/FilterParams";
 import { QueryParams } from "@/types/QueryParams";
+import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 
 const sortColumn = useSortColumn();
 const sortOrder = useSortOrder();
@@ -10,11 +11,11 @@ const selectedFiles = useSelectedFiles();
 const { storage } = useStorage();
 
 const filters = ref<FilterParams>({
-  name: null,
-  types: null,
-  sizeMin: null,
-  sizeMax: null,
-  dates: null,
+  name: "",
+  types: [],
+  sizeMin: 0,
+  sizeMax: MAX_FILE_SIZE_MB,
+  dates: [],
 });
 
 const computedClass = computed(() => {
@@ -168,12 +169,10 @@ const updateList = () => {
 
 .files__list--grid {
   display: grid;
-  grid-template-rows: auto;
+  grid-template-rows: 200px;
   grid-template-columns: 1fr;
   justify-items: center;
   gap: 1.5rem;
-  @include xsmallScreen {
-  }
   @include smallScreen {
     grid-template-columns: 1fr 1fr;
   }
