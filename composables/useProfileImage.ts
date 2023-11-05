@@ -1,4 +1,5 @@
 import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
+import { IGNORED_ERROR_CODE } from "~~/utils/constants/ignoredErrorCode";
 
 export const useProfileImage = () => {
   const client = useSupabaseClient();
@@ -32,7 +33,7 @@ export const useProfileImage = () => {
       .eq("id", user.value?.id)
       .single();
 
-    if (error && status !== 406) {
+    if (error && status !== IGNORED_ERROR_CODE) {
       profileImageError.value = error.message;
       profileImageName.value = "";
     }
@@ -47,7 +48,7 @@ export const useProfileImage = () => {
       .upsert({ id: user.value?.id, avatar: filename })
       .select();
 
-    if (error && status !== 406) {
+    if (error && status !== IGNORED_ERROR_CODE) {
       profileImageError.value = error.message;
       profileImageName.value = "";
     }
