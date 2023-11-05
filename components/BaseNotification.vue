@@ -1,30 +1,12 @@
 <script setup lang="ts">
-const props = defineProps<{
-  theme: "success" | "error";
-}>();
-
-const isNotificationOpen = ref(true);
-const time = ref(5000);
-
-const closeNotification = () => {
-  isNotificationOpen.value = false;
-};
-
-onMounted(() => {
-  setTimeout(() => {
-    closeNotification();
-  }, time.value);
-});
+const { theme, text, isOpen, closeNotification } = useNotification();
 </script>
 
 <template>
-  <section v-if="isNotificationOpen">
+  <section v-if="isOpen">
     <Teleport to="body">
       <Transition name="notification">
-        <div
-          class="notification__mask"
-          @keydown.esc="emit('closeNotification')"
-        >
+        <div class="notification__mask" @keydown.esc="closeNotification">
           <div class="notification__container">
             <button class="notification__button" @click="closeNotification">
               <CloseIcon />
@@ -32,10 +14,10 @@ onMounted(() => {
             <div
               :class="[
                 'notification__content',
-                `notification__content--${props.theme}`,
+                `notification__content--${theme}`,
               ]"
             >
-              <slot />
+              {{ text }}
             </div>
           </div>
         </div>
