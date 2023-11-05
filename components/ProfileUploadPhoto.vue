@@ -11,12 +11,16 @@ const {
   resetState,
   handleUpload,
   uploadedFiles,
-} = useDragAndDrop(MAX_FILE_SIZE_MB, 1);
+} = useUploadByDragAndDrop(MAX_FILE_SIZE_MB, 1);
 
 const { upsertProfileImage, checkProfileImage, profileImageError } =
   useProfileImage();
 
 const profileImageSource = useProfileImageSource();
+
+const { notify } = useNotification();
+
+const errorMessage = computed(() => errorMessages.value[0] || "");
 
 watch(
   uploadedFiles,
@@ -25,6 +29,14 @@ watch(
   },
   { deep: true }
 );
+
+watch(errorMessage, () => {
+  if (errorMessage.value) notify("error", errorMessage.value);
+});
+
+watch(profileImageError, () => {
+  notify("error", profileImageError.value);
+});
 
 onMounted(() => {
   checkProfileImage();
@@ -77,17 +89,6 @@ onMounted(() => {
         @change="handleUpload"
       />
     </label>
-    <template v-if="errorMessages.length">
-      <BaseNotification
-        v-for="error in errorMessages"
-        :key="error"
-        theme="error"
-        >{{ error }}</BaseNotification
-      >
-    </template>
-    <BaseNotification v-if="profileImageError" theme="error">{{
-      profileImageError
-    }}</BaseNotification>
   </section>
 </template>
 
