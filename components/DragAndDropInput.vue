@@ -15,7 +15,7 @@ const {
   handleKeydown,
   resetState,
   handleUpload,
-} = useDragAndDrop(props.maxFileSizeMB, props.maxFilesNumber);
+} = useUploadByDragAndDrop(props.maxFileSizeMB, props.maxFilesNumber);
 </script>
 
 <template>
