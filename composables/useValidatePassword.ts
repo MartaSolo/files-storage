@@ -1,3 +1,5 @@
+import { validation } from "@/utils/constants/validation";
+
 export const useValidatePassword = () => {
   const passwordError = ref("");
   const passwordTouched = ref(false);
@@ -5,15 +7,12 @@ export const useValidatePassword = () => {
   const validatePassword = (password: string) => {
     passwordTouched.value = true;
 
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
-
-    if (!passwordRegex.test(password)) {
-      passwordError.value = "Please enter valid password";
+    if (!validation.passwordRegex.test(password)) {
+      passwordError.value = validation.passwordError;
     } else {
       passwordError.value = "";
     }
-    return passwordRegex.test(password);
+    return validation.passwordRegex.test(password);
   };
 
   const handlePasswordInput = (password: string) => {
