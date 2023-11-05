@@ -125,7 +125,7 @@ const onUpdatePassword = async (password: string) => {
             class="profile__info--input"
             :class="validationClasses(nameError, newName)"
             placeholder="New name"
-            @input="handleNameInput(name)"
+            @input="handleNameInput(newName)"
             @blur="validateName(newName)"
           />
           <span v-if="nameError" class="profile__error">{{ nameError }}</span>
@@ -171,7 +171,7 @@ const onUpdatePassword = async (password: string) => {
             class="profile__info--input"
             :class="validationClasses(emailError, newEmail)"
             placeholder="email@email.com"
-            @input="handleEmailInput(email)"
+            @input="handleEmailInput(newEmail)"
             @blur="validateEmail(newEmail)"
           />
           <span v-if="emailError" class="profile__error">{{ emailError }}</span>
@@ -223,7 +223,7 @@ const onUpdatePassword = async (password: string) => {
             :class="validationClasses(passwordError, newPassword)"
             :type="passwordInputType"
             placeholder="New password"
-            @input="handlePasswordInput(password)"
+            @input="handlePasswordInput(newPassword)"
             @blur="validatePassword(newPassword)"
             ><button
               type="button"
