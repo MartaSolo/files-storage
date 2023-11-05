@@ -1,4 +1,4 @@
-export const useDragAndDrop = (
+export const useUploadByDragAndDrop = (
   maxFileSizeMB: number,
   maxFilesNumber: number
 ) => {
