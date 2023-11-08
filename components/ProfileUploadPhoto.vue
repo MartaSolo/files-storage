@@ -13,14 +13,20 @@ const {
   uploadedFiles,
 } = useUploadByDragAndDrop(MAX_FILE_SIZE_MB, 1);
 
-const { upsertProfileImage, checkProfileImage, profileImageError } =
-  useProfileImage();
+const {
+  upsertProfileImage,
+  checkProfileImage,
+  profileImageError,
+  getPrivateFileList,
+  selectedImage,
+  privateFileList,
+  isLoading,
+} = useProfileImage();
 
 const profileImageSource = useProfileImageSource();
-
 const { notify } = useNotification();
-
-const errorMessage = computed(() => errorMessages.value[0] || "");
+const isStoragePublic = useIsStoragePublic();
+const { updateStorage } = useStorage();
 
 watch(
   uploadedFiles,
@@ -30,6 +36,8 @@ watch(
   { deep: true }
 );
 
+const errorMessage = computed(() => errorMessages.value[0] || "");
+
 watch(errorMessage, () => {
   if (errorMessage.value) notify("error", errorMessage.value);
 });
@@ -38,23 +46,31 @@ watch(profileImageError, () => {
   notify("error", profileImageError.value);
 });
 
-onMounted(() => {
-  checkProfileImage();
+watch(selectedImage, () => {
+  upsertProfileImage(selectedImage.value);
+});
+
+onMounted(async () => {
+  isStoragePublic.value = false;
+  await updateStorage();
+  await checkProfileImage();
+  getPrivateFileList();
 });
 </script>
 
 <template>
-  <section ref="root" class="profile__photo">
+  <UploadPhotoSkeleton v-if="isLoading" />
+  <section v-else ref="root" class="profile__photo">
     <span class="profile__photo--name">Photo</span>
     <div
       class="profile__photo--dropzone"
-      :class="{ 'profile__photo__dropzone--active': isDragActive }"
+      :class="{ active: isDragActive }"
       @drop.prevent="handleDrop"
       @dragenter="handleDrag"
       @dragover.prevent="handleDrag"
       @dragleave="handleDrag"
     >
-      <p class="profile__photo__description">
+      <p class="profile__photo--description">
         Drop your photo here <br />
         or
       </p>
@@ -65,30 +81,38 @@ onMounted(() => {
         height="400"
       />
     </div>
-    <label
-      class="profile__photo__label"
-      for="file"
-      tabindex="0"
-      role="button"
-      aria-pressed="false"
-      @keydown="handleKeydown"
-      @click="resetState"
-    >
-      Upload your photo
-      <img
-        class="profile__photo__icon"
-        src="@/assets/img/upload.png"
-        alt="upload"
+    <div class="profile__photo--buttons">
+      <label
+        class="profile__photo--label"
+        for="file"
+        tabindex="0"
+        role="button"
+        aria-pressed="false"
+        @keydown="handleKeydown"
+        @click="resetState"
+      >
+        Upload your photo
+        <img
+          class="profile__photo--icon"
+          src="@/assets/img/upload.png"
+          alt="upload"
+        />
+        <input
+          id="file"
+          class="profile__photo--input"
+          type="file"
+          name="file"
+          multiple
+          @change="handleUpload"
+        />
+      </label>
+      <BaseSelect
+        v-model="selectedImage"
+        class="profile__photo--select"
+        placeholder="Select your photo"
+        :options="privateFileList"
       />
-      <input
-        id="file"
-        class="profile__photo__input"
-        type="file"
-        name="file"
-        multiple
-        @change="handleUpload"
-      />
-    </label>
+    </div>
   </section>
 </template>
 
@@ -135,7 +159,7 @@ onMounted(() => {
   }
 }
 
-.profile__photo__dropzone--active {
+.profile__photo--dropzone.active {
   background-color: $color-green-light;
 }
 
@@ -149,16 +173,31 @@ onMounted(() => {
   left: 0;
 }
 
-.profile__photo__description {
+.profile__photo--description {
   padding: 1rem;
   margin-top: 3rem;
   z-index: 9999;
 }
 
-.profile__photo__label {
+.profile__photo--buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  @include mediumScreen {
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+  @include largeScreenPlus {
+    gap: 4rem;
+  }
+}
+
+.profile__photo--label {
+  flex-basis: 50%;
   border-radius: 16px;
   background-color: $color-green-dark;
-  max-width: 300px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -170,12 +209,16 @@ onMounted(() => {
   cursor: pointer;
 }
 
-.profile__photo__icon {
-  width: 50px;
-  height: 50px;
+.profile__photo--icon {
+  width: 40px;
+  height: 40px;
 }
 
-.profile__photo__input {
+.profile__photo--input {
   display: none;
+}
+
+.profile__photo--select {
+  flex-basis: 50%;
 }
 </style>
