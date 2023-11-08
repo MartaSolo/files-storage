@@ -38,5 +38,5 @@ export const useStorage = () => {
     updateStorage();
   });
 
-  return { storage };
+  return { storage, updateStorage };
 };
