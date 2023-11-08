@@ -5,10 +5,15 @@ export const useProfileImage = () => {
   const client = useSupabaseClient();
   const user = useSupabaseUser();
 
+  const { storage } = useStorage();
   const profileImageSource = useProfileImageSource();
 
   const profileImageError = ref("");
   const profileImageName = ref("");
+  const privateFileList = ref<string[]>([]);
+  const privateFileListError = ref("");
+  const selectedImage = ref("");
+  const isLoading = ref(true);
 
   const setProfileImageSource = async () => {
     if (profileImageName.value) {
@@ -55,12 +60,44 @@ export const useProfileImage = () => {
 
     if (data) profileImageName.value = data?.[0].avatar;
     setProfileImageSource();
+    getPrivateFileList();
+  };
+
+  const getPrivateFileList = async () => {
+    const { data, error } = await client.storage
+      .from(storage.value.bucket)
+      .list(storage.value.folder, {
+        limit: 100,
+        offset: 0,
+      });
+
+    if (error) {
+      privateFileListError.value = error.message;
+    }
+
+    if (data) {
+      privateFileList.value = data.map((file) => file.name);
+      setSelectedImage();
+    }
+  };
+
+  const setSelectedImage = () => {
+    if (privateFileList.value.includes(profileImageName.value)) {
+      selectedImage.value = profileImageName.value;
+    } else {
+      selectedImage.value = "";
+    }
+    isLoading.value = false;
   };
 
   return {
     checkProfileImage,
     upsertProfileImage,
+    getPrivateFileList,
+    privateFileList,
     profileImageName,
     profileImageError,
+    selectedImage,
+    isLoading,
   };
 };
