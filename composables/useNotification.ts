@@ -7,7 +7,7 @@ const time = ref(10000);
 const timeout = ref();
 
 export const useNotification = () => {
-  const { hideScrollY } = usePreventBodyScroll();
+  const contentScrollOffset = useContentScrollOffset();
 
   const notify = (type: Theme, message: string) => {
     clearTimeout(timeout.value);
@@ -15,6 +15,7 @@ export const useNotification = () => {
     isOpen.value = true;
     text.value = message;
     theme.value = type;
+    contentScrollOffset.enable();
 
     timeout.value = setTimeout(() => {
       closeNotification();
@@ -23,11 +24,8 @@ export const useNotification = () => {
 
   const closeNotification = () => {
     isOpen.value = false;
+    contentScrollOffset.disable();
   };
-
-  watch(isOpen, () => {
-    hideScrollY(isOpen.value);
-  });
 
   return {
     theme,
