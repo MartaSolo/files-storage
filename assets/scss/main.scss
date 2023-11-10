@@ -10,12 +10,6 @@ body {
   font-family: $font-primary;
   color: $text-color-primary;
   margin: 0 auto;
-  width: 100vw;
-  overflow-x: hidden;
-}
-
-body.no-scroll {
-  overflow-y: hidden;
 }
 
 a {
