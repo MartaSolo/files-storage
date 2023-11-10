@@ -31,13 +31,12 @@ const observer = ref<IntersectionObserver | null>(null);
 const showRenameModal = ref(false);
 const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
-const showErrorModal = ref(false);
-const errorMessages = ref<string[]>([]);
 
 const copyFile = useCopyFile();
 const copyLink = useCopyLink(props.fileName);
 const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
+const { notify } = useNotification();
 
 const computedMenuListClass = computed(() => {
   return `menu__list--${menuListPosition.value}`;
@@ -81,7 +80,7 @@ const handleCopyFile = async () => {
   try {
     await copyFile.copy(props.fileName, props.fileList);
   } catch (error: any) {
-    errorMessages.value.push(error.message);
+    notify("error", error.message);
   }
   emit("fileAction");
   isMenuOpen.value = false;
@@ -91,7 +90,7 @@ const handleDownloadFile = async () => {
   try {
     await downloadFile.download(props.fileName);
   } catch (error: any) {
-    errorMessages.value.push(error.message);
+    notify("error", error.message);
   }
   isMenuOpen.value = false;
 };
@@ -100,7 +99,7 @@ const handleDeleteFile = async () => {
   try {
     await deleteFile.remove([props.fileName]);
   } catch (error: any) {
-    errorMessages.value.push(error.message);
+    notify("error", error.message);
   }
   emit("fileAction");
   isMenuOpen.value = false;
@@ -133,19 +132,6 @@ const handleActionByKeyboard = () => {
     isMenuOpen.value = true;
   }
 };
-
-const openModal = () => {
-  if (errorMessages.value.length > 0) {
-    showErrorModal.value = true;
-  }
-};
-
-const closeModal = () => {
-  showErrorModal.value = false;
-  errorMessages.value = [];
-};
-
-watch(errorMessages, openModal);
 
 onMounted(() => {
   const target = root.value as Element;
@@ -224,11 +210,6 @@ onBeforeUnmount(() => {
       :file-name="fileName"
       @close-rename-file-modal="showRenameModal = false"
       @file-name-updated="emit('fileAction')"
-    />
-    <ErrorModal
-      v-if="showErrorModal"
-      :errors="errorMessages"
-      @close-rename-file-modal="closeModal"
     />
   </div>
 </template>
