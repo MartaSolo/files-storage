@@ -6,6 +6,7 @@ const deleteFile = useDeleteFile();
 const downloadFile = useDownloadFile();
 const copyFile = useCopyFile();
 const { storage } = useStorage();
+const { notify } = useNotification();
 
 const props = defineProps<{
   fileList: FileObject[];
@@ -14,22 +15,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "filesAction"): void;
 }>();
-
-const showErrorModal = ref(false);
-const errorMessages = ref<string[]>([]);
-
-const openModal = () => {
-  if (errorMessages.value.length > 0) {
-    showErrorModal.value = true;
-  }
-};
-
-const closeModal = () => {
-  showErrorModal.value = false;
-  errorMessages.value = [];
-};
-
-watch(errorMessages, openModal);
 
 const numberOfSelectedFiles = computed(() => {
   return selectedFiles.value.length;
@@ -61,7 +46,7 @@ const handleCopyFiles = async () => {
       })
     );
   } catch (error: any) {
-    errorMessages.value.push(error.message);
+    notify("error", error.message);
   }
   emit("filesAction");
   handleClearSelection();
@@ -81,7 +66,7 @@ const handleDeleteFiles = async () => {
   try {
     await deleteFile.remove(selectedFiles.value);
   } catch (error: any) {
-    errorMessages.value.push(error.message);
+    notify("error", error.message);
   }
   emit("filesAction");
   handleClearSelection();
@@ -135,11 +120,6 @@ watch(storage.value, () => {
         <DeleteFile />
       </template>
     </IconButton>
-    <ErrorModal
-      v-if="showErrorModal"
-      :errors="errorMessages"
-      @close-rename-file-modal="closeModal"
-    />
   </div>
 </template>
 
@@ -149,9 +129,9 @@ watch(storage.value, () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-.menu__files.inactive {
-  opacity: 0.5;
+  &.inactive {
+    opacity: 0.5;
+  }
 }
 
 .menu__files--label {
