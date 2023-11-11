@@ -166,14 +166,12 @@ onBeforeUnmount(() => {
       description="More actions"
       theme="grey"
       @click="toggleMenu"
-      @keyup.down.prevent="highlightedIndex = 0"
-      @keyup.left.prevent="highlightPrev()"
-      @keyup.right.prevent="highlightNext()"
-      @keyup.enter.prevent="handleActionByKeyboard"
-      @keyup.space.prevent="handleActionByKeyboard"
-      @keyup.esc="isMenuOpen = false"
+      @keydown.up.prevent="highlightPrev"
+      @keydown.down.prevent="highlightNext"
+      @keydown.enter.prevent="handleActionByKeyboard"
+      @keydown.space.prevent="handleActionByKeyboard"
+      @keydown.esc="isMenuOpen = false"
       @keydown.tab="isMenuOpen = false"
-      @keydown.enter.prevent
     >
       <template #icon>
         <MoreActions />
