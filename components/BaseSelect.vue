@@ -78,7 +78,6 @@ const selectOptionByKeyboard = (index: number) => {
   <div ref="root" class="select">
     <button
       type="button"
-      :aria-labelledby="modelValue || placeholder"
       role="combobox"
       aria-controls="listbox-container"
       aria-owns="listbox-container"
