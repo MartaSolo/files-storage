@@ -1,12 +1,40 @@
 <script setup lang="ts">
+import { UserMenuOptions } from "@/types/UserMenuOptions";
+
 const router = useRouter();
 const { logout } = useLogoutUser();
 const { checkProfileImage } = useProfileImage();
 const profileImageSource = useProfileImageSource();
+const { notify } = useNotification();
+
+const options: UserMenuOptions[] = [
+  { id: "your-profile", label: "Got to your profile" },
+  { id: "logout", label: "Logout" },
+];
 
 const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
-const list = ref<HTMLElement | null>(null);
+const highlightedIndex = ref(0);
+
+const prevIndex = computed(() => {
+  return highlightedIndex.value === 0
+    ? options.length - 1
+    : highlightedIndex.value - 1;
+});
+
+const nextIndex = computed(() => {
+  return highlightedIndex.value === options.length - 1
+    ? 0
+    : highlightedIndex.value + 1;
+});
+
+const highlightPrev = () => {
+  highlightedIndex.value = prevIndex.value;
+};
+
+const highlightNext = () => {
+  highlightedIndex.value = nextIndex.value;
+};
 
 useClickOutside(root, () => {
   isMenuOpen.value = false;
@@ -16,12 +44,35 @@ const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
 
-const handleLogOut = () => {
+const handleOptionByKeyboard = () => {
+  if (isMenuOpen.value) {
+    handleOption(highlightedIndex.value);
+  } else {
+    isMenuOpen.value = true;
+  }
+};
+
+const redirectToYourProfile = () => {
+  router.push("/your-profile");
+  isMenuOpen.value = false;
+};
+
+const handleLogout = () => {
   try {
     logout();
     router.push("/");
   } catch (e: any) {
-    throw new Error(e.message);
+    notify("error", error.message);
+  }
+  isMenuOpen.value = false;
+};
+
+const handleOption = (index: number ) => {
+  switch (index) {
+    case 0:
+      return redirectToYourProfile();
+    case 1:
+      return handleLogout();
   }
 };
 
@@ -31,31 +82,55 @@ onMounted(() => {
 </script>
 
 <template>
-  <button
-    ref="root"
-    class="menu"
-    aria-label="user menu"
-    @click="toggleMenu"
-    @keyup.esc="isMenuOpen = false"
-  >
-    <img class="menu__image" :src="profileImageSource" width="50" height="50" />
-  </button>
-  <Transition name="menu" :duration="300">
-    <template v-if="isMenuOpen">
-      <div ref="list" class="menu__list">
-        <button class="menu__item--button" @click="handleLogOut">
-          Log out
-        </button>
-        <NuxtLink to="/your-profile" class="menu__item--button"
-          >Your profile</NuxtLink
+  <div ref="root" class="menu">
+    <button
+      class="menu__button"
+      aria-label="user menu"
+      role="combobox"
+      aria-controls="listbox-container"
+      aria-owns="listbox-container"
+      :aria-expanded="isMenuOpen"
+      @click="toggleMenu"
+      @keydown.up.prevent="highlightPrev"
+      @keydown.down.prevent="highlightNext"
+      @keydown.enter.prevent="handleOptionByKeyboard"
+      @keydown.space.prevent="handleOptionByKeyboard"
+      @keydown.esc="isMenuOpen = false"
+      @keydown.tab="isMenuOpen = false"
+    >
+      <img
+        class="menu__image"
+        :src="profileImageSource"
+        width="50"
+        height="50"
+      />
+    </button>
+    <Transition name="menu" :duration="300">
+      <ul
+        v-if="isMenuOpen"
+        id="listbox-container"
+        class="menu__list"
+        role="listbox"
+      >
+        <li
+          v-for="(option, index) in options"
+          :key="option.id"
+          class="menu__list--item"
+          :class="{
+            active: highlightedIndex === index,
+          }"
+          @click="handleOption(index)"
+          @mouseover="highlightedIndex = index"
         >
-      </div>
-    </template>
-  </Transition>
+          {{ option.label }}
+        </li>
+      </ul>
+    </Transition>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.menu {
+.menu__button {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -86,34 +161,18 @@ onMounted(() => {
 
 .menu__list--item {
   border-bottom: 1px solid $color-green-light;
-}
-.menu__list--item:last-child {
-  border-bottom: none;
-}
-
-.menu__item--button:focus {
-  background-color: $color-green-light-hover;
-}
-
-.menu__item--button {
   padding: 0 20px 0 20px;
   width: 100%;
   height: 45px;
   display: flex;
   align-items: center;
+  cursor: pointer;
   &:hover {
     background-color: $color-green-light-hover;
   }
-}
-
-.menu__list--item:first-child .menu__item--button {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-.menu__list--item:last-child .menu__item--button {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  &.active {
+    background-color: $color-green-light-hover;
+  }
 }
 
 .menu-enter-active,
