@@ -158,7 +158,7 @@ const updateList = () => {
 }
 
 .files__list {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: calc(100vh - 230px);
   padding: 0 1rem 3rem 0;
   @include mediumScreen {
