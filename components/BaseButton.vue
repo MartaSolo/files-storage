@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    theme?: "white" | "green" | "light-green";
+    theme?: "white" | "green" | "light-green" | "light-gray";
     to?: string | null;
   }>(),
   {
@@ -42,6 +42,7 @@ const component = computed(() => {
     background-color: $color-grey-lightest;
   }
 }
+
 .button--green {
   background-color: $color-green-dark;
   color: $color-white;
@@ -49,6 +50,7 @@ const component = computed(() => {
     background-color: $color-green-dark-hover;
   }
 }
+
 .button--light-green {
   background-color: $color-green-light;
   color: $color-green-dark;
@@ -56,6 +58,15 @@ const component = computed(() => {
     background-color: $color-green-light-hover;
   }
 }
+
+.button--light-grey {
+  background-color: $color-grey-lightest;
+  color: $text-color-primary;
+  &:hover {
+    background-color: $color-grey-lighter;
+  }
+}
+
 .button:disabled {
   cursor: not-allowed;
   opacity: 0.6;

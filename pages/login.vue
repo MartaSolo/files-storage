@@ -70,7 +70,7 @@ const loginUser = async () => {
           label="Email"
           class="login__email"
           :class="validationClasses(emailError, email)"
-          @input="handleEmailInput"
+          @input="handleEmailInput(email)"
           @blur="validateEmail(email)"
         />
         <span v-if="emailError" class="login__error">{{ emailError }}</span>
@@ -81,7 +81,7 @@ const loginUser = async () => {
           label="Password"
           class="login__password"
           :class="validationClasses(passwordError, password)"
-          @input="handlePasswordInput"
+          @input="handlePasswordInput(password)"
           @blur="validatePassword(password)"
         >
           <button

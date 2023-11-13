@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   description: string;
-  theme: "green" | "grey";
+  theme: "green" | "grey" | "white";
 }>();
 
 const isTextDisplayed = ref(false);
@@ -82,10 +82,18 @@ export default {
     background-color: $color-green-medium;
   }
 }
+
 .button__btn--grey {
   background-color: $color-grey-lightest;
   &:hover:not([disabled]) {
     background-color: $color-grey-light;
+  }
+}
+
+.button__btn--white {
+  background-color: $color-white;
+  &:hover:not([disabled]) {
+    background-color: $color-grey-lightest;
   }
 }
 

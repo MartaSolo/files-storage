@@ -18,5 +18,5 @@ export const useRetrievePrivateFileUrl = (fileName: string) => {
     server: false,
   });
 
-  return { privateUrl };
+  return { privateUrl, getPrivateUrl };
 };

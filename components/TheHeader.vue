@@ -11,6 +11,10 @@ const headerText = computed(() => {
   }
 });
 
+const isSwitcherShown = computed(() => {
+  return user.value?.id && route.path !== "/your-profile";
+});
+
 const isButtonShown = computed(() => {
   return !user.value?.id && route.matched[0].name !== "login";
 });
@@ -20,7 +24,7 @@ const isButtonShown = computed(() => {
   <header class="header">
     <h1 class="header__title">{{ headerText }}</h1>
     <nav class="header__menu">
-      <StorageSwitcher v-if="user?.id" v-model="isStoragePublic" />
+      <StorageSwitcher v-if="isSwitcherShown" v-model="isStoragePublic" />
       <BaseButton v-if="isButtonShown" to="/login">Login</BaseButton>
       <UserMenu v-if="user?.id" />
     </nav>

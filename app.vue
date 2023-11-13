@@ -14,5 +14,6 @@ onMounted(() => {
     <NuxtLayout v-else>
       <NuxtPage />
     </NuxtLayout>
+    <BaseNotification />
   </div>
 </template>

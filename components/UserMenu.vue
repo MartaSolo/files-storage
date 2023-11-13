@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const UserIcon = resolveComponent("UserIcon");
-
 const router = useRouter();
 const { logout } = useLogoutUser();
+const { checkProfileImage } = useProfileImage();
+const profileImageSource = useProfileImageSource();
 
 const isMenuOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
@@ -24,17 +24,21 @@ const handleLogOut = () => {
     throw new Error(e.message);
   }
 };
+
+onMounted(() => {
+  checkProfileImage();
+});
 </script>
 
 <template>
   <button
     ref="root"
-    class="user"
+    class="menu"
     aria-label="user menu"
     @click="toggleMenu"
     @keyup.esc="isMenuOpen = false"
   >
-    <UserIcon />
+    <img class="menu__image" :src="profileImageSource" width="50" height="50" />
   </button>
   <Transition name="menu" :duration="300">
     <template v-if="isMenuOpen">
@@ -51,7 +55,7 @@ const handleLogOut = () => {
 </template>
 
 <style lang="scss" scoped>
-.user {
+.menu {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -60,6 +64,13 @@ const handleLogOut = () => {
   align-items: center;
   border: 2px solid $color-green-dark;
   position: relative;
+}
+
+.menu__image {
+  border-radius: 50%;
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 }
 
 .menu__list {
