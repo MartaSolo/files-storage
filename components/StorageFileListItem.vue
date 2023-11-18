@@ -170,6 +170,7 @@ const updatedFile = () => {
 .file__details--size {
   grid-area: size;
 }
+
 .file__details--type {
   grid-area: type;
 }
@@ -280,6 +281,7 @@ const updatedFile = () => {
   background-color: $color-grey-lighter;
   transition: background-color 0.2s;
 }
+
 .file:hover .button__btn--grey:hover {
   background-color: $color-grey-light;
 }

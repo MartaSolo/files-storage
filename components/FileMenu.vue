@@ -232,6 +232,7 @@ onBeforeUnmount(() => {
 .menu__list--bottom {
   top: 41px;
 }
+
 .menu__list--top {
   top: -202px;
 }
@@ -239,6 +240,7 @@ onBeforeUnmount(() => {
 .menu__list--item--highlighted .menu__item--button {
   background-color: $color-green-light-hover;
 }
+
 .menu__item--button {
   width: 160px;
   display: flex;

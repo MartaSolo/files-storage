@@ -135,6 +135,7 @@ const {
   text-align: center;
   margin-bottom: 1rem;
 }
+
 .drag-and-drop__dropzone--active {
   background-color: $color-green-light;
 }

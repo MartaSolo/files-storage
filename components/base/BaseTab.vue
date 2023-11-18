@@ -33,6 +33,7 @@ const computedClass = computed(() => {
     font-size: 1.5rem;
   }
 }
+
 .tab__link {
   flex-basis: 100%;
   text-align: center;
@@ -40,6 +41,7 @@ const computedClass = computed(() => {
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
 }
+
 .tab__link--active {
   box-shadow: 0 7px 0 $color-white, 0 -3px 8px rgba(0, 0, 0, 0.1);
   color: $color-green-dark;

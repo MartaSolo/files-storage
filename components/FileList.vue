@@ -40,16 +40,27 @@ const computedClass = computed(() => {
   max-width: 700px;
 }
 
+.list--success {
+  & .list__title {
+    color: $text-color-success;
+  }
+  & .list__item::before {
+    background-color: $text-color-success;
+  }
+}
+
+.list--failure {
+  & .list__title {
+    color: $text-color-error;
+  }
+  & .list__item::before {
+    background-color: $text-color-error;
+  }
+}
+
 .list__title {
   padding-left: 0.5rem;
   font-weight: 500;
-}
-
-.list--success .list__title {
-  color: $text-color-success;
-}
-.list--failure .list__title {
-  color: $text-color-error;
 }
 
 .list__list {
@@ -61,24 +72,17 @@ const computedClass = computed(() => {
   display: flex;
   padding: 0.5rem;
   gap: 0.5rem;
-}
-.list__item::before {
-  counter-increment: list-item-counter;
-  content: counter(list-item-counter);
-  background-color: $text-color-primary;
-  color: rgb(255, 255, 255);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-}
-
-.list--success .list__item::before {
-  background-color: $text-color-success;
-}
-.list--failure .list__item::before {
-  background-color: $text-color-error;
+  &::before {
+    counter-increment: list-item-counter;
+    content: counter(list-item-counter);
+    background-color: $text-color-primary;
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+  }
 }
 </style>

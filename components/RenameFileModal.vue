@@ -83,6 +83,7 @@ const handleRename = async () => {
   width: 100%;
   max-width: 420px;
 }
+
 .rename__input--error {
   margin-bottom: 0.25rem;
 }

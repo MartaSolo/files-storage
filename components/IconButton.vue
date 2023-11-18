@@ -62,6 +62,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .button__btn {
   border-radius: 50%;
   width: 40px;
@@ -70,10 +71,9 @@ export default {
   justify-content: center;
   align-items: center;
   transition: background-color 0.2s;
-}
-
-.button__btn:disabled {
-  cursor: not-allowed;
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
 .button__btn--green {

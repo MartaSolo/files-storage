@@ -275,10 +275,11 @@ watch(storage.value, () => {
 .filter {
   border-bottom: 1px solid $color-green-medium;
   padding: 1rem 0.5rem;
+  &:last-child {
+    border-bottom: none;
+  }
 }
-.filter:last-child {
-  border-bottom: none;
-}
+
 .filter__label {
   padding-bottom: 0.5rem;
 }
