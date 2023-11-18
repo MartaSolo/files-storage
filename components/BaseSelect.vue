@@ -39,16 +39,14 @@ const handleBlur = () => {
   setHighlightedIndex();
 };
 
-const optionsLength = () => props.options.length;
-
 const prevOptionIndex = computed(() => {
   const prev = highlightedIndex.value - 1;
-  return prev < 0 ? optionsLength() - 1 : prev;
+  return prev < 0 ? props.options.length - 1 : prev;
 });
 
 const nextOptionIndex = computed(() => {
   const next = highlightedIndex.value + 1;
-  return next > optionsLength() - 1 ? 0 : next;
+  return next > props.options.length - 1 ? 0 : next;
 });
 
 const highlightPrev = () => {
@@ -183,6 +181,7 @@ const selectOptionByKeyboard = (index: number) => {
   }
   &.selected {
     background-color: $color-green-light;
+    font-weight: 800;
   }
 }
 </style>
