@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const contentScrollOffset = useContentScrollOffset();
+
 const root = ref<HTMLElement | null>(null);
 
 const emit = defineEmits<{
@@ -41,7 +43,12 @@ const handleFocusTrap = (e: KeyboardEvent) => {
 };
 
 onMounted(() => {
+  contentScrollOffset.enable();
   firstFocusableNode()?.focus();
+});
+
+onUnmounted(() => {
+  contentScrollOffset.disable();
 });
 </script>
 

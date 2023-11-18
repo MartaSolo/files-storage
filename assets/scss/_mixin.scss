@@ -28,6 +28,12 @@
   }
 }
 
+@mixin largeScreenPlus {
+  @media (min-width: $screen-lg-plus) {
+    @content;
+  }
+}
+
 @mixin xlargeScreen {
   @media (min-width: $screen-xl) {
     @content;
