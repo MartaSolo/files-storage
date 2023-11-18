@@ -146,10 +146,12 @@ const updateList = () => {
     align-self: center;
   }
 }
+
 .files__menu--sort {
   grid-area: sort;
   align-self: center;
 }
+
 .files__menu--switcher {
   @include smallScreen {
     grid-area: switcher;

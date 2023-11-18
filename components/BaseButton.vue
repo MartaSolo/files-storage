@@ -33,6 +33,13 @@ const component = computed(() => {
   padding: 0.5rem 0.75rem;
   border-radius: 40px;
   min-width: 90px;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    &:hover {
+      opacity: 0.4;
+    }
+  }
 }
 
 .button--white {
@@ -64,14 +71,6 @@ const component = computed(() => {
   color: $text-color-primary;
   &:hover {
     background-color: $color-grey-lighter;
-  }
-}
-
-.button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  &:hover {
-    opacity: 0.4;
   }
 }
 </style>

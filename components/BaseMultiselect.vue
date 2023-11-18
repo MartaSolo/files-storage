@@ -237,10 +237,17 @@ const checkByKeyboard = (index: number) => {
 .select__listitem {
   border-bottom: 1px solid $color-grey-light;
   display: flex;
-}
-
-.select__listitem:last-child {
-  border-bottom: none;
+  &:last-child {
+    border-bottom: none;
+  }
+  &:first-child > .select__listitem--label {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  &:last-child > .select__listitem--label {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 }
 
 .select__listitem--highlighted {
@@ -253,16 +260,6 @@ const checkByKeyboard = (index: number) => {
   width: 100%;
   height: 100%;
   display: flex;
-}
-
-.select__listitem:first-child > .select__listitem--label {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.select__listitem:last-child > .select__listitem--label {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
 }
 
 .select__listitem--checkbox {

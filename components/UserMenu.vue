@@ -67,7 +67,7 @@ const handleLogout = () => {
   isMenuOpen.value = false;
 };
 
-const handleOption = (index: number ) => {
+const handleOption = (index: number) => {
   switch (index) {
     case 0:
       return redirectToYourProfile();

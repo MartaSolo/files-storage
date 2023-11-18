@@ -197,7 +197,6 @@ const onInputMax = (e: Event) => {
 
 .slider__input {
   width: 100px;
-
   @include smallScreen {
     width: 150px;
   }

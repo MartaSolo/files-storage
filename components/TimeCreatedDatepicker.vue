@@ -97,11 +97,12 @@ const handleDate = (modelData: ModelValue) => {
   font-size: 0.8rem;
 }
 
-.dp__action_select:hover {
-  background-color: $color-green-dark-hover;
-}
-
-.dp__action_select:disabled {
-  background-color: $color-green-medium;
+.dp__action_select {
+  &:hover {
+    background-color: $color-green-dark-hover;
+  }
+  &:disabled {
+    background-color: $color-green-medium;
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <svg
-    version="1.1"
     id="Livello_1"
+    version="1.1"
     xmlns:x="&ns_extend;"
     xmlns:i="&ns_ai;"
     xmlns:graph="&ns_graphs;"

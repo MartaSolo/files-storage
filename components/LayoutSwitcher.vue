@@ -26,5 +26,3 @@ const toggleLayout = () => {
     </template>
   </IconButton>
 </template>
-
-<style lang="scss" scoped></style>

@@ -157,10 +157,9 @@ onMounted(async () => {
   @include mediumScreen {
     max-width: 400px;
   }
-}
-
-.profile__photo--dropzone.active {
-  background-color: $color-green-light;
+  &.active {
+    background-color: $color-green-light;
+  }
 }
 
 .profile__photo--image {

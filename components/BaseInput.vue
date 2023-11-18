@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = withDefaults(
+withDefaults(
   defineProps<{
     name: string;
     label?: string;
@@ -54,17 +54,14 @@ const onInput = (e: Event) => {
   padding: 0.5rem 0.75rem;
   flex-grow: 2;
   width: 100%;
-}
-
-.input__input[type="number"] {
-  width: 80%;
-}
-
-.error.input__input {
-  border: 1px solid $text-color-error;
-}
-
-.success.input__input {
-  border: 1px solid $text-color-success;
+  &.error {
+    border: 1px solid $text-color-error;
+  }
+  &.success {
+    border: 1px solid $text-color-success;
+  }
+  &[type="number"] {
+    width: 80%;
+  }
 }
 </style>
