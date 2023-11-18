@@ -107,12 +107,11 @@ const selectOptionByKeyboard = () => {
         :aria-expanded="isDropdownOpen"
         aria-controls="sort-dropdown"
         @click="toggleOptions"
-        @keyup.enter.prevent="selectOptionByKeyboard"
-        @keyup.space.prevent="selectOptionByKeyboard"
-        @keydown.enter.prevent
-        @keyup.escape="isDropdownOpen = false"
-        @keyup.up.prevent="highlightPrevOption"
-        @keyup.down.prevent="highlightNextOption"
+        @keydown.enter.prevent="selectOptionByKeyboard"
+        @keydown.space.prevent="selectOptionByKeyboard"
+        @keydown.up.prevent="highlightPrevOption"
+        @keydown.down.prevent="highlightNextOption"
+        @keydown.escape="isDropdownOpen = false"
         @keydown.tab="isDropdownOpen = false"
       >
         {{ selectedOption }}
