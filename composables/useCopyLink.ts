@@ -8,7 +8,7 @@ export const useCopyLink = (fileName: string) => {
       link = await getPrivateUrl.privateUrl.value;
     } else {
       const getPublicUrl = useRetrievePublicFileUrl(fileName);
-      link = await getPublicUrl.url.value?.publicUrl;
+      link = await getPublicUrl.url;
     }
     navigator.clipboard.writeText(link || "");
   };
