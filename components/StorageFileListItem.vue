@@ -22,13 +22,17 @@ const sortType = useSortType(props.file);
 
 const previewUrl = computed(() => {
   if (storage.value.bucket === "private") {
-    const getPrivateUrl = useRetrievePrivateFileUrl(props.file.name);
-    return getPrivateUrl.privateUrl.value;
+    const { privateUrl, privateUrlError } = useRetrievePrivateFileUrl(
+      props.file.name
+    );
+    return privateUrlError.value ? "" : privateUrl.value;
   } else {
     const getPublicUrl = useRetrievePublicFileUrl(props.file.name);
     return getPublicUrl.url;
   }
 });
+
+const previewUrlError = ref(false);
 
 const fileName = computed(() => {
   return props.file.name;
@@ -112,32 +116,44 @@ const updatedFile = () => {
       />
     </div>
     <div v-if="layoutType === 'grid'" class="file__preview">
-      <video
-        v-if="previewFileType === 'video'"
-        class="file__preview--video"
-        controls
-      >
-        <source :src="previewUrl" />
-        Your browser does not support HTML video.
-      </video>
-      <embed
-        v-else-if="previewFileType === 'pdf'"
-        class="file__preview--embed"
-        :src="previewUrl"
-        type="application/pdf"
-        frameBorder="0"
-      />
-      <component
-        :is="fileComponent"
-        v-else-if="filePreviewComponent"
-        class="file__preview--component"
-      />
-      <img
-        v-else
-        class="file__preview--image"
-        :src="previewUrl"
-        :alt="fileName"
-      />
+      <div v-if="!previewUrl" class="file__preview--placeholder"></div>
+      <template v-else>
+        <video
+          v-if="previewFileType === 'video'"
+          class="file__preview--video"
+          :type="file.metadata.mimetype"
+          controls
+        >
+          <source :src="previewUrl" />
+          Your browser does not support HTML video.
+        </video>
+        <embed
+          v-else-if="previewFileType === 'pdf'"
+          class="file__preview--embed"
+          :src="previewUrl"
+          type="application/pdf"
+          frameBorder="0"
+        />
+        <component
+          :is="fileComponent"
+          v-else-if="filePreviewComponent"
+          class="file__preview--component"
+        />
+        <a
+          v-else
+          :href="previewUrl"
+          target="_blank"
+          class="file__preview--link"
+          :class="{ 'file__preview--placeholder': previewUrlError }"
+        >
+          <img
+            class="file__preview--image"
+            :src="previewUrl"
+            :alt="fileName"
+            @error="previewUrlError = true"
+          />
+        </a>
+      </template>
     </div>
   </div>
 </template>
@@ -212,6 +228,28 @@ const updatedFile = () => {
 .file__preview:has(.file__preview--component) {
   display: flex;
   justify-content: center;
+}
+
+.file__preview--link {
+  display: blok;
+  height: 100%;
+  width: 100%;
+}
+
+.file__preview--placeholder {
+  background-color: $color-grey-lighter;
+  width: 100%;
+  height: 100%;
+  animation: skeleton-loading 0.5s linear infinite alternate;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: $color-grey-light;
+  }
+  100% {
+    background-color: $color-grey-lighter;
+  }
 }
 
 .file__preview--image,
