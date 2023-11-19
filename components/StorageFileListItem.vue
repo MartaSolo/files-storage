@@ -115,6 +115,7 @@ const updatedFile = () => {
       <video
         v-if="previewFileType === 'video'"
         class="file__preview--video"
+        :type="file.metadata.mimetype"
         controls
       >
         <source :src="previewUrl" />
@@ -132,12 +133,9 @@ const updatedFile = () => {
         v-else-if="filePreviewComponent"
         class="file__preview--component"
       />
-      <img
-        v-else
-        class="file__preview--image"
-        :src="previewUrl"
-        :alt="fileName"
-      />
+      <a v-else :href="previewUrl" target="_blank">
+        <img class="file__preview--image" :src="previewUrl" :alt="fileName" />
+      </a>
     </div>
   </div>
 </template>
