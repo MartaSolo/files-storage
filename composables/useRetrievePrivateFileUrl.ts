@@ -3,13 +3,15 @@ export const useRetrievePrivateFileUrl = (fileName: string) => {
 
   const { storage } = useStorage();
 
+  const privateUrlError = ref("");
+
   const getPrivateUrl = async () => {
     const { data, error } = await client.storage
       .from(`${storage.value.bucket}`)
       .createSignedUrl(`${storage.value.folder}/${fileName}`, 6000);
 
     if (error) {
-      throw new Error(error.message);
+      privateUrlError.value = error.message;
     }
     return data?.signedUrl;
   };
@@ -18,5 +20,5 @@ export const useRetrievePrivateFileUrl = (fileName: string) => {
     server: false,
   });
 
-  return { privateUrl, getPrivateUrl };
+  return { privateUrl, privateUrlError, getPrivateUrl };
 };
