@@ -1,6 +1,8 @@
 import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
 import { IGNORED_ERROR_CODE } from "@/utils/constants/ignoredErrorCode";
 
+const profileImageName = ref("");
+
 export const useProfileImage = () => {
   const client = useSupabaseClient();
   const user = useSupabaseUser();
@@ -9,7 +11,6 @@ export const useProfileImage = () => {
   const profileImageSource = useProfileImageSource();
 
   const profileImageError = ref("");
-  const profileImageName = ref("");
   const privateFileList = ref<string[]>([]);
   const privateFileListError = ref("");
   const selectedImage = ref("");
@@ -22,12 +23,14 @@ export const useProfileImage = () => {
           profileImageName.value
         );
         const link = await getPrivateUrl();
-        profileImageSource.value = link;
+        if (link) profileImageSource.value = link;
       } catch (e) {
         profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;
+        profileImageName.value = "";
       }
     } else {
       profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;
+      profileImageName.value = "";
     }
   };
 
@@ -70,13 +73,15 @@ export const useProfileImage = () => {
         limit: 100,
         offset: 0,
       });
-
     if (error) {
       privateFileListError.value = error.message;
     }
-
     if (data) {
-      privateFileList.value = data.map((file) => file.name);
+      const images = data.filter(
+        (file) => file.metadata.mimetype.split("/")[0] === "image"
+      );
+      privateFileList.value = images.map((file) => file.name);
+      privateFileList.value.sort((a, b) => a.localeCompare(b));
       setSelectedImage();
     }
   };
