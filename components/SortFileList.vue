@@ -158,7 +158,7 @@ const selectOptionByKeyboard = () => {
 
 .sort__selected {
   border: 1px solid $color-green-light;
-  border-radius: 8px;
+  border-radius: $base-border-radius;
   padding: 0.5rem;
   width: 230px;
   cursor: pointer;
@@ -169,7 +169,7 @@ const selectOptionByKeyboard = () => {
 
 .sort__dropdown {
   border: 1px solid $color-green-light;
-  border-radius: 8px;
+  border-radius: $base-border-radius;
   width: 230px;
   background-color: $color-white;
   position: absolute;
@@ -180,6 +180,14 @@ const selectOptionByKeyboard = () => {
 .sort__option {
   padding: 0.5rem;
   cursor: pointer;
+  &:first-child {
+    border-top-left-radius: $base-border-radius;
+    border-top-right-radius: $base-border-radius;
+  }
+  &:last-child {
+    border-bottom-left-radius: $base-border-radius;
+    border-bottom-right-radius: $base-border-radius;
+  }
   &:hover {
     background-color: $color-green-light-hover;
   }

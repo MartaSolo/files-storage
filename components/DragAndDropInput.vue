@@ -122,7 +122,7 @@ const {
 
 .drag-and-drop__dropzone {
   border: 4px dashed $color-green-medium;
-  border-radius: 16px;
+  border-radius: $secondary-border-radius;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -145,7 +145,7 @@ const {
 }
 
 .drag-and-drop__label {
-  border-radius: 16px;
+  border-radius: $secondary-border-radius;
   background-color: $color-green-dark;
   max-width: 300px;
   display: flex;
@@ -157,10 +157,9 @@ const {
   text-align: center;
   color: $color-white;
   cursor: pointer;
-}
-
-.file--label:hover {
-  background-color: $color-green-dark-hover;
+  &:hover {
+    background-color: $color-green-dark-hover;
+  }
 }
 
 .drag-and-drop__icon {

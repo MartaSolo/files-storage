@@ -26,8 +26,8 @@ const computedClass = computed(() => {
   font-size: 1rem;
   font-weight: 600;
   display: flex;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-top-left-radius: $secondary-border-radius;
+  border-top-right-radius: $secondary-border-radius;
   margin: 0 1px;
   @include mediumScreen {
     font-size: 1.5rem;
@@ -48,7 +48,6 @@ const computedClass = computed(() => {
 }
 
 .tab__link--inactive {
-  background-color: rgb(247, 244, 244);
   background-color: $color-green-lighter;
   color: $color-grey-light;
 }

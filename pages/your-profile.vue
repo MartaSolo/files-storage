@@ -29,7 +29,7 @@ onMounted(() => {
 .profile {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0 1rem 1rem 1rem;
   display: flex;
   flex-direction: column;
 }
@@ -37,7 +37,7 @@ onMounted(() => {
 .profile__title {
   font-size: 2rem;
   text-align: center;
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
   color: $text-color-secondary;
 }
 
