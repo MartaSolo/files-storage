@@ -14,22 +14,14 @@ const emit = defineEmits<{
   (e: "updateFileList"): void;
 }>();
 
-const { storage } = useStorage();
-
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
 const sortType = useSortType(props.file);
+const { privateUrl } = useRetrievePrivateFileUrl(props.file.name);
+const { publicUrl } = useRetrievePublicFileUrl(props.file.name);
 
 const previewUrl = computed(() => {
-  if (storage.value.bucket === "private") {
-    const { privateUrl, privateUrlError } = useRetrievePrivateFileUrl(
-      props.file.name
-    );
-    return privateUrlError.value ? "" : privateUrl.value;
-  } else {
-    const getPublicUrl = useRetrievePublicFileUrl(props.file.name);
-    return getPublicUrl.url;
-  }
+  return publicUrl.value || privateUrl.value;
 });
 
 const previewUrlError = ref(false);
@@ -148,6 +140,9 @@ const updatedFile = () => {
         >
           <img
             class="file__preview--image"
+            loading="lazy"
+            width="310"
+            height="130"
             :src="previewUrl"
             :alt="fileName"
             @error="previewUrlError = true"
