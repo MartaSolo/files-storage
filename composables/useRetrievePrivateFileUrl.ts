@@ -6,14 +6,16 @@ export const useRetrievePrivateFileUrl = (fileName: string) => {
   const privateUrlError = ref("");
 
   const getPrivateUrl = async () => {
-    const { data, error } = await client.storage
-      .from(`${storage.value.bucket}`)
-      .createSignedUrl(`${storage.value.folder}/${fileName}`, 6000);
+    if (storage.value.bucket === "private") {
+      const { data, error } = await client.storage
+        .from(`${storage.value.bucket}`)
+        .createSignedUrl(`${storage.value.folder}/${fileName}`, 6000);
 
-    if (error) {
-      privateUrlError.value = error.message;
+      if (error) {
+        privateUrlError.value = error.message;
+      }
+      return data?.signedUrl;
     }
-    return data?.signedUrl;
   };
 
   const { data: privateUrl } = useAsyncData(fileName, getPrivateUrl, {
