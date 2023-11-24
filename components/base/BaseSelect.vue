@@ -11,6 +11,7 @@ const emit = defineEmits<{
 
 const isDropdownOpen = ref(false);
 const root = ref<HTMLElement | null>(null);
+const listItems = ref<HTMLElement[] | null>(null);
 const highlightedIndex = ref(0);
 
 const setHighlightedIndex = () => {
@@ -70,6 +71,14 @@ const selectOptionByKeyboard = (index: number) => {
     isDropdownOpen.value = true;
   }
 };
+
+const scrollIntoView = () => {
+  listItems.value[highlightedIndex.value].scrollIntoView({
+    block: "nearest",
+  });
+};
+
+watch(highlightedIndex, scrollIntoView);
 </script>
 
 <template>
@@ -102,6 +111,7 @@ const selectOptionByKeyboard = (index: number) => {
       <li
         v-for="(option, index) in options"
         :key="option._uid"
+        ref="listItems"
         role="option"
         :aria-selected="modelValue === option"
         class="select__list--item"
@@ -133,11 +143,14 @@ const selectOptionByKeyboard = (index: number) => {
   justify-content: space-between;
   font-weight: 600;
   border: 2px solid $color-green-dark;
-  border-radius: 16px;
+  border-radius: $secondary-border-radius;
   padding: 0.25rem 1rem;
   gap: 0.5rem;
   text-align: center;
   color: $color-green-dark;
+  &:hover {
+    background-color: $color-green-light-hover;
+  }
 }
 
 .select__arrow {
@@ -149,9 +162,32 @@ const selectOptionByKeyboard = (index: number) => {
 
 .select__list {
   position: absolute;
+  top: -500px;
   z-index: 9999;
   width: 100%;
-  border-radius: 16px;
+  border-radius: $base-border-radius;
+  max-height: 500px;
+  overflow-y: scroll;
+  /* Width */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: $color-grey-lighter;
+    border-top-right-radius: $base-border-radius;
+    border-bottom-right-radius: $base-border-radius;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $color-green-dark;
+    border-top-right-radius: $base-border-radius;
+    border-bottom-right-radius: $base-border-radius;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: $color-green-dark-hover;
+  }
 }
 
 .select__list--item {
@@ -165,13 +201,10 @@ const selectOptionByKeyboard = (index: number) => {
   border-left: 1px solid $color-green-light;
   &:first-child {
     border-top: 1px solid $color-green-light;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+    border-top-left-radius: $base-border-radius;
   }
   &:last-child {
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    margin-bottom: 3rem;
+    border-bottom-left-radius: $base-border-radius;
   }
   &.active {
     background-color: $color-green-light-hover;
