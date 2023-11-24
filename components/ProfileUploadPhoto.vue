@@ -158,7 +158,7 @@ onMounted(async () => {
     max-width: 400px;
   }
   &.active {
-    background-color: $color-green-light;
+    border: 4px dashed $color-green-dark;
   }
 }
 
@@ -195,7 +195,7 @@ onMounted(async () => {
 
 .profile__photo--label {
   flex-basis: 50%;
-  border-radius: 16px;
+  border-radius: $secondary-border-radius;
   background-color: $color-green-dark;
   display: flex;
   align-items: center;
@@ -206,6 +206,9 @@ onMounted(async () => {
   text-align: center;
   color: $color-white;
   cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
 .profile__photo--icon {

@@ -1,9 +1,18 @@
+import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
+
 export const useDeleteFile = () => {
   const client = useSupabaseClient();
 
   const { storage } = useStorage();
+  const profileImageSource = useProfileImageSource();
+  const { profileImageName } = useProfileImage();
 
   const remove = async (fileNames: string[]) => {
+    if (fileNames.includes(profileImageName.value)) {
+      profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;
+      profileImageName.value = "";
+    }
+
     const files = fileNames.map((file) => {
       return `${storage.value.folder}/${file}`;
     });

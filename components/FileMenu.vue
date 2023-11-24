@@ -224,7 +224,7 @@ onBeforeUnmount(() => {
   right: 0px;
   z-index: 9999;
   background-color: $color_white;
-  border-radius: 4px;
+  border-radius: $base-border-radius;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
@@ -251,13 +251,13 @@ onBeforeUnmount(() => {
 }
 
 .menu__list--item:first-child .menu__item--button {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-top-left-radius: $base-border-radius;
+  border-top-right-radius: $base-border-radius;
 }
 
 .menu__list--item:last-child .menu__item--button {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: $base-border-radius;
+  border-bottom-right-radius: $base-border-radius;
 }
 
 .menu__item--icon {
