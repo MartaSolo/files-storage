@@ -138,13 +138,15 @@ const updatedFile = () => {
           class="file__preview--link"
           :class="{ 'file__preview--placeholder': previewUrlError }"
         >
-          <img
-            class="file__preview--image"
+          <nuxt-img
+            :src="previewUrl"
+            :alt="fileName"
             loading="lazy"
             width="310"
             height="130"
-            :src="previewUrl"
-            :alt="fileName"
+            quality="80"
+            sizes="xs:100vw sm:100vw md:50vw lg:50vw xl:30vw 2xl:30vw"
+            class="file__preview--image"
             @error="previewUrlError = true"
           />
         </a>

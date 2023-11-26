@@ -21,6 +21,7 @@ const {
   selectedImage,
   privateFileList,
   isLoading,
+  profileImageName,
 } = useProfileImage();
 
 const profileImageSource = useProfileImageSource();
@@ -74,11 +75,15 @@ onMounted(async () => {
         Drop your photo here <br />
         or
       </p>
-      <img
-        class="profile__photo--image"
+      <nuxt-img
         :src="profileImageSource"
+        :alt="profileImageName"
+        loading="lazy"
         width="400"
         height="400"
+        quality="80"
+        sizes="xs:100vw sm:100vw md:100vw lg:50vw xl:50vw 2xl:50vw"
+        class="profile__photo--image"
       />
     </div>
     <div class="profile__photo--buttons">
