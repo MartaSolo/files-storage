@@ -162,12 +162,12 @@ watch(highlightedIndex, scrollIntoView);
 
 .select__list {
   position: absolute;
-  top: -500px;
   z-index: 9999;
   width: 100%;
   border-radius: $base-border-radius;
-  max-height: 500px;
-  overflow-y: scroll;
+  border: 1px solid $color-green-light;
+  max-height: 247px;
+  overflow-y: auto;
   /* Width */
   &::-webkit-scrollbar {
     width: 8px;
@@ -194,17 +194,14 @@ watch(highlightedIndex, scrollIntoView);
   width: 100%;
   cursor: pointer;
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid $color-green-light;
   background-color: $color-white;
   border-bottom: 1px solid $color-green-light;
-  border-right: 1px solid $color-green-light;
-  border-left: 1px solid $color-green-light;
   &:first-child {
-    border-top: 1px solid $color-green-light;
     border-top-left-radius: $base-border-radius;
   }
   &:last-child {
     border-bottom-left-radius: $base-border-radius;
+    border-bottom: none;
   }
   &.active {
     background-color: $color-green-light-hover;
@@ -213,7 +210,6 @@ watch(highlightedIndex, scrollIntoView);
     background-color: $color-green-light-hover;
   }
   &.selected {
-    background-color: $color-green-light;
     font-weight: 800;
   }
 }
