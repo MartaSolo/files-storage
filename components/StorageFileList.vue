@@ -162,7 +162,7 @@ const updateList = () => {
 }
 
 .files__list {
-  overflow-y: auto;
+  @include customScrollbarGray;
   height: calc(100vh - 230px);
   padding: 0 1rem 3rem 0;
   @include mediumScreen {
