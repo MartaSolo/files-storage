@@ -113,12 +113,14 @@ const updateList = () => {
     "multiple"
     "sort";
   gap: 1rem;
+  justify-items: center;
   @include smallScreen {
     grid-template-columns: 1fr 40px;
     grid-template-rows: auto auto;
     grid-template-areas:
       "multiple filters"
       "sort switcher";
+    justify-items: start;
   }
   @include mediumScreenPlus {
     grid-template-columns: 330px 1fr 300px 40px;
