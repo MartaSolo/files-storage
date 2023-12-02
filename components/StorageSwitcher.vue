@@ -1,102 +1,93 @@
+<template>
+  <div class="switch">
+    <button
+      class="switch__button switch__button--public"
+      :class="{ 'switch__button--active': modelValue }"
+      @click="emit('update:modelValue', true)"
+    >
+      Public
+    </button>
+    <button
+      class="switch__button switch__button--private"
+      :class="{ 'switch__button--active': !modelValue }"
+      @click="emit('update:modelValue', false)"
+    >
+      Private
+    </button>
+    <span
+      class="switch__glider"
+      :style="{ transform: `translateX(${gliderPosition}%)` }"
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
 const props = defineProps<{
   modelValue: boolean;
 }>();
 
-const computedStyle = computed(() => {
-  const padding = props.modelValue ? "5px" : "28px";
-  return { paddingLeft: padding };
-});
-
-const label = computed(() => {
-  return props.modelValue ? "Public" : "Private";
-});
-
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
 
-const handleChange = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  emit("update:modelValue", target.checked);
-};
+const gliderPosition = computed(() => {
+  return props.modelValue ? "0" : "100";
+});
 </script>
 
-<template>
-  <div class="switch">
-    <label class="switch__label" for="switch">
-      <input
-        id="switch"
-        name="switch"
-        type="checkbox"
-        class="switch__input"
-        :checked="modelValue"
-        @change="handleChange"
-      />
-      <span class="switch__toggle" :style="computedStyle">{{ label }}</span>
-    </label>
-  </div>
-</template>
-
 <style lang="scss" scoped>
-.switch__label {
-  --switch-width: 90px;
-  --switch-height: 30px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.switch {
+  --switch-width: 130px;
+  --switch-width-lg: 140px;
+  --switch-height: 34px;
   width: var(--switch-width);
   height: var(--switch-height);
-  border-radius: var(--switch-height);
-}
-
-.switch__input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-.switch__toggle {
-  border: 2px solid $color-green-medium-hover;
-  display: flex;
-  align-items: center;
   position: relative;
-  height: 100%;
-  width: 100%;
-  border-radius: var(--switch-height);
+  display: inline-flex;
+  border-radius: 999px;
   background-color: $color-white;
-  transition: background-color 0.25s ease-in-out;
+  border: 2px solid $color-green-dark;
+  @include largeScreen {
+    width: var(--switch-width-lg);
+  }
+}
+
+.switch__button {
+  width: calc(var(--switch-width) / 2);
+  font-size: 14px;
+  font-weight: 600;
   color: $color-green-dark;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &--public {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+  }
+  &--private {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+  }
+  &--active {
+    z-index: 40;
+    color: $color-white;
+  }
+  @include largeScreen {
+    width: calc(var(--switch-width-lg) / 2);
+  }
 }
 
-.switch__toggle::before {
-  content: "";
+.switch__glider {
   position: absolute;
-  left: 0px;
-  height: calc(var(--switch-height) - 4px);
-  width: calc(var(--switch-height) - 4px);
-  border-radius: 9999px;
-  background-color: $color-green-medium;
-  border: 2px solid $color-green-medium-hover;
-  transition: transform 0.375s ease-in-out;
-}
-
-.switch__input:checked + .switch__toggle::before {
-  transform: translateX(calc(var(--switch-width) - var(--switch-height)));
-}
-
-.switch__input:focus + .switch__toggle::before,
-.switch__input:focus:checked + .switch__toggle::before {
-  outline: 5px auto Highlight;
-  outline: 5px auto -webkit-focus-ring-color;
+  left: -1px;
+  height: 100%;
+  cursor: pointer;
+  background-color: $color-green-dark;
+  border-radius: 999px;
+  transition: transform 0.25s ease-out;
+  width: calc(var(--switch-width) / 2);
+  @include largeScreen {
+    width: calc(var(--switch-width-lg) / 2);
+  }
 }
 </style>
