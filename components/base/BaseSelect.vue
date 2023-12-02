@@ -73,9 +73,11 @@ const selectOptionByKeyboard = (index: number) => {
 };
 
 const scrollIntoView = () => {
-  listItems.value[highlightedIndex.value].scrollIntoView({
-    block: "nearest",
-  });
+  if (isDropdownOpen.value) {
+    listItems.value[highlightedIndex.value].scrollIntoView({
+      block: "nearest",
+    });
+  }
 };
 
 watch(highlightedIndex, scrollIntoView);
@@ -166,28 +168,9 @@ watch(highlightedIndex, scrollIntoView);
   width: 100%;
   border-radius: $base-border-radius;
   border: 1px solid $color-green-light;
-  max-height: 247px;
-  overflow-y: auto;
-  /* Width */
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  /* Track */
-  &::-webkit-scrollbar-track {
-    background: $color-grey-lighter;
-    border-top-right-radius: $base-border-radius;
-    border-bottom-right-radius: $base-border-radius;
-  }
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: $color-green-dark;
-    border-top-right-radius: $base-border-radius;
-    border-bottom-right-radius: $base-border-radius;
-  }
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: $color-green-dark-hover;
-  }
+  max-height: 452px;
+  @include customScrollbarGreen;
+  margin-bottom: 2rem;
 }
 
 .select__list--item {

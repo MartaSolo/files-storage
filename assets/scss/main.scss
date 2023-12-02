@@ -11,10 +11,6 @@ body {
   font-family: $font-primary;
   color: $text-color-primary;
   margin: 0 auto;
-  overflow-y: hidden;
-  @include mediumScreen {
-    overflow-y: auto;
-  }
 }
 
 body.no-scroll {

@@ -63,29 +63,6 @@ onMounted(async () => {
   <UploadPhotoSkeleton v-if="isLoading" />
   <section v-else ref="root" class="profile__photo">
     <span class="profile__photo--name">Photo</span>
-    <div
-      class="profile__photo--dropzone"
-      :class="{ active: isDragActive }"
-      @drop.prevent="handleDrop"
-      @dragenter="handleDrag"
-      @dragover.prevent="handleDrag"
-      @dragleave="handleDrag"
-    >
-      <p class="profile__photo--description">
-        Drop your photo here <br />
-        or
-      </p>
-      <nuxt-img
-        :src="profileImageSource"
-        :alt="profileImageName"
-        loading="lazy"
-        width="400"
-        height="400"
-        quality="80"
-        sizes="xs:100vw sm:100vw md:100vw lg:50vw xl:50vw 2xl:50vw"
-        class="profile__photo--image"
-      />
-    </div>
     <div class="profile__photo--buttons">
       <label
         class="profile__photo--label"
@@ -116,6 +93,29 @@ onMounted(async () => {
         class="profile__photo--select"
         placeholder="Select your photo"
         :options="privateFileList"
+      />
+    </div>
+    <div
+      class="profile__photo--dropzone"
+      :class="{ active: isDragActive }"
+      @drop.prevent="handleDrop"
+      @dragenter="handleDrag"
+      @dragover.prevent="handleDrag"
+      @dragleave="handleDrag"
+    >
+      <p class="profile__photo--description">
+        Drop your photo here <br />
+        or
+      </p>
+      <nuxt-img
+        :src="profileImageSource"
+        :alt="profileImageName"
+        loading="lazy"
+        width="400"
+        height="400"
+        quality="80"
+        sizes="xs:100vw sm:100vw md:100vw lg:50vw xl:50vw 2xl:50vw"
+        class="profile__photo--image"
       />
     </div>
   </section>
@@ -156,9 +156,8 @@ onMounted(async () => {
   font-weight: 600;
   color: $color-green-dark;
   text-align: center;
-  margin-bottom: 1rem;
   position: relative;
-  z-index: 9999;
+  z-index: 999;
   @include mediumScreen {
     max-width: 400px;
   }
@@ -188,6 +187,7 @@ onMounted(async () => {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 1rem;
+  margin: 0.5rem 0 2rem 0;
   @include mediumScreen {
     width: 100%;
     grid-template-columns: 1fr 1fr;
