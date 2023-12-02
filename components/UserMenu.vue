@@ -131,14 +131,18 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .menu__button {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 2px solid $color-green-dark;
   position: relative;
+  @include largeScreen {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .menu__image {
