@@ -51,3 +51,49 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+@mixin customScrollbarGreen {
+  overflow-y: auto;
+  /* Width */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: $color-grey-lighter;
+    border-top-right-radius: $base-border-radius;
+    border-bottom-right-radius: $base-border-radius;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $color-green-dark;
+    border-top-right-radius: $base-border-radius;
+    border-bottom-right-radius: $base-border-radius;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: $color-green-dark-hover;
+  }
+}
+
+@mixin customScrollbarGray {
+  overflow-y: auto;
+  /* Width */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: $color-grey-lighter;
+    border-radius: $base-border-radius;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: $text-color-secondary;
+    border-radius: $base-border-radius;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: $color-grey;
+  }
+}
