@@ -27,9 +27,8 @@ const tabs: { label: string; path: string }[] = [
   max-width: 1700px;
   margin: 0 auto;
   overflow-y: hidden;
-  height: calc(100vh - 108px);
   @include mediumScreen {
-    height: calc(100vh - 132px);
+    height: calc(100vh - 134px);
   }
 }
 </style>

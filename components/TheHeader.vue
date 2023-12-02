@@ -33,7 +33,7 @@ const isButtonShown = computed(() => {
 
 <style lang="scss" scoped>
 .header {
-  padding: 0 1rem;
+  padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,7 +43,6 @@ const isButtonShown = computed(() => {
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 2px;
-  padding: 0.75rem 0 1rem 1rem;
   color: $text-color-secondary;
   @include mediumScreen {
     font-size: 1.5rem;
