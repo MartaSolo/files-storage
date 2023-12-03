@@ -48,7 +48,11 @@ const computedClass = computed(() => {
 }
 
 .tab__link--inactive {
-  background-color: $color-green-lighter;
-  color: $color-grey-light;
+  background-color: $color-green-dark;
+  color: $color-white;
+  opacity: 0.6;
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>
