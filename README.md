@@ -2,7 +2,7 @@
 
 Demo: https://files-storage.onrender.com/
 
-To test it out you can register or use the credentials:
+You can register or use the credentials:
 
 - email: filesstorage@gmail.com
 - password: 4Testing&
@@ -11,8 +11,8 @@ To test it out you can register or use the credentials:
 With file-storage you can upload and store your images, documents or any other types of files in a virtual storage. The application provides convenient dashboard to manage single file as well ad multiple files. A user can copy, download, rename, delete a file, filter and sort files, change layout form grid to list.
 <br/><br/>
 
-Unauthenticated user have access only to public files.
-The user can register and create his own private storage. Authenticated user have access to both public and private storage and can switch between them.
+Unauthenticated user has access only to public files.
+The user can register and create his own private storage. Authenticated user has access to both public and private storage and can switch between them.
 <br/><br/>
 
 The application is fully **accessible** so the user can use a keyboard to perform any action.
@@ -20,14 +20,17 @@ The application is fully **accessible** so the user can use a keyboard to perfor
 
 # Preview
 
-// add a video?
+<video controls autoplay width="800">
+  <source src="https://drive.google.com/file/d/1UrbVhibBV3_aoyCdAZU0-m9x3amcHydf/view" type="video/mp4" />
+</video>
+<br/><br/>
 
 # Technologies
 
 HTML5, CSS, SCSS, JavaScript(ES6), TypeScript, Nuxt3, Supabase
 <br/><br/>
 
-**Nuxt3** - composition API, composables, api routes, ssr, middleware
+**Nuxt3** - composition API, composables, api routes, middleware
 <br/><br/>
 
 **Supabase** - storage, authentication, database.
@@ -37,7 +40,7 @@ The application uses two storages:
 - public - full access for unauthenticated and authenticated user.
 - private - access only for authenticated users. The user have only access to a folder which name is equal to the user id.
 
-Database is used to store a nme of user profile photo (if set on /your-profile page).
+Database is used to store user profile photo name (if set).
 <br/><br/>
 
 # Setup
@@ -55,16 +58,14 @@ Authentication:
 Provider - enabale email provider.
 
 Database:
-
-- in the public schema create profiles table with id and avatar fields.
-  <br/><br/>
+In the public schema create profiles table with id and avatar fields.
+<br/><br/>
 
 ## Nuxt3
 
 Make sure to install the dependencies:
 
 ```bash
-# npm
 npm install
 ```
 
