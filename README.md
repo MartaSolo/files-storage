@@ -20,10 +20,13 @@ The application is fully **accessible** so the user can use a keyboard to perfor
 
 # Preview
 
-<video controls autoplay width="800">
-  <source src="https://drive.google.com/file/d/1UrbVhibBV3_aoyCdAZU0-m9x3amcHydf/view" type="video/mp4" />
-</video>
-<br/><br/>
+## unauthenticated user
+![files-storage-public files](https://github.com/MartaSolo/files-storage/assets/90101598/40ed6e09-3ee4-40fe-a699-7978025c9f76)
+<br></br>
+
+## authenticated user
+![files-storage-private files](https://github.com/MartaSolo/files-storage/assets/90101598/56ae4986-a296-4361-8b06-5fb46c10d421)
+
 
 # Technologies
 
