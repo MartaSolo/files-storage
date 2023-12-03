@@ -101,6 +101,7 @@ onMounted(() => {
       <img
         class="menu__image"
         :src="profileImageSource"
+        alt="user avatar"
         width="50"
         height="50"
       />
