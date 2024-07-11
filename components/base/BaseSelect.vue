@@ -73,7 +73,7 @@ const selectOptionByKeyboard = (index: number) => {
 };
 
 const scrollIntoView = () => {
-  if (isDropdownOpen.value) {
+  if (isDropdownOpen.value && listItems.value?.length) {
     listItems.value[highlightedIndex.value].scrollIntoView({
       block: "nearest",
     });
@@ -112,7 +112,7 @@ watch(highlightedIndex, scrollIntoView);
     >
       <li
         v-for="(option, index) in options"
-        :key="option._uid"
+        :key="index"
         ref="listItems"
         role="option"
         :aria-selected="modelValue === option"
