@@ -53,15 +53,15 @@ const handleOptionByKeyboard = () => {
 };
 
 const redirectToYourProfile = () => {
-  router.push("/your-profile");
+  navigateTo("/your-profile");
   isMenuOpen.value = false;
 };
 
 const handleLogout = () => {
   try {
     logout();
-    router.push("/");
-  } catch (e: any) {
+    navigateTo("/");
+  } catch (error: any) {
     notify("error", error.message);
   }
   isMenuOpen.value = false;
