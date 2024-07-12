@@ -1,28 +1,21 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from "vue";
-
 const SortUp = resolveComponent("SortUp");
 const SortDown = resolveComponent("SortDown");
 const UncheckIcon = resolveComponent("UncheckIcon");
 
 const props = defineProps<{
-  fileTypes: string[] | string;
+  fileTypes: string[];
   label: string;
   modelValue: string[];
 }>();
-
-const types = ref<string[] | string>([]);
-
-onMounted(() => {
-  types.value = props.fileTypes;
-});
 
 const emit = defineEmits<{
   (e: "update:modelValue", modelValue: string[]): void;
 }>();
 
+const types = ref(props.fileTypes);
 const dropdown = ref<HTMLElement | null>(null);
-const labelsRefs = ref<Element[] | ComponentPublicInstance[]>([]);
+const labelsRefs = ref<HTMLLabelElement[] | null>(null);
 const isDropdownOpen = ref(false);
 const highlightedIndex = ref(-1);
 
@@ -49,8 +42,8 @@ const highlightNext = () => {
 };
 
 const focusLabel = (index: number) => {
-  const label = labelsRefs.value[index] as HTMLElement;
-  label.focus();
+  const label = labelsRefs.value?.[index];
+  label?.focus();
 };
 
 const toggleDropdown = () => {
@@ -104,7 +97,7 @@ const checkByKeyboard = (index: number) => {
     <div ref="dropdown" class="select__dropdown">
       <div class="select__container">
         <div class="select__selected">
-          <template v-if="modelValue.length > 0">
+          <template v-if="modelValue.length">
             <button
               v-for="type in modelValue"
               :key="type"
@@ -149,7 +142,7 @@ const checkByKeyboard = (index: number) => {
             @input="check(type, $event)"
           />
           <label
-            :ref="(el) => el !== null && (labelsRefs[index] = el)"
+            ref="labelsRefs"
             :for="type"
             class="select__listitem--label"
             :tabindex="highlightedIndex === index ? '0' : '-1'"
@@ -200,19 +193,17 @@ const checkByKeyboard = (index: number) => {
   padding-right: 0.5rem;
   display: flex;
   flex-wrap: wrap;
-}
-
-.select__selected--type {
-  border: 1px solid $color-green-dark;
-  padding: 0.25rem 0.5rem;
-  margin: 0 0.25rem 0.5rem 0.25rem;
-  border-radius: 8px;
-  color: $color-green-dark;
-  display: flex;
-}
-
-.select__selected--icon {
-  align-self: flex-start;
+  &--type {
+    border: 1px solid $color-green-dark;
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.25rem 0.5rem 0.25rem;
+    border-radius: 8px;
+    color: $color-green-dark;
+    display: flex;
+  }
+  &--icon {
+    align-self: flex-start;
+  }
 }
 
 .select__button {
@@ -248,37 +239,33 @@ const checkByKeyboard = (index: number) => {
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
   }
-}
-
-.select__listitem--highlighted {
-  background-color: $color-green-light;
-}
-
-.select__listitem--label {
-  padding: 0.5rem 0.5rem 0.5rem 2.25rem;
-  display: block;
-  width: 100%;
-  height: 100%;
-  display: flex;
+  &--highlighted {
+    background-color: $color-green-light;
+  }
+  &--label {
+    padding: 0.5rem 0.5rem 0.5rem 2.25rem;
+    display: block;
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
 }
 
 .select__listitem--checkbox {
   appearance: none;
-}
-
-.select__listitem--checkbox:checked + .select__listitem--label {
-  font-weight: bold;
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-}
-
-.select__listitem--checkbox:checked + .select__listitem--label::before {
-  content: "";
-  display: block;
-  width: 20px;
-  height: 20px;
-  margin-right: 0.5rem;
-  background-image: url("@/assets/img/checked.png");
-  background-size: contain;
-  background-position: center;
+  &:checked + .select__listitem--label {
+    font-weight: bold;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  }
+  &:checked + .select__listitem--label::before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    background-image: url("@/assets/img/checked.png");
+    background-size: contain;
+    background-position: center;
+  }
 }
 </style>
