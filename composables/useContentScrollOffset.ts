@@ -1,7 +1,7 @@
 import { getScrollbarWidth } from "@/utils/helpers/getScrollbarWidth";
 
 export const useContentScrollOffset = () => {
-  const enable = () => {
+  const enableScrollOffset = () => {
     const isScrollVisible = !!(window.innerWidth - document.body.offsetWidth);
 
     if (isScrollVisible) {
@@ -12,10 +12,10 @@ export const useContentScrollOffset = () => {
     }
   };
 
-  const disable = () => {
+  const disableScrollOffset  = () => {
     document.body.style.removeProperty("padding-right");
     document.body.style.overflowY = "auto";
   };
 
-  return { enable, disable };
+  return { enableScrollOffset , disableScrollOffset  };
 };

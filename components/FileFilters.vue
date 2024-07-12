@@ -17,7 +17,7 @@ const { storage } = useStorage();
 
 const fileTypes = computed(() => {
   const { type } = useSortType(undefined, props.fileList);
-  return type;
+  return type as string[];
 });
 
 const isFilterOpen = ref(false);
@@ -118,7 +118,7 @@ const activeFilters = computed(() => {
   ) {
     activeFilters = activeFilters + 1;
   }
-  if (isDateValid.value && filters.value.dates.length) {
+  if (isDateValid.value && filters.value.dates?.length) {
     activeFilters = activeFilters + 1;
   }
   return activeFilters;
@@ -192,7 +192,7 @@ watch(storage.value, () => {
     </div>
     <Transition>
       <div v-if="isFilterOpen" class="filters__selection">
-        <div class="filter">
+        <div class="filters__filter">
           <BaseInput
             v-model="nameModel"
             type="text"
@@ -200,14 +200,14 @@ watch(storage.value, () => {
             name="name-filter"
           />
         </div>
-        <div class="filter">
+        <div class="filters__filter">
           <BaseMultiselect
             v-model="typeModel"
             :file-types="fileTypes"
             label="File type:"
           />
         </div>
-        <div class="filter">
+        <div class="filters__filter">
           <BaseMinMaxSlider
             v-model:min-value="sizeMinModel"
             v-model:max-value="sizeMaxModel"
@@ -218,11 +218,11 @@ watch(storage.value, () => {
             unit="MB"
           />
         </div>
-        <div class="filter">
-          <p class="filter__label">Time created:</p>
+        <div class="filters__filter">
+          <p class="filters__filter--label">Time created:</p>
           <TimeCreatedDatepicker v-model="datesModel" />
         </div>
-        <div class="actions">
+        <div class="filters__actions">
           <BaseButton theme="white" @click="handleClear"
             >Clear filters</BaseButton
           >
@@ -272,19 +272,18 @@ watch(storage.value, () => {
   }
 }
 
-.filter {
+.filters__filter {
   border-bottom: 1px solid $color-green-medium;
   padding: 1rem 0.5rem;
   &:last-child {
     border-bottom: none;
   }
+  &--label {
+    padding-bottom: 0.5rem;
+  }
 }
 
-.filter__label {
-  padding-bottom: 0.5rem;
-}
-
-.actions {
+.filters__actions {
   display: flex;
   justify-content: space-around;
   padding: 1rem;
