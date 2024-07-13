@@ -3,7 +3,7 @@ import { FileObject } from "@supabase/storage-js";
 export const useCopyFile = () => {
   const client = useSupabaseClient();
 
-  const copy = async (fileName: string, files: FileObject[]) => {
+  const copyFile = async (fileName: string, files: FileObject[]) => {
     const copyName = useCopyName();
     const newCopyName = copyName.copyName(fileName, files);
     const { storage } = useStorage();
@@ -20,5 +20,5 @@ export const useCopyFile = () => {
     return data;
   };
 
-  return { copy };
+  return { copyFile };
 };

@@ -7,7 +7,7 @@ export const useDeleteFile = () => {
   const profileImageSource = useProfileImageSource();
   const { profileImageName } = useProfileImage();
 
-  const remove = async (fileNames: string[]) => {
+  const deleteFile = async (fileNames: string[]) => {
     if (fileNames.includes(profileImageName.value)) {
       profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;
       profileImageName.value = "";
@@ -28,5 +28,5 @@ export const useDeleteFile = () => {
     return data;
   };
 
-  return { remove };
+  return { deleteFile };
 };
