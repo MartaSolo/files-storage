@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
 import { FilterParams } from "@/types/FilterParams";
-import { QueryParams } from "@/types/QueryParams";
+import { FilesQueryParams } from "@/types/FilesQueryParams";
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 
 const sortColumn = useSortColumn();
@@ -25,7 +25,7 @@ const computedClass = computed(() => {
 });
 
 const queryParameters = computed(() => {
-  const queryObject: QueryParams = {
+  const queryObject: FilesQueryParams = {
     key: sortColumn.value,
     order: sortOrder.value,
     storage: storage.value,

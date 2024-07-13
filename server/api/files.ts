@@ -1,5 +1,5 @@
 import { FileObject } from "@supabase/storage-js";
-import { QueryParams } from "@/types/QueryParams";
+import { FilesQueryParams } from "~~/types/FilesQueryParams";
 import { serverSupabaseClient } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   const { key, order, name, types, minSize, maxSize, dates, storage } =
-    query as unknown as QueryParams;
+    query as unknown as FilesQueryParams;
 
   const storageObject = JSON.parse(storage.toString());
 
