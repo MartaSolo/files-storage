@@ -2,7 +2,7 @@ import { FileObjectKeys } from "@/types/FileObjectKeys";
 import { SortOrder } from "@/types/SortOrder";
 import { StoragePath } from "@/types/StoragePath";
 
-export interface QueryParams {
+export interface FilesQueryParams {
   key: FileObjectKeys;
   order: SortOrder;
   storage: StoragePath;

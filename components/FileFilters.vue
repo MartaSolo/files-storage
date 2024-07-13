@@ -15,9 +15,8 @@ const emit = defineEmits<{
 
 const { storage } = useStorage();
 
-const fileTypes = computed(() => {
-  const { type } = useSortType(undefined, props.fileList);
-  return type as string[];
+const { data: fileTypes } = await useFetch<string[]>(`/api/types`, {
+  query: { storage: storage.value },
 });
 
 const isFilterOpen = ref(false);
@@ -171,6 +170,7 @@ const handleConfirm = () => {
 watch(storage.value, () => {
   emit("update:modelValue", filters.value);
   emit("set-filters-options");
+  isFilterOpen.value = false;
 });
 </script>
 

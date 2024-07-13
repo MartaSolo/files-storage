@@ -20,25 +20,33 @@ const isDropdownOpen = ref(false);
 const highlightedIndex = ref(-1);
 
 const prevIndex = computed(() => {
-  return highlightedIndex.value === 0
-    ? types.value.length - 1
-    : highlightedIndex.value - 1;
+  if (types.value?.length) {
+    return highlightedIndex.value === 0
+      ? types.value.length - 1
+      : highlightedIndex.value - 1;
+  }
 });
 
 const nextIndex = computed(() => {
-  return highlightedIndex.value === types.value.length - 1
-    ? 0
-    : highlightedIndex.value + 1;
+  if (types.value?.length) {
+    return highlightedIndex.value === types.value.length - 1
+      ? 0
+      : highlightedIndex.value + 1;
+  }
 });
 
 const highlightPrev = () => {
-  highlightedIndex.value = prevIndex.value;
-  focusLabel(highlightedIndex.value);
+  if (typeof prevIndex.value !== "undefined") {
+    highlightedIndex.value = prevIndex.value;
+    focusLabel(highlightedIndex.value);
+  }
 };
 
 const highlightNext = () => {
-  highlightedIndex.value = nextIndex.value;
-  focusLabel(highlightedIndex.value);
+  if (typeof nextIndex.value !== "undefined") {
+    highlightedIndex.value = nextIndex.value;
+    focusLabel(highlightedIndex.value);
+  }
 };
 
 const focusLabel = (index: number) => {
@@ -77,13 +85,14 @@ const uncheckType = (sortType: string) => {
 };
 
 const checkByKeyboard = (index: number) => {
+  if (!types.value?.length) return;
   let updatedValue = [...props.modelValue];
 
   if (index !== -1 && !updatedValue.includes(types.value[index])) {
     updatedValue.push(types.value[index]);
   } else {
     const filteredValue = updatedValue.filter(
-      (value) => value !== types.value[index]
+      (value) => value !== types.value?.[index]
     );
     updatedValue = filteredValue;
   }
