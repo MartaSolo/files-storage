@@ -134,10 +134,9 @@ const {
   color: $color-green-dark;
   text-align: center;
   margin-bottom: 1rem;
-}
-
-.drag-and-drop__dropzone--active {
-  background-color: $color-green-light;
+  &--active {
+    background-color: $color-green-light;
+  }
 }
 
 .drag-and-drop__description {

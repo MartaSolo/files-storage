@@ -1,7 +1,7 @@
 export const useCopyLink = (fileName: string) => {
   const { storage } = useStorage();
 
-  const copy = () => {
+  const copyLink = () => {
     let link;
     if (storage.value.bucket === "private") {
       const { privateUrl } = useRetrievePrivateFileUrl(fileName);
@@ -13,5 +13,5 @@ export const useCopyLink = (fileName: string) => {
     navigator.clipboard.writeText(link || "");
   };
 
-  return { copy };
+  return { copyLink };
 };

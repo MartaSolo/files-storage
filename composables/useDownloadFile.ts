@@ -2,7 +2,7 @@ export const useDownloadFile = () => {
   const client = useSupabaseClient();
   const { storage } = useStorage();
 
-  const download = async (fileName: string) => {
+  const downloadFile = async (fileName: string) => {
     let url;
 
     if (storage.value.bucket === "private") {
@@ -37,6 +37,6 @@ export const useDownloadFile = () => {
   };
 
   return {
-    download,
+    downloadFile,
   };
 };

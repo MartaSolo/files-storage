@@ -32,10 +32,10 @@ const showRenameModal = ref(false);
 const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
 
-const copyFile = useCopyFile();
-const copyLink = useCopyLink(props.fileName);
-const deleteFile = useDeleteFile();
-const downloadFile = useDownloadFile();
+const { copyFile } = useCopyFile();
+const { copyLink } = useCopyLink(props.fileName);
+const { deleteFile } = useDeleteFile();
+const { downloadFile } = useDownloadFile();
 const { notify } = useNotification();
 
 const computedMenuListClass = computed(() => {
@@ -72,13 +72,13 @@ const toggleMenu = () => {
 };
 
 const handleCopyLink = () => {
-  copyLink.copy();
+  copyLink();
   isMenuOpen.value = false;
 };
 
 const handleCopyFile = async () => {
   try {
-    await copyFile.copy(props.fileName, props.fileList);
+    await copyFile(props.fileName, props.fileList);
   } catch (error: any) {
     notify("error", error.message);
   }
@@ -88,7 +88,7 @@ const handleCopyFile = async () => {
 
 const handleDownloadFile = async () => {
   try {
-    await downloadFile.download(props.fileName);
+    await downloadFile(props.fileName);
   } catch (error: any) {
     notify("error", error.message);
   }
@@ -97,7 +97,7 @@ const handleDownloadFile = async () => {
 
 const handleDeleteFile = async () => {
   try {
-    await deleteFile.remove([props.fileName]);
+    await deleteFile([props.fileName]);
   } catch (error: any) {
     notify("error", error.message);
   }

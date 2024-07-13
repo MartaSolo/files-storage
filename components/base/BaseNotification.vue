@@ -54,14 +54,12 @@ const { theme, text, isOpen, closeNotification } = useNotification();
   margin: 20px 0;
   font-size: 1rem;
   line-height: 1.2;
-}
-
-.notification__content--error {
-  color: $text-color-error;
-}
-
-.notification__content--success {
-  color: $text-color-success;
+  &--error {
+    color: $text-color-error;
+  }
+  &--success {
+    color: $text-color-success;
+  }
 }
 
 .notification__button {

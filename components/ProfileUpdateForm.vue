@@ -104,7 +104,7 @@ const onUpdatePassword = async (password: string) => {
       <span class="profile__info--name">Name</span>
       <div class="profile__info--data">
         <p class="profile__info--user">
-          {{ user.user_metadata.first_name }}
+          {{ user?.user_metadata.first_name }}
         </p>
         <IconButton
           description="Edit name"
@@ -151,7 +151,7 @@ const onUpdatePassword = async (password: string) => {
     <div class="profile__info">
       <span class="profile__info--name">Email</span>
       <div class="profile__info--data">
-        <p class="profile__info--user">{{ user.email }}</p>
+        <p class="profile__info--user">{{ user?.email }}</p>
         <IconButton
           description="Edit email"
           theme="white"
@@ -274,49 +274,42 @@ const onUpdatePassword = async (password: string) => {
 
 .profile__info {
   margin-bottom: 2rem;
-}
-
-.profile__info--name {
-  display: inline-block;
-  padding: 0 0 0.5rem 0.5rem;
-  color: $text-color-secondary;
-  font-size: 0.8rem;
-}
-
-.profile__info--data {
-  border-bottom: 1px solid $color-grey-light;
-  display: flex;
-  margin-bottom: 1rem;
-}
-
-.profile__info--user {
-  flex-grow: 1;
-  padding: 0.5rem 0.75rem;
-}
-
-.profile__info--input {
-  padding-bottom: 1.5rem;
-  position: relative;
-}
-
-.error.profile__info--input {
-  padding-bottom: 0;
+  &--name {
+    display: inline-block;
+    padding: 0 0 0.5rem 0.5rem;
+    color: $text-color-secondary;
+    font-size: 0.8rem;
+  }
+  &--data {
+    border-bottom: 1px solid $color-grey-light;
+    display: flex;
+    margin-bottom: 1rem;
+  }
+  &--user {
+    flex-grow: 1;
+    padding: 0.5rem 0.75rem;
+  }
+  &--input {
+    padding-bottom: 1.5rem;
+    position: relative;
+    &.error {
+      padding-bottom: 0;
+    }
+  }
+  &--actions {
+    display: flex;
+    justify-content: space-around;
+  }
+  &--button {
+    font-size: 0.8rem;
+    padding: 0.25rem;
+    min-width: 70px;
+  }
 }
 
 .profile__password--button {
   position: absolute;
   right: 5px;
-}
-
-.profile__info--actions {
-  display: flex;
-  justify-content: space-around;
-}
-
-.profile__info--button {
-  font-size: 0.8rem;
-  padding: 0.25rem;
-  min-width: 70px;
 }
 
 .profile__error {
@@ -325,13 +318,6 @@ const onUpdatePassword = async (password: string) => {
   line-height: 1.2;
   display: block;
   padding: 0.2rem 0.6rem 0.3rem 0.5rem;
-}
-
-.profile__photo {
-  background-color: palegreen;
-  @include mediumScreen {
-    flex-basis: 50%;
-  }
 }
 
 .slide-enter-active {

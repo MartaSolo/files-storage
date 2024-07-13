@@ -2,9 +2,9 @@
 import { FileObject } from "@supabase/storage-js";
 
 const selectedFiles = useSelectedFiles();
-const deleteFile = useDeleteFile();
-const downloadFile = useDownloadFile();
-const copyFile = useCopyFile();
+const { deleteFile } = useDeleteFile();
+const { downloadFile } = useDownloadFile();
+const { copyFile } = useCopyFile();
 const { storage } = useStorage();
 const { notify } = useNotification();
 
@@ -42,7 +42,7 @@ const handleCopyFiles = async () => {
   try {
     await Promise.all(
       selectedFiles.value.map((file) => {
-        return copyFile.copy(file, props.fileList);
+        return copyFile(file, props.fileList);
       })
     );
   } catch (error: any) {
@@ -55,7 +55,7 @@ const handleCopyFiles = async () => {
 const handleDownloadFiles = () => {
   selectedFiles.value.forEach((file, index) => {
     const download = () => {
-      downloadFile.download(file);
+      downloadFile(file);
     };
     setTimeout(download, Number(`${index}000`));
   });
@@ -64,7 +64,7 @@ const handleDownloadFiles = () => {
 
 const handleDeleteFiles = async () => {
   try {
-    await deleteFile.remove(selectedFiles.value);
+    await deleteFile(selectedFiles.value);
   } catch (error: any) {
     notify("error", error.message);
   }
