@@ -47,14 +47,13 @@
   @include largeScreenPlus {
     gap: 4rem;
   }
-}
-
-.skeleton__buttons--button {
-  width: 230px;
-  border-radius: 16px;
-  background-color: $color-grey-lighter;
-  height: 44px;
-  flex-basis: 50%;
+  &--button {
+    width: 230px;
+    border-radius: 16px;
+    background-color: $color-grey-lighter;
+    height: 44px;
+    flex-basis: 50%;
+  }
 }
 
 .skeleton__image,
