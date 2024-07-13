@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { SortOption } from "@/types/SortOptions";
+import { FileObjectKeys } from "@/types/FileObjectKeys";
+
 const SortUp = resolveComponent("SortUp");
 const SortDown = resolveComponent("SortDown");
 
@@ -76,7 +78,7 @@ const selectOption = (chosenOption: SortOption) => {
   highlightedOptionIndex.value = sortOptions.findIndex(
     (option) => option.label === selectedOption.value
   );
-  sortColumn.value = chosenOption.column;
+  sortColumn.value = chosenOption.column as FileObjectKeys;
   sortOrder.value = chosenOption.order;
   emit("setSortOptions");
 };
@@ -191,19 +193,17 @@ const selectOptionByKeyboard = () => {
   &:hover {
     background-color: $color-green-light-hover;
   }
+  &--selected {
+    font-weight: 800;
+  }
+  &--highlighted {
+    background-color: $color-green-light;
+  }
 }
 
 @for $i from 1 through 7 {
   .sort__option:nth-child(#{$i}) {
     border-bottom: 1px solid $color-green-light;
   }
-}
-
-.sort__option--selected {
-  font-weight: 800;
-}
-
-.sort__option--highlighted {
-  background-color: $color-green-light;
 }
 </style>
