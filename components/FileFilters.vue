@@ -10,7 +10,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: FilterParams): void;
-  (e: "set-filters-options"): void;
 }>();
 
 const { storage } = useStorage();
@@ -21,32 +20,16 @@ const { data: fileTypes } = await useFetch<string[]>(`/api/types`, {
 
 const isFilterOpen = ref(false);
 
-const filters = ref<FilterParams>({
-  name: "",
-  types: [],
-  sizeMin: 0,
-  sizeMax: MAX_FILE_SIZE_MB,
-  dates: [],
-});
+// deep clone to prevent reactivity leaking to the parent
+const filters = ref<FilterParams>(JSON.parse(JSON.stringify(props.modelValue)));
 
 const activeFilters = computed(() => {
   let activeFilters = 0;
-
-  if (filters.value.name) {
-    activeFilters = 1;
-  }
-  if (filters.value.types && filters.value.types.length >= 1) {
-    activeFilters = activeFilters + 1;
-  }
-  if (
-    filters.value.sizeMin !== 0 ||
-    filters.value.sizeMax !== MAX_FILE_SIZE_MB
-  ) {
-    activeFilters = activeFilters + 1;
-  }
-  if (isDateValid.value && filters.value.dates?.length) {
-    activeFilters = activeFilters + 1;
-  }
+  if (filters.value.name) activeFilters = 1;
+  if (filters.value.types.length) activeFilters += 1;
+  if (filters.value.sizeMin !== 0 || filters.value.sizeMax !== MAX_FILE_SIZE_MB)
+    activeFilters += 1;
+  if (isDateValid.value && filters.value.dates?.length) activeFilters += 1;
   return activeFilters;
 });
 
@@ -72,20 +55,25 @@ const resetFilters = () => {
 const handleClear = () => {
   resetFilters();
   emit("update:modelValue", filters.value);
-  emit("set-filters-options");
   isFilterOpen.value = false;
 };
 
 const handleConfirm = () => {
-  console.log("handleConfirm fired");
   emit("update:modelValue", filters.value);
-  emit("set-filters-options");
   isFilterOpen.value = false;
 };
 
+// Watch for changes to props.modelValue and update filters only if necessary
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    filters.value = JSON.parse(JSON.stringify(newValue));
+  },
+  { deep: true }
+);
+
 watch(storage.value, () => {
-  resetFilters();
-  isFilterOpen.value = false;
+  handleClear();
 });
 </script>
 
@@ -109,33 +97,40 @@ watch(storage.value, () => {
       <div v-if="isFilterOpen" class="filters__selection">
         <div class="filters__filter">
           <BaseInput
-            v-model="filters.name"
             type="text"
             label="Name includes:"
             name="name-filter"
+            :model-value="filters.name"
+            @update:model-value="($event:string) => (filters.name = $event)"
           />
         </div>
         <div class="filters__filter">
           <BaseMultiselect
-            v-model="filters.types"
-            :file-types="fileTypes"
             label="File type:"
+            :file-types="fileTypes"
+            :model-value="filters.types"
+            @update:model-value="($event:string[]) => (filters.types = $event)"
           />
         </div>
         <div class="filters__filter">
           <BaseMinMaxSlider
-            v-model:min-value="filters.sizeMin"
-            v-model:max-value="filters.sizeMax"
+            label="Size range:"
+            unit="MB"
             :min="0"
             :max="MAX_FILE_SIZE_MB"
             :step="0.01"
-            label="Size range:"
-            unit="MB"
+            :min-value="filters.sizeMin"
+            :max-value="filters.sizeMax"
+            @update:min-value="($event:number) => (filters.sizeMin = $event)"
+            @update:max-value="($event:number) => (filters.sizeMax = $event)"
           />
         </div>
         <div class="filters__filter">
           <p class="filters__filter--label">Time created:</p>
-          <TimeCreatedDatepicker v-model="filters.dates" />
+          <TimeCreatedDatepicker
+            :model-value="filters.dates"
+            @update:model-value="($event:Date[]) => (filters.dates = $event)"
+          />
         </div>
         <div class="filters__actions">
           <BaseButton theme="white" @click="handleClear">
