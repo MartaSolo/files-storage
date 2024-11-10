@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const storageObject = JSON.parse(storage.toString());
 
-  let files: FileObject[];
+  let files: FileObject[] = [];
 
   const { data, error } = await client.storage
     .from(storageObject.bucket)

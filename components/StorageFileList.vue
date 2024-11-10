@@ -10,7 +10,7 @@ const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
 const { storage } = useStorage();
 
-const filters = ref<FilterParams>({
+const filterParams = ref<FilterParams>({
   name: "",
   types: [],
   sizeMin: 0,
@@ -30,20 +30,20 @@ const queryParameters = computed(() => {
     order: sortOrder.value,
     storage: storage.value,
   };
-  if (filters.value.name) {
-    queryObject.name = filters.value.name;
+  if (filterParams.value.name) {
+    queryObject.name = filterParams.value.name;
   }
-  if (filters.value.types?.length) {
-    queryObject.types = filters.value.types.join(",");
+  if (filterParams.value.types?.length) {
+    queryObject.types = filterParams.value.types.join(",");
   }
-  if (filters.value.sizeMin) {
-    queryObject.minSize = filters.value.sizeMin;
+  if (filterParams.value.sizeMin) {
+    queryObject.minSize = filterParams.value.sizeMin;
   }
-  if (filters.value.sizeMax && filters.value.sizeMax < 5) {
-    queryObject.maxSize = filters.value.sizeMax;
+  if (filterParams.value.sizeMax && filterParams.value.sizeMax < 5) {
+    queryObject.maxSize = filterParams.value.sizeMax;
   }
-  if (filters.value.dates?.length) {
-    queryObject.dates = filters.value.dates.join(",");
+  if (filterParams.value.dates?.length) {
+    queryObject.dates = filterParams.value.dates.join(",");
   }
   return queryObject;
 });
@@ -79,10 +79,10 @@ const updateList = () => {
           @files-action="updateList"
         />
         <FileFilters
-          v-model="filters"
+          :model-value="filterParams"
           class="files__menu--filters"
           :file-list="fileList"
-          @set-filters-options="updateList"
+          @update:model-value="($event:FilterParams) => (filterParams = $event)"
         />
         <SortFileList
           class="files__menu--sort"
@@ -161,6 +161,13 @@ const updateList = () => {
   }
 }
 
+:deep(.button .files__menu--switcher) {
+  display: none;
+  @include smallScreen {
+    display: flex;
+  }
+}
+
 .files__list {
   @include customScrollbarGray;
   height: calc(100vh - 230px);
@@ -191,15 +198,6 @@ const updateList = () => {
   }
   @include xxlargeScreen {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  }
-}
-</style>
-
-<style lang="scss">
-.button .files__menu--switcher {
-  display: none;
-  @include smallScreen {
-    display: flex;
   }
 }
 </style>

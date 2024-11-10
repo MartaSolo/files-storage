@@ -10,7 +10,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: FilterParams): void;
-  (e: "set-filters-options"): void;
 }>();
 
 const { storage } = useStorage();
@@ -21,110 +20,17 @@ const { data: fileTypes } = await useFetch<string[]>(`/api/types`, {
 
 const isFilterOpen = ref(false);
 
-const publicFilters = reactive<FilterParams>({
-  name: "",
-  types: [],
-  sizeMin: 0,
-  sizeMax: MAX_FILE_SIZE_MB,
-  dates: [],
-});
-
-const privateFilters = reactive<FilterParams>({
-  name: "",
-  types: [],
-  sizeMin: 0,
-  sizeMax: MAX_FILE_SIZE_MB,
-  dates: [],
-});
-
-const nameModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.name
-      : publicFilters.name;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.name = newValue)
-      : (publicFilters.name = newValue);
-  },
-});
-
-const typeModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.types
-      : publicFilters.types;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.types = newValue)
-      : (publicFilters.types = newValue);
-  },
-});
-
-const sizeMinModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.sizeMin
-      : publicFilters.sizeMin;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.sizeMin = newValue)
-      : (publicFilters.sizeMin = newValue);
-  },
-});
-
-const sizeMaxModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.sizeMax
-      : publicFilters.sizeMax;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.sizeMax = newValue)
-      : (publicFilters.sizeMax = newValue);
-  },
-});
-
-const datesModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.dates
-      : publicFilters.dates;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.dates = newValue)
-      : (publicFilters.dates = newValue);
-  },
-});
+// deep clone to prevent reactivity leaking to the parent
+const filters = ref<FilterParams>(JSON.parse(JSON.stringify(props.modelValue)));
 
 const activeFilters = computed(() => {
   let activeFilters = 0;
-
-  if (filters.value.name) {
-    activeFilters = 1;
-  }
-  if (filters.value.types && filters.value.types.length >= 1) {
-    activeFilters = activeFilters + 1;
-  }
-  if (
-    filters.value.sizeMin !== 0 ||
-    filters.value.sizeMax !== MAX_FILE_SIZE_MB
-  ) {
-    activeFilters = activeFilters + 1;
-  }
-  if (isDateValid.value && filters.value.dates?.length) {
-    activeFilters = activeFilters + 1;
-  }
+  if (filters.value.name) activeFilters = 1;
+  if (filters.value.types.length) activeFilters += 1;
+  if (filters.value.sizeMin !== 0 || filters.value.sizeMax !== MAX_FILE_SIZE_MB)
+    activeFilters += 1;
+  if (isDateValid.value && filters.value.dates?.length) activeFilters += 1;
   return activeFilters;
-});
-
-const filters = computed(() => {
-  return storage.value.bucket === "private" ? privateFilters : publicFilters;
 });
 
 const toggleFilters = () => {
@@ -139,38 +45,35 @@ const isDateValid = computed(() => {
 });
 
 const resetFilters = () => {
-  if (storage.value.bucket === "private") {
-    privateFilters.name = "";
-    privateFilters.types = [];
-    privateFilters.sizeMin = 0;
-    privateFilters.sizeMax = MAX_FILE_SIZE_MB;
-    privateFilters.dates = [];
-  } else {
-    publicFilters.name = "";
-    publicFilters.types = [];
-    publicFilters.sizeMin = 0;
-    publicFilters.sizeMax = MAX_FILE_SIZE_MB;
-    publicFilters.dates = [];
-  }
+  filters.value.name = "";
+  filters.value.types = [];
+  filters.value.sizeMin = 0;
+  filters.value.sizeMax = MAX_FILE_SIZE_MB;
+  filters.value.dates = [];
 };
 
 const handleClear = () => {
   resetFilters();
   emit("update:modelValue", filters.value);
-  emit("set-filters-options");
   isFilterOpen.value = false;
 };
 
 const handleConfirm = () => {
   emit("update:modelValue", filters.value);
-  emit("set-filters-options");
   isFilterOpen.value = false;
 };
 
+// Watch for changes to props.modelValue and update filters only if necessary
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    filters.value = JSON.parse(JSON.stringify(newValue));
+  },
+  { deep: true }
+);
+
 watch(storage.value, () => {
-  emit("update:modelValue", filters.value);
-  emit("set-filters-options");
-  isFilterOpen.value = false;
+  handleClear();
 });
 </script>
 
@@ -194,41 +97,48 @@ watch(storage.value, () => {
       <div v-if="isFilterOpen" class="filters__selection">
         <div class="filters__filter">
           <BaseInput
-            v-model="nameModel"
             type="text"
             label="Name includes:"
             name="name-filter"
+            :model-value="filters.name"
+            @update:model-value="($event:string) => (filters.name = $event)"
           />
         </div>
         <div class="filters__filter">
           <BaseMultiselect
-            v-model="typeModel"
-            :file-types="fileTypes"
             label="File type:"
+            :file-types="fileTypes"
+            :model-value="filters.types"
+            @update:model-value="($event:string[]) => (filters.types = $event)"
           />
         </div>
         <div class="filters__filter">
           <BaseMinMaxSlider
-            v-model:min-value="sizeMinModel"
-            v-model:max-value="sizeMaxModel"
+            label="Size range:"
+            unit="MB"
             :min="0"
             :max="MAX_FILE_SIZE_MB"
             :step="0.01"
-            label="Size range:"
-            unit="MB"
+            :min-value="filters.sizeMin"
+            :max-value="filters.sizeMax"
+            @update:min-value="($event:number) => (filters.sizeMin = $event)"
+            @update:max-value="($event:number) => (filters.sizeMax = $event)"
           />
         </div>
         <div class="filters__filter">
           <p class="filters__filter--label">Time created:</p>
-          <TimeCreatedDatepicker v-model="datesModel" />
+          <TimeCreatedDatepicker
+            :model-value="filters.dates"
+            @update:model-value="($event:Date[]) => (filters.dates = $event)"
+          />
         </div>
         <div class="filters__actions">
-          <BaseButton theme="white" @click="handleClear"
-            >Clear filters</BaseButton
-          >
-          <BaseButton :disabled="!isDateValid" @click="handleConfirm"
-            >Confirm</BaseButton
-          >
+          <BaseButton theme="white" @click="handleClear">
+            Clear filters
+          </BaseButton>
+          <BaseButton :disabled="!isDateValid" @click="handleConfirm">
+            Confirm
+          </BaseButton>
         </div>
       </div>
     </Transition>
