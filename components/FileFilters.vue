@@ -21,85 +21,12 @@ const { data: fileTypes } = await useFetch<string[]>(`/api/types`, {
 
 const isFilterOpen = ref(false);
 
-const publicFilters = reactive<FilterParams>({
+const filters = ref<FilterParams>({
   name: "",
   types: [],
   sizeMin: 0,
   sizeMax: MAX_FILE_SIZE_MB,
   dates: [],
-});
-
-const privateFilters = reactive<FilterParams>({
-  name: "",
-  types: [],
-  sizeMin: 0,
-  sizeMax: MAX_FILE_SIZE_MB,
-  dates: [],
-});
-
-const nameModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.name
-      : publicFilters.name;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.name = newValue)
-      : (publicFilters.name = newValue);
-  },
-});
-
-const typeModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.types
-      : publicFilters.types;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.types = newValue)
-      : (publicFilters.types = newValue);
-  },
-});
-
-const sizeMinModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.sizeMin
-      : publicFilters.sizeMin;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.sizeMin = newValue)
-      : (publicFilters.sizeMin = newValue);
-  },
-});
-
-const sizeMaxModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.sizeMax
-      : publicFilters.sizeMax;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.sizeMax = newValue)
-      : (publicFilters.sizeMax = newValue);
-  },
-});
-
-const datesModel = computed({
-  get() {
-    return storage.value.bucket === "private"
-      ? privateFilters.dates
-      : publicFilters.dates;
-  },
-  set(newValue) {
-    return storage.value.bucket === "private"
-      ? (privateFilters.dates = newValue)
-      : (publicFilters.dates = newValue);
-  },
 });
 
 const activeFilters = computed(() => {
@@ -123,10 +50,6 @@ const activeFilters = computed(() => {
   return activeFilters;
 });
 
-const filters = computed(() => {
-  return storage.value.bucket === "private" ? privateFilters : publicFilters;
-});
-
 const toggleFilters = () => {
   isFilterOpen.value = !isFilterOpen.value;
 };
@@ -139,19 +62,11 @@ const isDateValid = computed(() => {
 });
 
 const resetFilters = () => {
-  if (storage.value.bucket === "private") {
-    privateFilters.name = "";
-    privateFilters.types = [];
-    privateFilters.sizeMin = 0;
-    privateFilters.sizeMax = MAX_FILE_SIZE_MB;
-    privateFilters.dates = [];
-  } else {
-    publicFilters.name = "";
-    publicFilters.types = [];
-    publicFilters.sizeMin = 0;
-    publicFilters.sizeMax = MAX_FILE_SIZE_MB;
-    publicFilters.dates = [];
-  }
+  filters.value.name = "";
+  filters.value.types = [];
+  filters.value.sizeMin = 0;
+  filters.value.sizeMax = MAX_FILE_SIZE_MB;
+  filters.value.dates = [];
 };
 
 const handleClear = () => {
@@ -162,14 +77,14 @@ const handleClear = () => {
 };
 
 const handleConfirm = () => {
+  console.log("handleConfirm fired");
   emit("update:modelValue", filters.value);
   emit("set-filters-options");
   isFilterOpen.value = false;
 };
 
 watch(storage.value, () => {
-  emit("update:modelValue", filters.value);
-  emit("set-filters-options");
+  resetFilters();
   isFilterOpen.value = false;
 });
 </script>
@@ -194,7 +109,7 @@ watch(storage.value, () => {
       <div v-if="isFilterOpen" class="filters__selection">
         <div class="filters__filter">
           <BaseInput
-            v-model="nameModel"
+            v-model="filters.name"
             type="text"
             label="Name includes:"
             name="name-filter"
@@ -202,15 +117,15 @@ watch(storage.value, () => {
         </div>
         <div class="filters__filter">
           <BaseMultiselect
-            v-model="typeModel"
+            v-model="filters.types"
             :file-types="fileTypes"
             label="File type:"
           />
         </div>
         <div class="filters__filter">
           <BaseMinMaxSlider
-            v-model:min-value="sizeMinModel"
-            v-model:max-value="sizeMaxModel"
+            v-model:min-value="filters.sizeMin"
+            v-model:max-value="filters.sizeMax"
             :min="0"
             :max="MAX_FILE_SIZE_MB"
             :step="0.01"
@@ -220,15 +135,15 @@ watch(storage.value, () => {
         </div>
         <div class="filters__filter">
           <p class="filters__filter--label">Time created:</p>
-          <TimeCreatedDatepicker v-model="datesModel" />
+          <TimeCreatedDatepicker v-model="filters.dates" />
         </div>
         <div class="filters__actions">
-          <BaseButton theme="white" @click="handleClear"
-            >Clear filters</BaseButton
-          >
-          <BaseButton :disabled="!isDateValid" @click="handleConfirm"
-            >Confirm</BaseButton
-          >
+          <BaseButton theme="white" @click="handleClear">
+            Clear filters
+          </BaseButton>
+          <BaseButton :disabled="!isDateValid" @click="handleConfirm">
+            Confirm
+          </BaseButton>
         </div>
       </div>
     </Transition>

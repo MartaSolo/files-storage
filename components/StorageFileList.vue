@@ -59,6 +59,14 @@ const {
 const updateList = () => {
   refresh();
 };
+
+watch(
+  filters,
+  () => {
+    console.log("watch filters");
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -79,10 +87,10 @@ const updateList = () => {
           @files-action="updateList"
         />
         <FileFilters
-          v-model="filters"
+          :model-value="filters"
           class="files__menu--filters"
           :file-list="fileList"
-          @set-filters-options="updateList"
+          @update:model-value="($event:FilterParams) => (filters = $event)"
         />
         <SortFileList
           class="files__menu--sort"
