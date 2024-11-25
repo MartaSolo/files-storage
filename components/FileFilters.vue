@@ -20,8 +20,7 @@ const { data: fileTypes } = await useFetch<string[]>(`/api/types`, {
 
 const isFilterOpen = ref(false);
 
-// deep clone to prevent reactivity leaking to the parent
-const filters = ref<FilterParams>(JSON.parse(JSON.stringify(props.modelValue)));
+const filters = ref<FilterParams>({ ...props.modelValue });
 
 const activeFilters = computed(() => {
   let activeFilters = 0;
@@ -63,15 +62,6 @@ const handleConfirm = () => {
   isFilterOpen.value = false;
 };
 
-// Watch for changes to props.modelValue and update filters only if necessary
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    filters.value = JSON.parse(JSON.stringify(newValue));
-  },
-  { deep: true }
-);
-
 watch(storage.value, () => {
   handleClear();
 });
@@ -95,6 +85,9 @@ watch(storage.value, () => {
     </div>
     <Transition>
       <div v-if="isFilterOpen" class="filters__selection">
+        <button class="filters__close-button" @click="isFilterOpen = false">
+          <CloseIcon />
+        </button>
         <div class="filters__filter">
           <BaseInput
             type="text"
@@ -177,9 +170,15 @@ watch(storage.value, () => {
   right: 10px;
   border-radius: 8px;
   z-index: 99999;
+  display: flex;
+  flex-direction: column;
   @include mediumScreenPlus {
     right: -225px;
   }
+}
+
+.filters__close-button {
+  align-self: end;
 }
 
 .filters__filter {
