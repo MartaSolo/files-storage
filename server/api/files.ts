@@ -1,6 +1,7 @@
 import { FileObject } from "@supabase/storage-js";
 import { FilesQueryParams } from "~~/types/FilesQueryParams";
 import { serverSupabaseClient } from "#supabase/server";
+import { getSortType } from "@/utils/helpers/getSortTypes";
 
 export default defineEventHandler(async (event) => {
   const client = serverSupabaseClient(event);
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   const storageObject = JSON.parse(storage.toString());
 
-  let files: FileObject[];
+  let files: FileObject[] = [];
 
   // fetch data from supabase
   const { data, error } = await client.storage
@@ -24,6 +25,9 @@ export default defineEventHandler(async (event) => {
   if (error) throw error;
 
   files = data;
+
+  // get types of all files
+  const fileTypes = getSortType(undefined, files);
 
   // sort fetched data
   files.sort((e1: FileObject, e2: FileObject) => {
@@ -90,5 +94,8 @@ export default defineEventHandler(async (event) => {
     files = datesFiltered;
   }
 
-  return files;
+  return {
+    files,
+    fileTypes,
+  };
 });
