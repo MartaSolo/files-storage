@@ -4,8 +4,9 @@ export const useCopyFile = () => {
   const client = useSupabaseClient();
 
   const copyFile = async (fileName: string, files: FileObject[]) => {
-    const copyName = useCopyName();
-    const newCopyName = copyName.copyName(fileName, files);
+    const { copyName } = useCopyName();
+    const newCopyName = copyName(fileName, files);
+
     const { storage } = useStorage();
 
     const { data, error } = await client.storage

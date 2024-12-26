@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { FileObject } from "@supabase/storage-js";
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 import { FilterParams } from "@/types/FilterParams";
 
 const props = defineProps<{
-  fileList: FileObject[];
+  fileTypes: string[];
   modelValue: FilterParams;
 }>();
 
@@ -13,10 +12,6 @@ const emit = defineEmits<{
 }>();
 
 const { storage } = useStorage();
-
-const { data: fileTypes } = await useFetch<string[]>(`/api/types`, {
-  query: { storage: storage.value },
-});
 
 const isFilterOpen = ref(false);
 

@@ -49,7 +49,7 @@ const queryParameters = computed(() => {
 });
 
 const {
-  data: fileList,
+  data,
   refresh,
   error: fileListError,
 } = await useFetch<FileObject[]>(`/api/files`, {
@@ -63,7 +63,7 @@ const updateList = () => {
 
 <template>
   <section class="files">
-    <BaseLoader v-if="!fileList" />
+    <BaseLoader v-if="!data.files.length" />
     <ErrorMessage
       v-else-if="fileListError"
       title="Something went wrong"
@@ -71,17 +71,16 @@ const updateList = () => {
     />
     <template v-else>
       <div class="files__menu">
-        <!-- v-if="selectedFiles" added to get rid of hydration errors caused by useSelectedFiles composable -->
         <MultipleFilesMenu
           v-if="selectedFiles"
           class="files__menu--multiple"
-          :file-list="fileList"
+          :file-list="data.files"
           @files-action="updateList"
         />
         <FileFilters
           :model-value="filterParams"
           class="files__menu--filters"
-          :file-list="fileList"
+          :file-types="data.fileTypes"
           @update:model-value="($event:FilterParams) => (filterParams = $event)"
         />
         <SortFileList
@@ -92,10 +91,10 @@ const updateList = () => {
       </div>
       <div class="files__list" :class="computedClass">
         <StorageFileListItem
-          v-for="file in fileList"
+          v-for="file in data.files"
           :key="file.id"
           :file="file"
-          :file-list="fileList"
+          :file-list="data.files"
           @update-file-list="updateList"
         />
       </div>
