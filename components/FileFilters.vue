@@ -15,15 +15,15 @@ const { storage } = useStorage();
 
 const isFilterOpen = ref(false);
 
-const filters = ref<FilterParams>({ ...props.modelValue });
+const filters = reactive<FilterParams>({ ...props.modelValue });
 
 const activeFilters = computed(() => {
   let activeFilters = 0;
-  if (filters.value.name) activeFilters = 1;
-  if (filters.value.types.length) activeFilters += 1;
-  if (filters.value.sizeMin !== 0 || filters.value.sizeMax !== MAX_FILE_SIZE_MB)
+  if (filters.name) activeFilters = 1;
+  if (filters.types.length) activeFilters += 1;
+  if (filters.sizeMin !== 0 || filters.sizeMax !== MAX_FILE_SIZE_MB)
     activeFilters += 1;
-  if (isDateValid.value && filters.value.dates?.length) activeFilters += 1;
+  if (isDateValid.value && filters.dates?.length) activeFilters += 1;
   return activeFilters;
 });
 
@@ -33,27 +33,26 @@ const toggleFilters = () => {
 
 const isDateValid = computed(() => {
   return !(
-    Array.isArray(filters.value.dates) &&
-    filters.value.dates?.some((el) => el === null)
+    Array.isArray(filters.dates) && filters.dates?.some((el) => el === null)
   );
 });
 
 const resetFilters = () => {
-  filters.value.name = "";
-  filters.value.types = [];
-  filters.value.sizeMin = 0;
-  filters.value.sizeMax = MAX_FILE_SIZE_MB;
-  filters.value.dates = [];
+  filters.name = "";
+  filters.types = [];
+  filters.sizeMin = 0;
+  filters.sizeMax = MAX_FILE_SIZE_MB;
+  filters.dates = [];
 };
 
 const handleClear = () => {
   resetFilters();
-  emit("update:modelValue", filters.value);
+  emit("update:modelValue", { ...filters });
   isFilterOpen.value = false;
 };
 
 const handleConfirm = () => {
-  emit("update:modelValue", filters.value);
+  emit("update:modelValue", { ...filters });
   isFilterOpen.value = false;
 };
 
