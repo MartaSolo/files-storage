@@ -3,7 +3,7 @@ withDefaults(
   defineProps<{
     title: string;
     description?: string;
-    type: "error" | "success" | "info";
+    type?: "error" | "success" | "info";
   }>(),
   {
     type: "info",
