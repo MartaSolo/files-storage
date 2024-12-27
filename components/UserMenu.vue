@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { UserMenuOptions } from "@/types/UserMenuOptions";
 
-const router = useRouter();
 const { logout } = useLogoutUser();
 const { checkProfileImage } = useProfileImage();
 const profileImageSource = useProfileImageSource();

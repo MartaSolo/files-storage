@@ -12,10 +12,10 @@ export const useContentScrollOffset = () => {
     }
   };
 
-  const disableScrollOffset  = () => {
+  const disableScrollOffset = () => {
     document.body.style.removeProperty("padding-right");
     document.body.style.overflowY = "auto";
   };
 
-  return { enableScrollOffset , disableScrollOffset  };
+  return { enableScrollOffset, disableScrollOffset };
 };
