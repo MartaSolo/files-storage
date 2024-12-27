@@ -88,7 +88,7 @@ watch(storage.value, () => {
             label="Name includes:"
             name="name-filter"
             :model-value="filters.name"
-            @update:model-value="($event:string) => (filters.name = $event)"
+            @update:model-value="($event) => (filters.name = $event as string)"
           />
         </div>
         <div class="filters__filter">
@@ -116,7 +116,7 @@ watch(storage.value, () => {
           <p class="filters__filter--label">Time created:</p>
           <TimeCreatedDatepicker
             :model-value="filters.dates"
-            @update:model-value="($event:Date[]) => (filters.dates = $event)"
+            @update:model-value="($event) => (filters.dates = $event as Date[])"
           />
         </div>
         <div class="filters__actions">
