@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((to, _from) => {
+export default defineNuxtRouteMiddleware((_to, _from) => {
   const user = useSupabaseUser();
 
   if (!user.value) {
