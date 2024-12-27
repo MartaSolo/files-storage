@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { FileObject } from "@supabase/storage-js";
 import { FilterParams } from "@/types/FilterParams";
 import { FilesQueryParams } from "@/types/FilesQueryParams";
+import { FilesFetchedObject } from "@/types/FilesFetchedObject";
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 
 const sortColumn = useSortColumn();
@@ -50,9 +50,10 @@ const queryParameters = computed(() => {
 
 const {
   data,
+  pending,
   refresh,
   error: fileListError,
-} = await useFetch<FileObject[]>(`/api/files`, {
+} = await useFetch<FilesFetchedObject>(`/api/files`, {
   query: queryParameters,
 });
 
@@ -63,9 +64,10 @@ const updateList = () => {
 
 <template>
   <section class="files">
-    <BaseLoader v-if="!data.files.length" />
-    <ErrorMessage
+    <BaseLoader v-if="pending" />
+    <BaseMessage
       v-else-if="fileListError"
+      type="error"
       title="Something went wrong"
       description="We are sorry, but your files cannot be displayed at the moment."
     />
@@ -74,13 +76,13 @@ const updateList = () => {
         <MultipleFilesMenu
           v-if="selectedFiles"
           class="files__menu--multiple"
-          :file-list="data.files"
+          :file-list="data?.files || []"
           @files-action="updateList"
         />
         <FileFilters
           :model-value="filterParams"
           class="files__menu--filters"
-          :file-types="data.fileTypes"
+          :file-types="data?.fileTypes || []"
           @update:model-value="($event:FilterParams) => (filterParams = $event)"
         />
         <SortFileList
@@ -89,7 +91,7 @@ const updateList = () => {
         />
         <LayoutSwitcher class="files__menu--switcher" />
       </div>
-      <div class="files__list" :class="computedClass">
+      <div v-if="data?.files.length" class="files__list" :class="computedClass">
         <StorageFileListItem
           v-for="file in data.files"
           :key="file.id"
@@ -98,6 +100,7 @@ const updateList = () => {
           @update-file-list="updateList"
         />
       </div>
+      <BaseMessage v-else title="No files found" />
     </template>
   </section>
 </template>

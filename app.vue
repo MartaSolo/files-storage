@@ -10,7 +10,7 @@ onMounted(() => {
 <template>
   <div>
     <BaseLoader v-if="isSessionLoading" />
-    <ErrorMessage v-else-if="sessionError" :description="sessionError" />
+    <BaseMessage v-else-if="sessionError" type="error" :title="sessionError" />
     <NuxtLayout v-else>
       <NuxtPage />
     </NuxtLayout>

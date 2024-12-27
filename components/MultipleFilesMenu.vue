@@ -16,17 +16,13 @@ const emit = defineEmits<{
   (e: "filesAction"): void;
 }>();
 
-const numberOfSelectedFiles = computed(() => {
-  return selectedFiles.value.length;
-});
+const numberOfSelectedFiles = computed(() => selectedFiles.value.length);
 
 const computedWrapperClass = computed(() => {
   return numberOfSelectedFiles.value === 0 ? "inactive" : "";
 });
 
-const isDisabled = computed(() => {
-  return numberOfSelectedFiles.value === 0;
-});
+const isDisabled = computed(() => numberOfSelectedFiles.value === 0);
 
 const numbOfSelectedFilesLabel = computed(() => {
   return numberOfSelectedFiles.value === 1
@@ -129,12 +125,13 @@ watch(storage.value, () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
   &.inactive {
     opacity: 0.5;
   }
-}
 
-.menu__files--label {
-  width: 120px;
+  &--label {
+    width: 120px;
+  }
 }
 </style>

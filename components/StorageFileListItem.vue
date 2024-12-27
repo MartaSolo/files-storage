@@ -41,7 +41,7 @@ const fileSize = computed(() => {
 });
 
 const sortFileType = computed(() => {
-  return `type: ${type}`;
+  return `type: ${type.value[0]}`;
 });
 
 const previewFileType = computed(() => {
