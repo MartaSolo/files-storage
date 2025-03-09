@@ -68,10 +68,10 @@ const handleRename = async () => {
     </template>
     <template #footer>
       <div class="rename__buttons">
-        <BaseButton theme="white" @click="close">Cancel</BaseButton>
-        <BaseButton :disabled="isDisabled" @click="handleRename"
-          >Confirm</BaseButton
-        >
+        <BaseButton theme="white" @click="close"> Cancel </BaseButton>
+        <BaseButton :disabled="isDisabled" @click="handleRename">
+          Confirm
+        </BaseButton>
       </div>
     </template>
   </BaseModal>

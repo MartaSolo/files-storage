@@ -133,17 +133,19 @@ const onUpdatePassword = async (password: string) => {
             <BaseButton
               class="profile__info--button"
               theme="white"
-              type="button"
+              size="small"
               @click="hideNameInput"
-              >Cancel</BaseButton
             >
+              Cancel
+            </BaseButton>
             <BaseButton
               class="profile__info--button"
               theme="light-green"
-              type="button"
+              size="small"
               @click="onUpdateName(newName)"
-              >Update</BaseButton
             >
+              Update
+            </BaseButton>
           </div>
         </div>
       </Transition>
@@ -179,17 +181,19 @@ const onUpdatePassword = async (password: string) => {
             <BaseButton
               class="profile__info--button"
               theme="white"
-              type="button"
+              size="small"
               @click="hideEmailInput"
-              >Cancel</BaseButton
             >
+              Cancel
+            </BaseButton>
             <BaseButton
               class="profile__info--button"
               theme="light-green"
-              type="button"
+              size="small"
               @click="onUpdateEmail(newEmail)"
-              >Update</BaseButton
             >
+              Update
+            </BaseButton>
           </div>
         </div>
       </Transition>
@@ -239,28 +243,30 @@ const onUpdatePassword = async (password: string) => {
             <BaseButton
               class="profile__info--button"
               theme="white"
-              type="button"
+              size="small"
               @click="hidePasswordInput"
-              >Cancel</BaseButton
             >
+              Cancel
+            </BaseButton>
             <BaseButton
               class="profile__info--button"
               theme="light-green"
-              type="button"
+              size="small"
               @click="onUpdatePassword(newPassword)"
-              >Update</BaseButton
             >
+              Update
+            </BaseButton>
           </div>
         </div>
       </Transition>
     </div>
     <div class="profile__update">
-      <BaseNotification v-if="updateUserError" theme="error">{{
-        updateUserError
-      }}</BaseNotification>
-      <BaseNotification v-if="updateUserSuccess" theme="success">{{
-        updateUserSuccess
-      }}</BaseNotification>
+      <BaseNotification v-if="updateUserError" theme="error">
+        {{ updateUserError }}
+      </BaseNotification>
+      <BaseNotification v-if="updateUserSuccess" theme="success">
+        {{ updateUserSuccess }}
+      </BaseNotification>
     </div>
   </form>
 </template>
@@ -299,11 +305,6 @@ const onUpdatePassword = async (password: string) => {
   &--actions {
     display: flex;
     justify-content: space-around;
-  }
-  &--button {
-    font-size: 0.8rem;
-    padding: 0.25rem;
-    min-width: 70px;
   }
 }
 

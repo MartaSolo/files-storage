@@ -97,8 +97,10 @@ const loginUser = async () => {
         }}</span>
       </div>
       <div class="login__actions">
-        <BaseButton theme="white" to="">Cancel</BaseButton>
-        <BaseButton type="submit" :disabled="!isFormValid">Confirm</BaseButton>
+        <BaseButton theme="white" to="/">Cancel</BaseButton>
+        <BaseButton type="submit" :disabled="!isFormValid">
+          Confirm
+        </BaseButton>
       </div>
       <div class="login__redirect">
         <h3 class="login__redirect--title">Don't have an account yet?</h3>
@@ -106,12 +108,14 @@ const loginUser = async () => {
           to="/register"
           class="login__redirect--link"
           theme="light-green"
-          >Register</BaseButton
+          size="large"
         >
+          Register
+        </BaseButton>
       </div>
-      <span v-if="loginError" class="login__error--action">{{
-        loginError
-      }}</span>
+      <span v-if="loginError" class="login__error--action">
+        {{ loginError }}
+      </span>
     </div>
   </form>
 </template>
@@ -133,7 +137,7 @@ const loginUser = async () => {
 .login__content {
   width: 100%;
   max-width: 500px;
-  padding: 0 2rem 0 2rem;
+  padding: 0 1rem;
 }
 
 .login__email,
@@ -171,7 +175,7 @@ const loginUser = async () => {
 
 .login__redirect--title {
   font-size: 1.5rem;
-  padding-bottom: 1rem;
+  padding-bottom: 2rem;
   text-align: center;
   color: $text-color-secondary;
 }

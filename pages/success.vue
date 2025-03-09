@@ -10,9 +10,9 @@ definePageMeta({
     <div class="success__content">
       <h1 class="success__title">You have been registered successfully!</h1>
       <div class="success__actions">
-        <BaseButton theme="white" to="/your-profile"
-          >Go to user page</BaseButton
-        >
+        <BaseButton theme="white" to="/your-profile">
+          Go to user page
+        </BaseButton>
         <BaseButton to="/">Go to your storage</BaseButton>
       </div>
     </div>
