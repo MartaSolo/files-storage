@@ -4,8 +4,8 @@ import { serverSupabaseClient } from "#supabase/server";
 import { getSortType } from "@/utils/helpers/getSortTypes";
 import type { SortOrder } from "@/types/SortOrder";
 import type {
-  FileObjectKey,
-  FileObjectMetadataKey,
+  FileObjectKeys,
+  FileObjectMetadataKeys,
 } from "@/types/FileObjectKeys";
 
 const MB_TO_BYTES = 1000000;
@@ -64,7 +64,7 @@ const filterFiles = (
  */
 const sortFiles = (
   files: FileObject[],
-  key: FileObjectKey | FileObjectMetadataKey,
+  key: FileObjectKeys | FileObjectMetadataKeys,
   order: SortOrder
 ): FileObject[] => {
   const sortOrder = order === "asc" ? 1 : -1;
@@ -72,12 +72,12 @@ const sortFiles = (
   return [...files].sort((e1, e2) => {
     const a =
       key in e1
-        ? e1[key as FileObjectKey]
-        : e1.metadata[key as FileObjectMetadataKey];
+        ? e1[key as FileObjectKeys]
+        : e1.metadata[key as FileObjectMetadataKeys];
     const b =
       key in e2
-        ? e2[key as FileObjectKey]
-        : e2.metadata[key as FileObjectMetadataKey];
+        ? e2[key as FileObjectKeys]
+        : e2.metadata[key as FileObjectMetadataKeys];
 
     if (key === "name") {
       return sortOrder === 1 ? a.localeCompare(b) : b.localeCompare(a);
