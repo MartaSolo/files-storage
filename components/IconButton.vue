@@ -1,30 +1,25 @@
 <script setup lang="ts">
-const props = defineProps<{
-  description: string;
-  theme: "green" | "grey" | "white";
-}>();
+const props = withDefaults(
+  defineProps<{
+    description: string;
+    theme?: "grey" | "green" | "white";
+  }>(),
+  { theme: "grey" }
+);
 
 const isTextDisplayed = ref(false);
 
-const computedClass = computed(() => {
-  return `button__btn--${props.theme}`;
-});
+const computedClass = computed(() => `button__btn--${props.theme}`);
 
-const descriptionWidth = computed(() => {
-  return props.description.length * 7;
-});
+const WIDTH_MULTIPLIER = 7;
 
 const descriptionStyle = computed(() => {
-  return `width:${descriptionWidth.value}px;`;
+  return `width:${props.description.length * WIDTH_MULTIPLIER}px;`;
 });
 
-const showText = () => {
-  isTextDisplayed.value = true;
-};
+const showText = () => (isTextDisplayed.value = true);
 
-const hideText = () => {
-  isTextDisplayed.value = false;
-};
+const hideText = () => (isTextDisplayed.value = false);
 </script>
 
 <script lang="ts">
@@ -64,13 +59,14 @@ export default {
 }
 
 .button__btn {
+  border: none;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   &:disabled {
     cursor: not-allowed;
   }
@@ -102,12 +98,13 @@ export default {
   display: inline-block;
   color: $color-grey-lightest;
   padding: 0.25rem 0;
+  margin-top: 0.25rem;
   border-radius: 5px;
   font-size: 0.75rem;
   position: absolute;
   top: 40px;
   display: flex;
   justify-content: center;
-  z-index: 999999;
+  z-index: 9999;
 }
 </style>
