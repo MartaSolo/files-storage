@@ -114,17 +114,19 @@ const registerUser = async () => {
             <EyeIcon />
           </button>
         </BaseInput>
-        <span v-if="passwordError" class="register__error">{{
-          passwordError
-        }}</span>
+        <span v-if="passwordError" class="register__error">
+          {{ passwordError }}
+        </span>
       </div>
       <div class="register__actions">
         <BaseButton theme="white" to="/">Cancel</BaseButton>
-        <BaseButton type="submit" :disabled="!isFormValid">Confirm</BaseButton>
+        <BaseButton type="submit" :disabled="!isFormValid">
+          Confirm
+        </BaseButton>
       </div>
-      <span v-if="registerError" class="register__error--action">{{
-        registerError
-      }}</span>
+      <span v-if="registerError" class="register__error--action">
+        {{ registerError }}
+      </span>
     </div>
   </form>
 </template>

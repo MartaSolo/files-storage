@@ -18,9 +18,9 @@ onMounted(() => {
       <ProfileUploadPhoto />
     </div>
     <div class="profile__action">
-      <BaseButton theme="light-green" to="/all-files"
-        >Go to your private storage</BaseButton
-      >
+      <BaseButton theme="light-green" to="/all-files" size="large">
+        Go to your private storage
+      </BaseButton>
     </div>
   </section>
 </template>
@@ -55,5 +55,7 @@ onMounted(() => {
   max-width: 300px;
   margin: 2rem 0;
   align-self: center;
+  display: flex;
+  justify-content: center;
 }
 </style>
