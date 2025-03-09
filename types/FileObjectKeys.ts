@@ -1,3 +1,4 @@
 import { FileObject } from "@supabase/storage-js";
 
-export type FileObjectKeys = keyof FileObject;
+export type FileObjectKey = keyof FileObject;
+export type FileObjectMetadataKey = keyof FileObject["metadata"];
