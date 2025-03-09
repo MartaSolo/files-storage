@@ -77,7 +77,6 @@ watch(storage.value, () => {
   <div class="menu__files" :class="computedWrapperClass">
     <IconButton
       description="Clear selection"
-      theme="grey"
       :disabled="isDisabled"
       @click="handleClearSelection"
     >
@@ -88,7 +87,6 @@ watch(storage.value, () => {
     <p class="menu__files--label">{{ numbOfSelectedFilesLabel }}</p>
     <IconButton
       description="Copy files"
-      theme="grey"
       :disabled="isDisabled"
       @click="handleCopyFiles"
     >
@@ -98,7 +96,6 @@ watch(storage.value, () => {
     </IconButton>
     <IconButton
       description="Download files"
-      theme="grey"
       :disabled="isDisabled"
       @click="handleDownloadFiles"
     >
@@ -108,7 +105,6 @@ watch(storage.value, () => {
     </IconButton>
     <IconButton
       description="Delete files"
-      theme="grey"
       :disabled="isDisabled"
       @click="handleDeleteFiles"
     >

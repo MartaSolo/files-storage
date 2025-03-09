@@ -164,7 +164,6 @@ onBeforeUnmount(() => {
   <div ref="root" class="menu">
     <IconButton
       description="More actions"
-      theme="grey"
       @click="toggleMenu"
       @keydown.up.prevent="highlightPrev"
       @keydown.down.prevent="highlightNext"
