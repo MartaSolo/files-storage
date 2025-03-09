@@ -5,11 +5,11 @@ const ListLayout = resolveComponent("ListLayout");
 const layoutType = useLayoutType();
 
 const descriptionText = computed(() => {
-  return layoutType.value === "grid" ? "Grid layout" : "List layout";
+  return layoutType.value === "grid" ? "List layout" : "Grid layout";
 });
 
 const layoutComponent = computed(() => {
-  return layoutType.value === "grid" ? GridLayout : ListLayout;
+  return layoutType.value === "grid" ? ListLayout : GridLayout;
 });
 
 const toggleLayout = () => {
@@ -20,7 +20,7 @@ const toggleLayout = () => {
 </script>
 
 <template>
-  <IconButton :description="descriptionText" theme="grey" @click="toggleLayout">
+  <IconButton :description="descriptionText" @click="toggleLayout">
     <template #icon>
       <component :is="layoutComponent" />
     </template>
