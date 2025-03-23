@@ -3,7 +3,7 @@ type Theme = "success" | "error" | "";
 const theme = ref<Theme>("");
 const text = ref("");
 const isOpen = ref(false);
-const time = ref(10000);
+const time = ref(5000);
 const timeout = ref();
 
 export const useNotification = () => {
