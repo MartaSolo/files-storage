@@ -8,7 +8,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="app">
     <BaseLoader v-if="isSessionLoading" />
     <BaseMessage v-else-if="sessionError" type="error" :title="sessionError" />
     <NuxtLayout v-else>
@@ -17,3 +17,9 @@ onMounted(() => {
     <BaseNotification />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.app {
+  position: relative;
+}
+</style>
