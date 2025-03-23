@@ -1,3 +1,28 @@
+<template>
+  <div
+    class="input"
+    :class="[
+      'input',
+      { 'input--error': errorMessage },
+      { 'input--success': valid && !errorMessage },
+    ]"
+  >
+    <label v-if="label" class="input__label" :for="name">{{ label }}</label>
+    <input
+      :id="name"
+      v-bind="$attrs"
+      class="input__input"
+      :value="modelValue"
+      :placeholder="placeholder"
+      @input="onInput"
+    />
+    <slot />
+    <span v-if="errorMessage" class="input__error-message">{{
+      errorMessage
+    }}</span>
+  </div>
+</template>
+
 <script setup lang="ts">
 withDefaults(
   defineProps<{
@@ -5,10 +30,14 @@ withDefaults(
     label?: string;
     modelValue: string | number;
     placeholder?: string;
+    errorMessage?: string;
+    valid?: boolean;
   }>(),
   {
     label: "",
     placeholder: "",
+    errorMessage: "",
+    valid: false,
   }
 );
 
@@ -22,46 +51,47 @@ const onInput = (e: Event) => {
 };
 </script>
 
-<template>
-  <div class="input">
-    <label v-if="label" class="input__label" :for="name">{{ label }}</label>
-    <input
-      :id="name"
-      v-bind="$attrs"
-      class="input__input"
-      :value="modelValue"
-      :placeholder="placeholder"
-      @input="onInput"
-    />
-    <slot />
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .input {
   max-width: 100%;
   display: flex;
-  align-items: center;
-}
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
 
-.input__label {
-  padding-right: 0.5rem;
-}
+  &__label {
+    padding: 0 0.5rem 0.25rem 0;
+  }
 
-.input__input {
-  border: 1px solid $color-grey-light;
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
-  flex-grow: 2;
-  width: 100%;
-  &.error {
+  &__input {
+    border: 1px solid $color-grey-light;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    flex-grow: 2;
+    width: 100%;
+    &[type="number"] {
+      width: 80%;
+    }
+  }
+
+  &__error-message {
+    padding-top: 0.3rem;
+    font-size: 0.7rem;
+    line-height: 0.7rem;
+    color: $text-color-error;
+    display: block;
+  }
+
+  &--error {
+    margin-bottom: 1rem;
+  }
+
+  &--error .input__input {
     border: 1px solid $text-color-error;
   }
-  &.success {
+
+  &--success .input__input {
     border: 1px solid $text-color-success;
-  }
-  &[type="number"] {
-    width: 80%;
   }
 }
 </style>
