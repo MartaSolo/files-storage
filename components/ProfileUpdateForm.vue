@@ -1,109 +1,9 @@
-<script setup lang="ts">
-const user = useSupabaseUser();
-
-const { validateName, handleNameInput, nameError } = useValidateName();
-const { validateEmail, handleEmailInput, emailError } = useValidateEmail();
-const { validatePassword, handlePasswordInput, passwordError } =
-  useValidatePassword();
-
-const {
-  updateName,
-  updateEmail,
-  updatePassword,
-  updateUserError,
-  updateUserSuccess,
-} = useUpdateUser();
-
-const editName = ref(false);
-const editEmail = ref(false);
-const editPassword = ref(false);
-const newName = ref("");
-const newEmail = ref("");
-const newPassword = ref("");
-const passwordInputType = ref("password");
-
-const validationClasses = (error: string, inputValue: string) => {
-  return [error ? "error" : "", inputValue && !error ? "success" : ""];
-};
-
-const toggleEditName = () => {
-  if (editName.value) {
-    hideNameInput();
-  } else {
-    editName.value = true;
-  }
-};
-
-const toggleEditEmail = () => {
-  if (editEmail.value) {
-    hideEmailInput();
-  } else {
-    editEmail.value = true;
-  }
-};
-
-const toggleEditPassword = () => {
-  if (editPassword.value) {
-    hidePasswordInput();
-  } else {
-    editPassword.value = true;
-  }
-};
-
-const hideNameInput = () => {
-  editName.value = false;
-  nameError.value = "";
-  newName.value = "";
-};
-
-const hideEmailInput = () => {
-  editEmail.value = false;
-  emailError.value = "";
-  newEmail.value = "";
-};
-
-const hidePasswordInput = () => {
-  editPassword.value = false;
-  passwordError.value = "";
-  newPassword.value = "";
-};
-
-const toggleShowPassword = () => {
-  return passwordInputType.value === "password"
-    ? (passwordInputType.value = "text")
-    : (passwordInputType.value = "password");
-};
-
-const resetFormMessages = () => {
-  updateUserError.value = "";
-  updateUserSuccess.value = "";
-};
-
-const onUpdateName = async (name: string) => {
-  resetFormMessages();
-  await updateName(name);
-  if (!updateUserError.value) editName.value = false;
-};
-
-const onUpdateEmail = async (email: string) => {
-  resetFormMessages();
-  await updateEmail(email);
-  if (!updateUserError.value) editEmail.value = false;
-};
-
-const onUpdatePassword = async (password: string) => {
-  resetFormMessages();
-  await updatePassword(password);
-  if (!updateUserError.value) editPassword.value = false;
-};
-</script>
-
 <template>
   <form class="profile__form">
     <div class="profile__info">
-      <span class="profile__info--name">Name</span>
-      <div class="profile__info--data">
-        <p class="profile__info--user">
+      <span class="profile__name">Name</span>
+      <div class="profile__data">
+        <p class="profile__user">
           {{ user?.user_metadata.first_name }}
         </p>
         <IconButton
@@ -120,16 +20,15 @@ const onUpdatePassword = async (password: string) => {
       <Transition name="slide">
         <div v-if="editName" class="profile__info--edit">
           <BaseInput
-            v-model.trim="newName"
+            v-model.trim="name"
             name="new-name"
-            class="profile__info--input"
-            :class="validationClasses(nameError, newName)"
+            class="profile__input"
             placeholder="New name"
-            @input="handleNameInput(newName)"
-            @blur="validateName(newName)"
+            :error-message="nameError"
+            :valid="nameSuccess"
+            @blur="nameTouched = true"
           />
-          <span v-if="nameError" class="profile__error">{{ nameError }}</span>
-          <div class="profile__info--actions">
+          <div class="profile__actions">
             <BaseButton
               class="profile__info--button"
               theme="white"
@@ -142,7 +41,7 @@ const onUpdatePassword = async (password: string) => {
               class="profile__info--button"
               theme="light-green"
               size="small"
-              @click="onUpdateName(newName)"
+              @click="onUpdateName(name)"
             >
               Update
             </BaseButton>
@@ -151,9 +50,9 @@ const onUpdatePassword = async (password: string) => {
       </Transition>
     </div>
     <div class="profile__info">
-      <span class="profile__info--name">Email</span>
-      <div class="profile__info--data">
-        <p class="profile__info--user">{{ user?.email }}</p>
+      <span class="profile__name">Email</span>
+      <div class="profile__data">
+        <p class="profile__user">{{ user?.email }}</p>
         <IconButton
           description="Edit email"
           theme="white"
@@ -168,16 +67,15 @@ const onUpdatePassword = async (password: string) => {
       <Transition name="slide">
         <div v-if="editEmail" class="profile__info--edit">
           <BaseInput
-            v-model.trim="newEmail"
+            v-model.trim="email"
             name="new-email"
-            class="profile__info--input"
-            :class="validationClasses(emailError, newEmail)"
+            class="profile__input"
             placeholder="email@email.com"
-            @input="handleEmailInput(newEmail)"
-            @blur="validateEmail(newEmail)"
+            :error-message="emailError"
+            :valid="emailSuccess"
+            @blur="emailTouched = true"
           />
-          <span v-if="emailError" class="profile__error">{{ emailError }}</span>
-          <div class="profile__info--actions">
+          <div class="profile__actions">
             <BaseButton
               class="profile__info--button"
               theme="white"
@@ -190,7 +88,7 @@ const onUpdatePassword = async (password: string) => {
               class="profile__info--button"
               theme="light-green"
               size="small"
-              @click="onUpdateEmail(newEmail)"
+              @click="onUpdateEmail(email)"
             >
               Update
             </BaseButton>
@@ -199,9 +97,9 @@ const onUpdatePassword = async (password: string) => {
       </Transition>
     </div>
     <div class="profile__info">
-      <span class="profile__info--name">Password</span>
-      <div class="profile__info--data">
-        <p class="profile__info--user">**********</p>
+      <span class="profile__name">Password</span>
+      <div class="profile__data">
+        <p class="profile__user">**********</p>
         <IconButton
           description="Edit password"
           theme="white"
@@ -221,25 +119,22 @@ const onUpdatePassword = async (password: string) => {
           >
           </BaseAccordion>
           <BaseInput
-            v-model.trim="newPassword"
+            v-model.trim="password"
             name="new-password"
-            class="profile__info--input"
-            :class="validationClasses(passwordError, newPassword)"
+            class="profile__input"
             :type="passwordInputType"
             placeholder="New password"
-            @input="handlePasswordInput(newPassword)"
-            @blur="validatePassword(newPassword)"
+            :error-message="passwordError"
+            :valid="passwordSuccess"
+            @blur="passwordTouched = true"
             ><button
               type="button"
-              class="profile__password--button"
+              class="profile__icon"
               @click="toggleShowPassword"
             >
               <EyeIcon /></button
           ></BaseInput>
-          <span v-if="passwordError" class="profile__error">{{
-            passwordError
-          }}</span>
-          <div class="profile__info--actions">
+          <div class="profile__actions">
             <BaseButton
               class="profile__info--button"
               theme="white"
@@ -252,7 +147,7 @@ const onUpdatePassword = async (password: string) => {
               class="profile__info--button"
               theme="light-green"
               size="small"
-              @click="onUpdatePassword(newPassword)"
+              @click="onUpdatePassword(password)"
             >
               Update
             </BaseButton>
@@ -260,65 +155,159 @@ const onUpdatePassword = async (password: string) => {
         </div>
       </Transition>
     </div>
-    <div class="profile__update">
-      <BaseNotification v-if="updateUserError" theme="error">
-        {{ updateUserError }}
-      </BaseNotification>
-      <BaseNotification v-if="updateUserSuccess" theme="success">
-        {{ updateUserSuccess }}
-      </BaseNotification>
-    </div>
   </form>
 </template>
 
-<style lang="scss" scoped>
-.profile__form {
-  @include mediumScreen {
-    flex-basis: 50%;
-  }
-}
+<script setup lang="ts">
+const user = useSupabaseUser();
 
-.profile__info {
-  margin-bottom: 2rem;
-  &--name {
+const { name, nameError, nameSuccess, nameTouched, isNameValid } =
+  useValidateName();
+
+const { email, emailTouched, emailError, emailSuccess, isEmailValid } =
+  useValidateEmail();
+
+const {
+  password,
+  passwordTouched,
+  passwordError,
+  passwordSuccess,
+  isPasswordValid,
+} = useValidatePassword();
+
+const {
+  updateName,
+  updateEmail,
+  updatePassword,
+  updateUserError,
+  updateUserSuccess,
+} = useUpdateUser();
+
+const { notify } = useNotification();
+
+const editName = ref(false);
+const editEmail = ref(false);
+const editPassword = ref(false);
+const passwordInputType = ref("password");
+
+const toggleEditName = () => {
+  editName.value ? hideNameInput() : (editName.value = true);
+};
+
+const toggleEditEmail = () => {
+  editEmail.value ? hideEmailInput() : (editEmail.value = true);
+};
+
+const toggleEditPassword = () => {
+  editPassword.value ? hidePasswordInput() : (editPassword.value = true);
+};
+
+const hideNameInput = () => {
+  editName.value = false;
+  nameError.value = "";
+  name.value = "";
+  nameTouched.value = false;
+};
+
+const hideEmailInput = () => {
+  editEmail.value = false;
+  emailError.value = "";
+  email.value = "";
+  emailTouched.value = false;
+};
+
+const hidePasswordInput = () => {
+  editPassword.value = false;
+  passwordError.value = "";
+  password.value = "";
+  passwordTouched.value = false;
+};
+
+const toggleShowPassword = () => {
+  return passwordInputType.value === "password"
+    ? (passwordInputType.value = "text")
+    : (passwordInputType.value = "password");
+};
+
+const resetFormMessages = () => {
+  updateUserError.value = "";
+  updateUserSuccess.value = "";
+};
+
+const showNotification = () => {
+  updateUserError.value
+    ? notify("error", updateUserError.value)
+    : notify("success", updateUserSuccess.value);
+};
+
+const onUpdateName = async (name: string) => {
+  if (!isNameValid.value) return;
+  resetFormMessages();
+  await updateName(name);
+  if (!updateUserError.value) hideNameInput();
+  showNotification();
+};
+
+const onUpdateEmail = async (email: string) => {
+  if (!isEmailValid.value) return;
+  resetFormMessages();
+  await updateEmail(email);
+  if (!updateUserError.value) hideEmailInput();
+  showNotification();
+};
+
+const onUpdatePassword = async (password: string) => {
+  if (!isPasswordValid.value) return;
+  resetFormMessages();
+  await updatePassword(password);
+  if (!updateUserError.value) hidePasswordInput();
+  showNotification();
+};
+</script>
+
+<style lang="scss" scoped>
+.profile {
+  &__form {
+    @include mediumScreen {
+      flex-basis: 50%;
+    }
+  }
+
+  &__info {
+    margin-bottom: 2rem;
+  }
+
+  &__name {
     display: inline-block;
     padding: 0 0 0.5rem 0.5rem;
     color: $text-color-secondary;
     font-size: 0.8rem;
   }
-  &--data {
+
+  &__data {
     border-bottom: 1px solid $color-grey-light;
     display: flex;
     margin-bottom: 1rem;
   }
-  &--user {
+
+  &__user {
     flex-grow: 1;
     padding: 0.5rem 0.75rem;
   }
-  &--input {
-    padding-bottom: 1.5rem;
+
+  &__input {
     position: relative;
-    &.error {
-      padding-bottom: 0;
-    }
   }
-  &--actions {
+
+  &__actions {
     display: flex;
     justify-content: space-around;
   }
-}
 
-.profile__password--button {
-  position: absolute;
-  right: 5px;
-}
-
-.profile__error {
-  font-size: 0.8rem;
-  color: $text-color-error;
-  line-height: 1.2;
-  display: block;
-  padding: 0.2rem 0.6rem 0.3rem 0.5rem;
+  &__icon {
+    position: absolute;
+    right: 5px;
+  }
 }
 
 .slide-enter-active {
