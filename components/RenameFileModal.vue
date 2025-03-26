@@ -6,13 +6,14 @@
       </template>
       <template #body>
         <div
-          class="rename__input"
-          :class="{ 'rename__input--error': errorMessage }"
+          class="rename__input-wrapper"
+          :class="{ 'rename__input-wrapper--error': errorMessage }"
         >
           <BaseInput
             v-model="newFileName"
             name="rename"
             type="text"
+            class="rename__input"
             @blur="inputTouched = true"
             @focus="handleInputFocus"
           >
@@ -77,7 +78,7 @@ const handleRename = async () => {
 
 <style lang="scss" scoped>
 .rename {
-  &__input {
+  &__input-wrapper {
     margin-bottom: 3rem;
     width: 100%;
     max-width: 420px;
@@ -87,10 +88,15 @@ const handleRename = async () => {
     :deep(.input) {
       margin-bottom: 0;
     }
+
+    &--error {
+      margin-bottom: 0.25rem;
+    }
   }
 
-  &__input--error {
-    margin-bottom: 0.25rem;
+  &__input {
+    flex-direction: row;
+    align-items: center;
   }
 
   &__error {
