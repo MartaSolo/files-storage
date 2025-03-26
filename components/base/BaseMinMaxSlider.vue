@@ -24,33 +24,33 @@
       />
     </div>
     <div class="slider__inputs">
-      <div class="slider__input">
+      <div class="slider__input_wrapper">
         <BaseInput
           name="min-size"
           type="number"
-          class="slider__input--input"
+          class="slider__input"
           :min="min"
           :max="max"
           :model-value="minValue"
           :step="step"
           @input="onInputMin"
         >
-          <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
+          <span v-if="unit" class="slider__unit">{{ unit }}</span>
         </BaseInput>
       </div>
       <div class="slider__dash"></div>
-      <div class="slider__input">
+      <div class="slider__input_wrapper">
         <BaseInput
           name="max-size"
           type="number"
-          class="slider__input--input"
+          class="slider__input"
           :min="min"
           :max="max"
           :model-value="maxValue"
           :step="step"
           @input="onInputMax"
         >
-          <span v-if="unit" class="slider__input--unit">{{ unit }}</span>
+          <span v-if="unit" class="slider__unit">{{ unit }}</span>
         </BaseInput>
       </div>
     </div>
@@ -189,18 +189,18 @@ const onInputMax = (e: Event) => {
     }
   }
 
-  &__input--unit {
+  &__unit {
     padding: 0.5rem 0 0.5rem 0.5rem;
   }
 
-  &__input {
+  &__input-wrapper {
     width: 100px;
     @include smallScreen {
       width: 120px;
     }
   }
 
-  &__input--input {
+  &__input {
     flex-direction: row;
     margin-bottom: 0;
   }

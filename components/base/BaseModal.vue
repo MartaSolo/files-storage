@@ -1,3 +1,31 @@
+<template>
+  <Teleport to="body">
+    <Transition name="modal">
+      <div
+        ref="root"
+        class="modal__mask"
+        @keydown.esc="emit('closeModal')"
+        @keydown.tab="handleFocusTrap"
+      >
+        <div class="modal__container">
+          <button class="modal__button" @click="emit('closeModal')">
+            <CloseIcon />
+          </button>
+          <div class="modal__header">
+            <slot name="header" />
+          </div>
+          <div class="modal__body">
+            <slot name="body" />
+          </div>
+          <div class="modal__footer">
+            <slot name="footer" />
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+</template>
+
 <script setup lang="ts">
 const { enableScrollOffset, disableScrollOffset } = useContentScrollOffset();
 
@@ -44,7 +72,6 @@ const handleFocusTrap = (e: KeyboardEvent) => {
 
 onMounted(() => {
   enableScrollOffset();
-  firstFocusableNode()?.focus();
 });
 
 onUnmounted(() => {
@@ -52,74 +79,48 @@ onUnmounted(() => {
 });
 </script>
 
-<template>
-  <Teleport to="body">
-    <Transition name="modal">
-      <div
-        ref="root"
-        class="modal__mask"
-        @keydown.esc="emit('closeModal')"
-        @keydown.tab="handleFocusTrap"
-      >
-        <div class="modal__container">
-          <button class="modal__button" @click="emit('closeModal')">
-            <CloseIcon />
-          </button>
-          <div class="modal__header">
-            <slot name="header" />
-          </div>
-          <div class="modal__body">
-            <slot name="body" />
-          </div>
-          <div class="modal__footer">
-            <slot name="footer" />
-          </div>
-        </div>
-      </div>
-    </Transition>
-  </Teleport>
-</template>
-
 <style lang="scss" scoped>
-.modal__mask {
-  position: fixed;
-  z-index: 99999;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: $modal-bg-color;
-  display: flex;
-  transition: opacity 0.3s ease;
-}
-
-.modal__container {
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
-  padding: 20px 30px;
-  background-color: $color-white;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-}
-
-.modal__header h3 {
-  margin-top: 0;
-  color: $color-green-dark;
-}
-
-.modal__body {
-  margin: 20px 0;
-}
-
-.modal__button {
-  float: right;
-  &:focus {
-    outline-style: auto;
+.modal {
+  &__mask {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $modal-bg-color;
+    display: flex;
+    transition: opacity 0.3s ease;
   }
-  &:focus-visible {
-    outline-style: auto;
+
+  &__container {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    padding: 20px 30px;
+    background-color: $color-white;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+    transition: all 0.3s ease;
+  }
+
+  &__header h3 {
+    margin-top: 0;
+    color: $color-green-dark;
+  }
+
+  &__body {
+    margin: 20px 0;
+  }
+
+  &__button {
+    float: right;
+    &:focus {
+      outline-style: auto;
+    }
+    &:focus-visible {
+      outline-style: auto;
+    }
   }
 }
 

@@ -8,7 +8,7 @@
       >
         <template #icon>
           <FilterIcon />
-          <div v-if="activeFilters >= 1" class="filters__menu--active">
+          <div v-if="activeFilters >= 1" class="filters__number">
             {{ activeFilters }}
           </div>
         </template>
@@ -61,7 +61,10 @@
           <BaseButton theme="white" @click="handleClear">
             Clear filters
           </BaseButton>
-          <BaseButton :disabled="!isDateValid" @click="handleConfirm">
+          <BaseButton
+            :disabled="!isDateValid || !selectedFilters"
+            @click="handleConfirm"
+          >
             Confirm
           </BaseButton>
         </div>
@@ -91,12 +94,25 @@ const filters = reactive<FilterParams>({ ...props.modelValue });
 
 const activeFilters = computed(() => {
   let activeFilters = 0;
-  if (filters.name) activeFilters = 1;
-  if (filters.types.length) activeFilters += 1;
-  if (filters.sizeMin !== 0 || filters.sizeMax !== MAX_FILE_SIZE_MB)
+  if (props.modelValue.name) activeFilters = 1;
+  if (props.modelValue.types.length) activeFilters += 1;
+  if (
+    props.modelValue.sizeMin !== 0 ||
+    props.modelValue.sizeMax !== MAX_FILE_SIZE_MB
+  )
     activeFilters += 1;
-  if (isDateValid.value && filters.dates?.length) activeFilters += 1;
+  if (isDateValid.value && props.modelValue.dates?.length) activeFilters += 1;
   return activeFilters;
+});
+
+const selectedFilters = computed(() => {
+  let selectedFilters = 0;
+  if (filters.name) selectedFilters = 1;
+  if (filters.types.length) selectedFilters += 1;
+  if (filters.sizeMin !== 0 || filters.sizeMax !== MAX_FILE_SIZE_MB)
+    selectedFilters += 1;
+  if (isDateValid.value && filters.dates?.length) selectedFilters += 1;
+  return selectedFilters;
 });
 
 const toggleFilters = () => {
@@ -118,8 +134,10 @@ const resetFilters = () => {
 };
 
 const handleClear = () => {
-  resetFilters();
-  emit("update:modelValue", { ...filters });
+  if (activeFilters.value) {
+    resetFilters();
+    emit("update:modelValue", { ...filters });
+  }
   isFilterOpen.value = false;
 };
 
@@ -138,7 +156,7 @@ watch(storage.value, () => {
   width: 50px;
   position: relative;
 
-  &__menu--active {
+  &__number {
     position: absolute;
     display: flex;
     justify-content: center;
