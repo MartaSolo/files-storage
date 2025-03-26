@@ -1,12 +1,3 @@
-<script setup lang="ts">
-const { isSessionLoading, sessionError, retrieveSession } =
-  useRetrieveSession();
-
-onMounted(() => {
-  retrieveSession();
-});
-</script>
-
 <template>
   <div class="app">
     <BaseLoader v-if="isSessionLoading" />
@@ -17,6 +8,15 @@ onMounted(() => {
     <BaseNotification />
   </div>
 </template>
+
+<script setup lang="ts">
+const { isSessionLoading, sessionError, retrieveSession } =
+  useRetrieveSession();
+
+onMounted(() => {
+  retrieveSession();
+});
+</script>
 
 <style lang="scss" scoped>
 .app {

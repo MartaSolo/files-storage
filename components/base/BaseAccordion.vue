@@ -1,3 +1,33 @@
+<template>
+  <div class="accordion">
+    <button
+      id="accordionId"
+      type="button"
+      class="accordion__button"
+      :aria-expanded="showContent"
+      @click="showContent = !showContent"
+    >
+      {{ title }}
+      <div
+        class="accordion__icon"
+        :class="{ 'accordion__icon--transform': showContent }"
+      >
+        <ArrowIcon />
+      </div>
+    </button>
+    <Transition name="slide">
+      <div
+        v-if="showContent"
+        class="accordion__content"
+        role="region"
+        aria-labelledby="accordionId"
+      >
+        <p class="accordion__text">{{ content }}</p>
+      </div>
+    </Transition>
+  </div>
+</template>
+
 <script setup lang="ts">
 defineProps<{
   title: string;
@@ -9,50 +39,38 @@ const ArrowIcon = resolveComponent("ArrowIcon");
 const showContent = ref(false);
 </script>
 
-<template>
-  <div class="accordion">
-    <button
-      type="button"
-      class="accordion__button"
-      @click="showContent = !showContent"
-    >
-      {{ title }}
-      <div class="accordion__button--icon" :class="{ transform: showContent }">
-        <ArrowIcon />
-      </div>
-    </button>
-    <Transition name="slide">
-      <p v-if="showContent" class="accordion__content">{{ content }}</p>
-    </Transition>
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .accordion {
   width: 100%;
   padding-bottom: 1.5rem;
-}
 
-.accordion__button {
-  width: 100%;
-  text-align: left;
-  padding: 0.75rem;
-  border-top: 1px solid $color-green-dark;
-  border-bottom: 1px solid $color-green-dark;
-  color: $color-green-dark;
-  background-color: $color-green-lightest;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  &__button {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem;
+    border-top: 1px solid $color-green-dark;
+    border-bottom: 1px solid $color-green-dark;
+    color: $color-green-dark;
+    background-color: $color-green-lightest;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.accordion__button--icon.transform {
-  transform: rotate(180deg);
-}
+  &__icon {
+    &--transform {
+      transform: rotate(180deg);
+    }
+  }
 
-.accordion__content {
-  color: $color-green-dark;
-  font-size: 0.9rem;
+  &__content {
+    color: $color-green-dark;
+    font-size: 0.9rem;
+  }
+
+  &__text {
+    padding-top: 0.5rem;
+  }
 }
 
 .slide-enter-active {
