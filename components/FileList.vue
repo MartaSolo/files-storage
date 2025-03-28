@@ -1,24 +1,5 @@
-<script setup lang="ts">
-import { computed } from "vue";
-
-const props = withDefaults(
-  defineProps<{
-    items: string[];
-    title: string;
-    theme?: "success" | "failure" | "none";
-  }>(),
-  {
-    theme: "none",
-  }
-);
-
-const computedClass = computed(() => {
-  return props.theme === "none" ? "" : `list--${props.theme}`;
-});
-</script>
-
 <template>
-  <div class="list" :class="computedClass">
+  <div :class="['list', `list--${theme}`]">
     <p class="list__title">{{ title }}</p>
     <ol class="list__list" role="list">
       <li v-for="item in items" :key="item" class="list__item">
@@ -27,6 +8,19 @@ const computedClass = computed(() => {
     </ol>
   </div>
 </template>
+
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    items: string[];
+    title: string;
+    theme?: "success" | "failure" | "default";
+  }>(),
+  {
+    theme: "default",
+  }
+);
+</script>
 
 <style lang="scss" scoped>
 .list {
@@ -38,51 +32,51 @@ const computedClass = computed(() => {
   box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
   width: 100%;
   max-width: 700px;
-}
 
-.list--success {
-  & .list__title {
-    color: $text-color-success;
+  &--success {
+    & .list__title {
+      color: $text-color-success;
+    }
+    & .list__item::before {
+      background-color: $text-color-success;
+    }
   }
-  & .list__item::before {
-    background-color: $text-color-success;
+
+  &--failure {
+    & .list__title {
+      color: $text-color-error;
+    }
+    & .list__item::before {
+      background-color: $text-color-error;
+    }
   }
-}
 
-.list--failure {
-  & .list__title {
-    color: $text-color-error;
+  &__title {
+    padding-left: 0.5rem;
+    font-weight: 500;
   }
-  & .list__item::before {
-    background-color: $text-color-error;
+
+  &__list {
+    font-size: 1rem;
+    counter-reset: list-item-counter;
   }
-}
 
-.list__title {
-  padding-left: 0.5rem;
-  font-weight: 500;
-}
-
-.list__list {
-  font-size: 1rem;
-  counter-reset: list-item-counter;
-}
-
-.list__item {
-  display: flex;
-  padding: 0.5rem;
-  gap: 0.5rem;
-  &::before {
-    counter-increment: list-item-counter;
-    content: counter(list-item-counter);
-    background-color: $text-color-primary;
-    color: rgb(255, 255, 255);
+  &__item {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    &::before {
+      counter-increment: list-item-counter;
+      content: counter(list-item-counter);
+      background-color: $text-color-primary;
+      color: rgb(255, 255, 255);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+    }
   }
 }
 </style>

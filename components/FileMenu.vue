@@ -1,3 +1,54 @@
+<template>
+  <div ref="root" class="menu">
+    <IconButton
+      description="More actions"
+      @click="toggleMenu"
+      @keydown.up.prevent="highlightPrev"
+      @keydown.down.prevent="highlightNext"
+      @keydown.enter.prevent="handleActionByKeyboard"
+      @keydown.space.prevent="handleActionByKeyboard"
+      @keydown.esc="isMenuOpen = false"
+      @keydown.tab="isMenuOpen = false"
+    >
+      <template #icon>
+        <MoreActions />
+      </template>
+    </IconButton>
+    <Transition name="menu" :duration="300">
+      <template v-if="isMenuOpen">
+        <ul :class="['menu__list', `menu__list--${menuListPosition}`]">
+          <li
+            v-for="(action, index) in actions"
+            :key="action.id"
+            class="menu__list-item"
+            :class="{
+              'menu__list-item--highlighted': highlightedIndex === index,
+            }"
+          >
+            <button
+              class="menu__item-button"
+              :aria-label="action.label"
+              @click="handleAction(index)"
+              @mouseover="highlightedIndex = index"
+            >
+              <div class="menu__item-icon">
+                <component :is="action.svg" />
+              </div>
+              {{ action.label }}
+            </button>
+          </li>
+        </ul>
+      </template>
+    </Transition>
+    <RenameFileModal
+      v-if="showRenameModal"
+      :file-name="fileName"
+      @close-rename-file-modal="showRenameModal = false"
+      @file-name-updated="emit('fileAction')"
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
 import { FileObject } from "@supabase/storage-js";
 import { FileActions } from "@/types/FileActions";
@@ -37,10 +88,6 @@ const { copyLink } = useCopyLink(props.fileName);
 const { deleteFile } = useDeleteFile();
 const { downloadFile } = useDownloadFile();
 const { notify } = useNotification();
-
-const computedMenuListClass = computed(() => {
-  return `menu__list--${menuListPosition.value}`;
-});
 
 const prevIndex = computed(() => {
   return highlightedIndex.value === 0
@@ -160,112 +207,61 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<template>
-  <div ref="root" class="menu">
-    <IconButton
-      description="More actions"
-      @click="toggleMenu"
-      @keydown.up.prevent="highlightPrev"
-      @keydown.down.prevent="highlightNext"
-      @keydown.enter.prevent="handleActionByKeyboard"
-      @keydown.space.prevent="handleActionByKeyboard"
-      @keydown.esc="isMenuOpen = false"
-      @keydown.tab="isMenuOpen = false"
-    >
-      <template #icon>
-        <MoreActions />
-      </template>
-    </IconButton>
-    <Transition name="menu" :duration="300">
-      <template v-if="isMenuOpen">
-        <ul class="menu__list" :class="computedMenuListClass">
-          <li
-            v-for="(action, index) in actions"
-            :key="action.id"
-            class="menu__list--item"
-            :class="{
-              'menu__list--item--highlighted': highlightedIndex === index,
-            }"
-          >
-            <button
-              class="menu__item--button"
-              :aria-label="action.label"
-              @click="handleAction(index)"
-              @mouseover="highlightedIndex = index"
-            >
-              <div class="menu__item--icon">
-                <component :is="action.svg" />
-              </div>
-              {{ action.label }}
-            </button>
-          </li>
-        </ul>
-      </template>
-    </Transition>
-    <RenameFileModal
-      v-if="showRenameModal"
-      :file-name="fileName"
-      @close-rename-file-modal="showRenameModal = false"
-      @file-name-updated="emit('fileAction')"
-    />
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .menu {
   width: 40px;
   height: 40px;
   position: relative;
-}
 
-.menu__list {
-  position: absolute;
-  right: 0px;
-  z-index: 9999;
-  background-color: $color_white;
-  border-radius: $base-border-radius;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-}
+  &__list {
+    position: absolute;
+    right: 0px;
+    z-index: 9999;
+    background-color: $color_white;
+    border-radius: $base-border-radius;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 
-.menu__list--bottom {
-  top: 41px;
-}
+    &--bottom {
+      top: 41px;
+    }
 
-.menu__list--top {
-  top: -202px;
-}
+    &--top {
+      top: -202px;
+    }
+  }
 
-.menu__list--item--highlighted .menu__item--button {
-  background-color: $color-green-light-hover;
-}
-
-.menu__item--button {
-  width: 160px;
-  display: flex;
-  align-items: center;
-  &:hover {
+  &__list-item--highlighted .menu__item-button {
     background-color: $color-green-light-hover;
   }
-}
 
-.menu__list--item:first-child .menu__item--button {
-  border-top-left-radius: $base-border-radius;
-  border-top-right-radius: $base-border-radius;
-}
+  &__item-button {
+    width: 160px;
+    display: flex;
+    align-items: center;
+    &:hover {
+      background-color: $color-green-light-hover;
+    }
+  }
 
-.menu__list--item:last-child .menu__item--button {
-  border-bottom-left-radius: $base-border-radius;
-  border-bottom-right-radius: $base-border-radius;
-}
+  &__list-item:first-child .menu__item-button {
+    border-top-left-radius: $base-border-radius;
+    border-top-right-radius: $base-border-radius;
+  }
 
-.menu__item--icon {
-  height: 40px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 0.3rem;
+  &__list-item:last-child .menu__item-button {
+    border-bottom-left-radius: $base-border-radius;
+    border-bottom-right-radius: $base-border-radius;
+  }
+
+  &__item-icon {
+    height: 40px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0.3rem;
+  }
 }
 
 .menu-enter-active,
