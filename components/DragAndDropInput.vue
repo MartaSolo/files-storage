@@ -1,23 +1,3 @@
-<script setup lang="ts">
-const props = defineProps<{
-  maxFilesNumber: number;
-  maxFileSizeMB: number;
-}>();
-
-const {
-  isDragActive,
-  errorMessages,
-  uploadedFiles,
-  notUploadedFiles,
-  root,
-  handleDrag,
-  handleDrop,
-  handleKeydown,
-  resetState,
-  handleUpload,
-} = useUploadByDragAndDrop(props.maxFileSizeMB, props.maxFilesNumber);
-</script>
-
 <template>
   <div ref="root" class="drag-and-drop">
     <form class="drag-and-drop__form" @submit.prevent>
@@ -91,6 +71,26 @@ const {
   </div>
 </template>
 
+<script setup lang="ts">
+const props = defineProps<{
+  maxFilesNumber: number;
+  maxFileSizeMB: number;
+}>();
+
+const {
+  isDragActive,
+  errorMessages,
+  uploadedFiles,
+  notUploadedFiles,
+  root,
+  handleDrag,
+  handleDrop,
+  handleKeydown,
+  resetState,
+  handleUpload,
+} = useUploadByDragAndDrop(props.maxFileSizeMB, props.maxFilesNumber);
+</script>
+
 <style lang="scss" scoped>
 .drag-and-drop {
   display: flex;
@@ -98,83 +98,83 @@ const {
   align-items: center;
   height: 100%;
   overflow-y: auto;
-}
 
-.drag-and-drop__form {
-  width: 100%;
-  max-width: 700px;
-  box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
-  border-radius: 16px;
-  padding: 1rem;
-  margin: 1rem 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.drag-and-drop__info {
-  color: $text-color-primary;
-  font-size: 1rem;
-  font-weight: 400;
-  text-align: center;
-  padding: 1rem;
-}
-
-.drag-and-drop__dropzone {
-  border: 4px dashed $color-green-medium;
-  border-radius: $secondary-border-radius;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $color-green-dark;
-  text-align: center;
-  margin-bottom: 1rem;
-  &--active {
-    background-color: $color-green-light;
+  &__form {
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0.25rem 0.25rem 0.75rem rgb(0 0 0 / 10%);
+    border-radius: 16px;
+    padding: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-}
 
-.drag-and-drop__description {
-  padding: 1rem;
-}
-
-.drag-and-drop__label {
-  border-radius: $secondary-border-radius;
-  background-color: $color-green-dark;
-  max-width: 300px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  text-align: center;
-  color: $color-white;
-  cursor: pointer;
-  &:hover {
-    background-color: $color-green-dark-hover;
+  &__info {
+    color: $text-color-primary;
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: center;
+    padding: 1rem;
   }
-}
 
-.drag-and-drop__icon {
-  width: 50px;
-  height: 50px;
-}
+  &__dropzone {
+    border: 4px dashed $color-green-medium;
+    border-radius: $secondary-border-radius;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $color-green-dark;
+    text-align: center;
+    margin-bottom: 1rem;
+    &--active {
+      background-color: $color-green-light-hover;
+    }
+  }
 
-.drag-and-drop__input {
-  display: none;
-}
+  &__description {
+    padding: 1rem;
+  }
 
-.drag-and-drop__error {
-  font-size: 1.2rem;
-  color: $text-color-error;
-  text-align: center;
-  padding: 0.5rem 0;
+  &__label {
+    border-radius: $secondary-border-radius;
+    background-color: $color-green-dark;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    color: $color-white;
+    cursor: pointer;
+    &:hover {
+      background-color: $color-green-dark-hover;
+    }
+  }
+
+  &__icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  &__input {
+    display: none;
+  }
+
+  &__error {
+    font-size: 1.2rem;
+    color: $text-color-error;
+    text-align: center;
+    padding: 0.5rem 0;
+  }
 }
 
 .v-enter-active,
