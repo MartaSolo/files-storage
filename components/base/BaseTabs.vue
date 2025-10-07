@@ -61,10 +61,12 @@ const route = useRoute();
 
     &--inactive {
       background-color: $color-green-light;
-      color: $text-color-primary;
+      color: $text-color-active;
       opacity: 0.6;
+      transition: background-color 0.2s ease, color 0.2s ease;
       &:hover {
-        opacity: 1;
+        background-color: $color-green-medium;
+        color: rgba(0, 51, 51, 1);
       }
     }
   }
