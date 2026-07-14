@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "no-tabs-layout",
-  middleware: "no-auth",
+  middleware: "auth",
 });
 </script>
 
