@@ -86,19 +86,3 @@ docker run -p 3000:3000 --env-file .env files-storage
 ```
 
 Open http://localhost:3000.
-
-## Stop, remove, rebuild
-
-Stop the container: `Ctrl+C`
-
-Remove the container and its volumes:
-
-```bash
-docker rm -v $(docker ps -aq --filter ancestor=files-storage-dev)
-```
-
-Remove the image:
-
-```bash
-docker rmi files-storage-dev
-```
