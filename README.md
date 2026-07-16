@@ -61,3 +61,44 @@ Copy `.env.example` to `.env` and fill in your project credentials.
 npm install
 npm run dev
 ```
+
+# Docker
+
+For full explanation of docker configuration go to [docs/docker.md](docs/docker.md).
+
+## Development (with live reload)
+
+```bash
+docker build -f Dockerfile.dev -t files-storage-dev .
+docker run -p 3000:3000 -p 24678:24678 --env-file .env \
+  -v $(pwd):/src \
+  -v /src/node_modules \
+  files-storage-dev
+```
+
+Open http://localhost:3000. Source code changes are picked up automatically.
+
+## Production
+
+```bash
+docker build -t files-storage .
+docker run -p 3000:3000 --env-file .env files-storage
+```
+
+Open http://localhost:3000.
+
+## Stop, remove, rebuild
+
+Stop the container: `Ctrl+C`
+
+Remove the container and its volumes:
+
+```bash
+docker rm -v $(docker ps -aq --filter ancestor=files-storage-dev)
+```
+
+Remove the image:
+
+```bash
+docker rmi files-storage-dev
+```

@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   ssr: true,
   modules: ["@nuxtjs/tailwindcss", "@nuxtjs/supabase", "@nuxt/image"],
   vite: {
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
