@@ -1,10 +1,11 @@
 import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
 import { IGNORED_ERROR_CODE } from "@/utils/constants/ignoredErrorCode";
+import type { Database } from "@/types/supabase";
 
 const profileImageName = ref("");
 
 export const useProfileImage = () => {
-  const client = useSupabaseClient();
+  const client = useSupabaseClient<Database>();
   const user = useSupabaseUser();
 
   const { storage } = useStorage();
@@ -46,14 +47,16 @@ export const useProfileImage = () => {
       profileImageName.value = "";
     }
 
-    if (data) profileImageName.value = data?.avatar;
+    if (data) profileImageName.value = data?.avatar ?? "";
     setProfileImageSource();
   };
 
   const upsertProfileImage = async (filename: string) => {
+    if (!user.value?.id) return;
+
     const { data, error, status } = await client
       .from("profiles")
-      .upsert({ id: user.value?.id, avatar: filename })
+      .upsert({ id: user.value.id, avatar: filename })
       .select();
 
     if (error && status !== IGNORED_ERROR_CODE) {
@@ -61,7 +64,7 @@ export const useProfileImage = () => {
       profileImageName.value = "";
     }
 
-    if (data) profileImageName.value = data?.[0].avatar;
+    if (data) profileImageName.value = data?.[0].avatar ?? "";
     setProfileImageSource();
     getPrivateFileList();
   };

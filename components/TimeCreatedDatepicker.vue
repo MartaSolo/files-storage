@@ -23,7 +23,7 @@ const isRangeValid = computed(() => {
 });
 
 const onClickOutside = () => {
-  if (root.value) root.value.closeMenu();
+  if (root.value) (root.value as any).closeMenu();
 };
 
 const handleDate = (modelData: ModelValue) => {
