@@ -155,7 +155,9 @@ const {
     text-align: center;
     color: $color-white;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
     &:hover {
       background-color: $color-green-dark-hover;
     }

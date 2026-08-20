@@ -83,7 +83,9 @@ const updateList = () => {
           :model-value="filterParams"
           class="files__menu--filters"
           :file-types="data?.fileTypes || []"
-          @update:model-value="($event:FilterParams) => (filterParams = $event)"
+          @update:model-value="
+            ($event: FilterParams) => (filterParams = $event)
+          "
         />
         <SortFileList
           class="files__menu--sort"
