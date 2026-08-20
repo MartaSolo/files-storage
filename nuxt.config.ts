@@ -11,8 +11,14 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData:
-            "@import '@/assets/scss/_colors.scss'; @import '@/assets/scss/_font.scss'; @import '@/assets/scss/_breakpoints.scss'; @import '@/assets/scss/_mixin.scss'; @import '@/assets/scss/_other.scss';",
+          api: "modern-compiler",
+          additionalData: `
+        @use '@/assets/scss/colors' as *;
+        @use '@/assets/scss/font' as *;
+        @use '@/assets/scss/breakpoints' as *;
+        @use '@/assets/scss/mixin' as *;
+        @use '@/assets/scss/other' as *;
+      `,
         },
       },
     },

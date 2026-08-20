@@ -1,6 +1,6 @@
 <template>
-  <section v-if="isOpen" class="notification">
-    <Transition name="notification">
+  <Transition name="notification">
+    <section v-if="isOpen" class="notification">
       <div class="notification__container">
         <div
           :class="['notification__content', `notification__content--${theme}`]"
@@ -11,8 +11,8 @@
           <CloseIcon />
         </button>
       </div>
-    </Transition>
-  </section>
+    </section>
+  </Transition>
 </template>
 
 <script setup lang="ts">

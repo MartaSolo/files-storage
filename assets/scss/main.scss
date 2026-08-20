@@ -1,7 +1,7 @@
-@import "./font.scss";
-@import "./colors.scss";
-@import "./breakpoints.scss";
-@import "./other.scss";
+@use "./font" as *;
+@use "./colors" as *;
+@use "./breakpoints" as *;
+@use "./other" as *;
 
 * {
   box-sizing: border-box;
