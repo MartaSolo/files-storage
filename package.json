@@ -38,7 +38,7 @@
     "defaults"
   ],
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=22.22.2"
   },
   "lint-staged": {
     "*.{ts,vue}": [
