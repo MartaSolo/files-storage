@@ -1,4 +1,5 @@
 import type { StoragePath } from "@/types/StoragePath";
+import { useSupabaseUser } from "#imports";
 
 export const useStorage = () => {
   const user = useSupabaseUser();

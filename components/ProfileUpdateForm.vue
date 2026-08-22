@@ -159,6 +159,8 @@
 </template>
 
 <script setup lang="ts">
+import { useSupabaseUser } from "#imports";
+
 const user = useSupabaseUser();
 
 const { name, nameError, nameSuccess, nameTouched, isNameValid } =

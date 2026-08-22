@@ -1,6 +1,7 @@
 import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
 import { IGNORED_ERROR_CODE } from "@/utils/constants/ignoredErrorCode";
 import type { Database } from "@/types/supabase";
+import { useSupabaseUser } from "#imports";
 
 const profileImageName = ref("");
 
