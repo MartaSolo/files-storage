@@ -1,5 +1,5 @@
-import { FileObject } from "@supabase/storage-js";
-import { FilesQueryParams } from "~~/types/FilesQueryParams";
+import type { FileObject } from "@supabase/storage-js";
+import type { FilesQueryParams } from "~~/types/FilesQueryParams";
 import { serverSupabaseClient } from "#supabase/server";
 import { getSortType } from "@/utils/helpers/getSortTypes";
 import type { SortOrder } from "@/types/SortOrder";
@@ -23,7 +23,7 @@ const filterFiles = (
   const { name, types, minSize, maxSize, dates } = filters;
 
   return files.filter((file) => {
-    const fileMetadata = file.metadata || {};
+    const fileMetadata = file.metadata || null;
     const fileName = file.name.toLowerCase();
     const fileNameWithoutExtension = fileName.split(".").slice(0, -1).join(".");
 
@@ -35,19 +35,27 @@ const filterFiles = (
     // Type filter
     if (types) {
       const typesArray = types.split(",");
-      const fileType = fileMetadata.mimetype?.split("/")[0];
+      const fileType = fileMetadata?.mimetype.split("/")[0] || "";
       if (!typesArray.includes(fileType)) return false;
     }
 
     // Size filters
-    const fileSize = fileMetadata.size || 0;
+    const fileSize = fileMetadata?.size || 0;
     if (minSize && fileSize < minSize * MB_TO_BYTES) return false;
     if (maxSize && fileSize > maxSize * MB_TO_BYTES) return false;
 
     // Date filters
     if (dates) {
-      const [minDate, maxDate] = dates.split(",").map((date) => new Date(date));
+      const dateValues = dates.split(",");
+      if (dateValues.length !== 2) return false;
+      const [minDate, maxDate] = dateValues.map((date) => new Date(date)) as [
+        Date,
+        Date,
+      ];
+
+      if (!file.created_at) return false;
       const fileDate = new Date(file.created_at);
+
       if (fileDate < minDate || fileDate > maxDate) return false;
     }
 
@@ -73,11 +81,11 @@ const sortFiles = (
     const a =
       key in e1
         ? e1[key as FileObjectKeys]
-        : e1.metadata[key as FileObjectMetadataKeys];
+        : e1.metadata?.[key as FileObjectMetadataKeys];
     const b =
       key in e2
         ? e2[key as FileObjectKeys]
-        : e2.metadata[key as FileObjectMetadataKeys];
+        : e2.metadata?.[key as FileObjectMetadataKeys];
 
     if (key === "name") {
       return sortOrder === 1 ? a.localeCompare(b) : b.localeCompare(a);
@@ -88,7 +96,7 @@ const sortFiles = (
 };
 
 export default defineEventHandler(async (event) => {
-  const client = serverSupabaseClient(event);
+  const client = await serverSupabaseClient(event);
   const query = getQuery(event) as unknown as FilesQueryParams;
 
   const { key, order, name, types, minSize, maxSize, dates, storage } = query;

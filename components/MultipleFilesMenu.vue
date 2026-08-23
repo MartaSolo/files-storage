@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FileObject } from "@supabase/storage-js";
+import type { FileObject } from "@supabase/storage-js";
 
 const selectedFiles = useSelectedFiles();
 const { deleteFile } = useDeleteFile();

@@ -159,7 +159,11 @@ const checkByKeyboard = (index: number) => {
   if (!types.value?.length) return;
   let updatedValue = [...props.modelValue];
 
-  if (index !== -1 && !updatedValue.includes(types.value[index])) {
+  if (
+    types.value[index] &&
+    index !== -1 &&
+    !updatedValue.includes(types.value[index])
+  ) {
     updatedValue.push(types.value[index]);
   } else {
     const filteredValue = updatedValue.filter(

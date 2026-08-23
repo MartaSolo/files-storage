@@ -32,7 +32,9 @@ const { updateStorage } = useStorage();
 watch(
   uploadedFiles,
   () => {
-    upsertProfileImage(uploadedFiles.value[0]);
+    if (uploadedFiles.value[0]) {
+      upsertProfileImage(uploadedFiles.value[0]);
+    }
   },
   { deep: true }
 );

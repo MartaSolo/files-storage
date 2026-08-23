@@ -6,7 +6,7 @@ export const useStorage = () => {
   const isStoragePublic = useIsStoragePublic();
 
   const setStorage = (): StoragePath => {
-    if (!user.value?.id || (user.value.id && isStoragePublic.value)) {
+    if (!user.value?.sub || (user.value.sub && isStoragePublic.value)) {
       return {
         bucket: "files",
         folder: "public",
@@ -14,7 +14,7 @@ export const useStorage = () => {
     } else {
       return {
         bucket: "private",
-        folder: user.value.id,
+        folder: user.value.sub,
       };
     }
   };
@@ -22,12 +22,12 @@ export const useStorage = () => {
   const storage = ref<StoragePath>(setStorage());
 
   const updateStorage = () => {
-    if (!user.value?.id || (user.value.id && isStoragePublic.value)) {
+    if (!user.value?.sub || (user.value.sub && isStoragePublic.value)) {
       storage.value.bucket = "files";
       storage.value.folder = "public";
     } else {
       storage.value.bucket = "private";
-      storage.value.folder = user.value.id;
+      storage.value.folder = user.value.sub;
     }
   };
 

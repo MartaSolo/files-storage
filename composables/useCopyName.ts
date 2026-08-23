@@ -1,17 +1,20 @@
-import { FileObject } from "@supabase/storage-js";
+import type { FileObject } from "@supabase/storage-js";
 
 export const useCopyName = () => {
   const copyName = (fileName: string, files: FileObject[]) => {
-    const fileETag = () =>
-      files.filter((file) => file.name === fileName)[0].metadata.eTag;
+    const fileETag = () => {
+      const file = files.find((file) => file.name === fileName);
+      if (!file?.metadata) return;
+      return file.metadata.eTag;
+    };
 
     // sorted files with the same etag, where file at 0 index is original file and at 1 index is the latest copy (highest number)
     const filesWithSameETag = () =>
       files
-        .filter((file) => file.metadata.eTag === fileETag())
+        .filter((file) => file.metadata?.eTag === fileETag())
         .sort((a, b) => b.name.localeCompare(a.name));
 
-    const originalFile = filesWithSameETag()[0].name;
+    const originalFile = filesWithSameETag()[0]?.name;
 
     const name = useFileName(fileName);
 
@@ -23,7 +26,7 @@ export const useCopyName = () => {
     ) {
       newCopyName = `${name.name}_(1)${name.extension}`;
     } else if (filesWithSameETag().length > 1 && fileName === originalFile) {
-      const prevCopy = filesWithSameETag()[1].name || null;
+      const prevCopy = filesWithSameETag()[1]?.name || null;
 
       const prevCopyFullName = useFileName(prevCopy || "");
 

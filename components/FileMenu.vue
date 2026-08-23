@@ -50,8 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { FileObject } from "@supabase/storage-js";
-import { FileActions } from "@/types/FileActions";
+import type { FileObject } from "@supabase/storage-js";
+import type { FileActions } from "@/types/FileActions";
 
 const CopyLink = resolveComponent("CopyLink");
 const CopyFile = resolveComponent("CopyFile");

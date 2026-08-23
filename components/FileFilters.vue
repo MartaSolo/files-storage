@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
-import { FilterParams } from "@/types/FilterParams";
+import type { FilterParams } from "@/types/FilterParams";
 
 const props = defineProps<{
   fileTypes: string[];

@@ -1,4 +1,4 @@
-import { SortOrder } from "@/types/SortOrder";
+import type { SortOrder } from "@/types/SortOrder";
 
 export interface SortOption {
   label: string;

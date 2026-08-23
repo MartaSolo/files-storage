@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: "2026-08-22",
+  future: {
+    compatibilityVersion: 4,
+  },
   ssr: true,
   modules: ["@nuxtjs/tailwindcss", "@nuxtjs/supabase", "@nuxt/image"],
   vite: {
@@ -11,7 +15,6 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          api: "modern-compiler",
           additionalData: `
         @use '@/assets/scss/colors' as *;
         @use '@/assets/scss/font' as *;
@@ -40,6 +43,13 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: "en",
       },
+    },
+  },
+  supabase: {
+    redirectOptions: {
+      login: "/login",
+      callback: "/confirm",
+      exclude: ["/register", "/login", "/", "/all-files"],
     },
   },
 });

@@ -1,15 +1,18 @@
-import { FileObject } from "@supabase/storage-js";
+import type { FileObject } from "@supabase/storage-js";
 
 export const getSortType = (file?: FileObject, files?: FileObject[]) => {
   let type: string[] = [];
 
   if (file) {
-    type.push(file.metadata.mimetype.split("/")[0]);
+    const fileType = file.metadata?.mimetype.split("/")[0];
+    if (fileType) type.push(fileType);
   } else {
-    const allTypes = files?.map((file) => file.metadata.mimetype.split("/")[0]);
-    const uniqueTypes = allTypes?.filter(
-      (type, index, array) => array.indexOf(type) === index
-    );
+    const allTypes = files
+      ?.map((file) => file.metadata?.mimetype.split("/")[0])
+      .filter((type): type is string => type !== undefined);
+
+    const uniqueTypes = [...new Set(allTypes)];
+
     if (uniqueTypes?.length) type = uniqueTypes;
   }
 

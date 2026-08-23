@@ -1,7 +1,6 @@
 import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
 import { IGNORED_ERROR_CODE } from "@/utils/constants/ignoredErrorCode";
-import type { Database } from "@/types/supabase";
-import { useSupabaseUser } from "#imports";
+import type { Database } from "~/types/database.types";
 
 const profileImageName = ref("");
 
@@ -37,10 +36,12 @@ export const useProfileImage = () => {
   };
 
   const checkProfileImage = async () => {
+    if (!user.value?.sub) return;
+
     const { data, error, status } = await client
       .from("profiles")
       .select("avatar")
-      .eq("id", user.value?.id)
+      .eq("id", user.value?.sub)
       .single();
 
     if (error && status !== IGNORED_ERROR_CODE) {
@@ -53,11 +54,11 @@ export const useProfileImage = () => {
   };
 
   const upsertProfileImage = async (filename: string) => {
-    if (!user.value?.id) return;
+    if (!user.value?.sub) return;
 
     const { data, error, status } = await client
       .from("profiles")
-      .upsert({ id: user.value.id, avatar: filename })
+      .upsert({ id: user.value.sub, avatar: filename })
       .select();
 
     if (error && status !== IGNORED_ERROR_CODE) {
@@ -65,7 +66,7 @@ export const useProfileImage = () => {
       profileImageName.value = "";
     }
 
-    if (data) profileImageName.value = data?.[0].avatar ?? "";
+    if (data) profileImageName.value = data?.[0]?.avatar ?? "";
     setProfileImageSource();
     getPrivateFileList();
   };
@@ -82,7 +83,7 @@ export const useProfileImage = () => {
     }
     if (data) {
       const images = data.filter(
-        (file) => file.metadata.mimetype.split("/")[0] === "image"
+        (file) => file.metadata?.mimetype.split("/")[0] === "image"
       );
       privateFileList.value = images.map((file) => file.name);
       privateFileList.value.sort((a, b) => a.localeCompare(b));

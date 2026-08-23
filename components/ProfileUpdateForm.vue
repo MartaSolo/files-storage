@@ -4,7 +4,7 @@
       <span class="profile__name">Name</span>
       <div class="profile__data">
         <p class="profile__user">
-          {{ user?.user_metadata.first_name }}
+          {{ user?.user_metadata?.first_name }}
         </p>
         <IconButton
           description="Edit name"
@@ -159,8 +159,6 @@
 </template>
 
 <script setup lang="ts">
-import { useSupabaseUser } from "#imports";
-
 const user = useSupabaseUser();
 
 const { name, nameError, nameSuccess, nameTouched, isNameValid } =

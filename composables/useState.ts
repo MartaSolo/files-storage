@@ -1,6 +1,6 @@
-import { FileObjectKeys } from "@/types/FileObjectKeys";
-import { SortOrder } from "@/types/SortOrder";
-import { LayoutType } from "@/types/LayoutType";
+import type { FileObjectKeys } from "@/types/FileObjectKeys";
+import type { SortOrder } from "@/types/SortOrder";
+import type { LayoutType } from "@/types/LayoutType";
 import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
 
 export const useSortColumn = () =>

@@ -1,15 +1,26 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "no-tabs-layout",
-  middleware: "auth",
 });
+
+const user = useSupabaseUser();
+
+watch(
+  user,
+  () => {
+    if (user.value) {
+      return navigateTo("/success");
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
-  <section class="success">
-    <div class="success__content">
-      <h1 class="success__title">You have been registered successfully!</h1>
-      <div class="success__actions">
+  <section class="confirm">
+    <div class="confirm__content">
+      <h1 class="confirm__title">You have been logged in successfully!</h1>
+      <div class="confirm__actions">
         <BaseButton theme="white" to="/your-profile">
           Go to user page
         </BaseButton>
@@ -20,13 +31,13 @@ definePageMeta({
 </template>
 
 <style lang="scss" scoped>
-.success {
+.confirm {
   display: flex;
   justify-content: center;
   padding-top: 150px;
 }
 
-.success__content {
+.confirm__content {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,14 +46,14 @@ definePageMeta({
   width: 500px;
 }
 
-.success__title {
+.confirm__title {
   font-size: 2rem;
   text-align: center;
   padding: 2rem;
   color: $text-color-secondary;
 }
 
-.success__actions {
+.confirm__actions {
   display: flex;
   gap: 1rem;
 }

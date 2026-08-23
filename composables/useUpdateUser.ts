@@ -12,6 +12,9 @@ export const useUpdateUser = () => {
     if (error) {
       updateUserError.value = error.message;
     }
+
+    await client.auth.refreshSession();
+
     updateUserSuccess.value = "Your name have been successfully updated.";
     return data;
   };
@@ -22,6 +25,9 @@ export const useUpdateUser = () => {
     if (error) {
       updateUserError.value = error.message;
     }
+
+    await client.auth.refreshSession();
+
     updateUserSuccess.value =
       "Please check your mailbox, we have just sent an email with confirmation link.";
     return data;
@@ -35,6 +41,9 @@ export const useUpdateUser = () => {
     if (error) {
       updateUserError.value = error.message;
     }
+
+    await client.auth.refreshSession();
+
     updateUserSuccess.value = "Your password have been successfully updated.";
     return data;
   };

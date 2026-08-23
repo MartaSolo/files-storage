@@ -106,17 +106,18 @@ const selectOption = (selectedOption: string) => {
 const selectOptionByKeyboard = (index: number) => {
   if (isDropdownOpen.value) {
     const highlightedOption = props.options[index];
-    selectOption(highlightedOption);
+    if (highlightedOption) selectOption(highlightedOption);
   }
   isDropdownOpen.value = true;
 };
 
 const scrollIntoView = () => {
-  if (isDropdownOpen.value && listItems.value?.length) {
-    listItems.value[highlightedIndex.value].scrollIntoView({
-      block: "nearest",
-    });
-  }
+  if (!isDropdownOpen.value || !listItems.value?.length) return;
+
+  const highlightedItem = listItems.value[highlightedIndex.value];
+  if (!highlightedItem) return;
+
+  highlightedItem.scrollIntoView({ block: "nearest" });
 };
 
 watch(highlightedIndex, scrollIntoView);

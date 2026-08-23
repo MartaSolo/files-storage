@@ -4,7 +4,7 @@ const isStoragePublic = useIsStoragePublic();
 const route = useRoute();
 
 const headerText = computed(() => {
-  if (!user.value?.id || (user.value.id && isStoragePublic.value)) {
+  if (!user.value?.sub || (user.value.sub && isStoragePublic.value)) {
     return "Public files";
   } else {
     return "Private files";
@@ -12,11 +12,11 @@ const headerText = computed(() => {
 });
 
 const isSwitcherShown = computed(() => {
-  return user.value?.id && route.path !== "/your-profile";
+  return user.value?.sub && route.path !== "/your-profile";
 });
 
 const isButtonShown = computed(() => {
-  return !user.value?.id && route.matched[0].name !== "login";
+  return !user.value?.sub && route.matched[0]?.name !== "login";
 });
 </script>
 
@@ -26,7 +26,7 @@ const isButtonShown = computed(() => {
     <nav class="header__menu">
       <StorageSwitcher v-if="isSwitcherShown" v-model="isStoragePublic" />
       <BaseButton v-if="isButtonShown" to="/login"> Login </BaseButton>
-      <UserMenu v-if="user?.id" />
+      <UserMenu v-if="user?.sub" />
     </nav>
   </header>
 </template>
