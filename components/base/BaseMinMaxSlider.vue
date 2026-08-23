@@ -62,7 +62,7 @@ const props = withDefaults(
   defineProps<{
     min: number;
     max: number;
-    step: number;
+    step?: number;
     minValue: number;
     maxValue: number;
     label: string;
@@ -75,8 +75,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: "update:minValue", sliderMinValue: number): void;
-  (e: "update:maxValue", sliderMaxValue: number): void;
+  (e: "update:minValue" | "update:maxValue", value: number): void;
 }>();
 
 const leftPercent = computed(() => {

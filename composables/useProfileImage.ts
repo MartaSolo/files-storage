@@ -7,6 +7,7 @@ const profileImageName = ref("");
 export const useProfileImage = () => {
   const client = useSupabaseClient<Database>();
   const user = useSupabaseUser();
+  const { notify } = useNotification();
 
   const { storage } = useStorage();
   const profileImageSource = useProfileImageSource();
@@ -25,9 +26,12 @@ export const useProfileImage = () => {
         );
         const link = await getPrivateUrl();
         if (link) profileImageSource.value = link;
-      } catch (e) {
+      } catch (error) {
         profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;
         profileImageName.value = "";
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error occurred.";
+        notify("error", errorMessage);
       }
     } else {
       profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;

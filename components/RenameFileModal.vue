@@ -40,8 +40,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "closeRenameFileModal"): void;
-  (e: "fileNameUpdated"): void;
+  (e: "closeRenameFileModal" | "fileNameUpdated"): void;
 }>();
 
 const renameFile = useRenameFile();
@@ -60,7 +59,7 @@ const close = () => {
 };
 
 const handleInputFocus = () => {
-  if (newFileName && inputTouched) {
+  if (newFileName.value && inputTouched.value) {
     errorMessage.value = "";
   }
 };
@@ -70,8 +69,10 @@ const handleRename = async () => {
     await renameFile.rename(props.fileName, newFullFileName.value);
     emit("fileNameUpdated");
     close();
-  } catch (error: any) {
-    errorMessage.value = error.message;
+  } catch (error) {
+    const errorMessageText =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    errorMessage.value = errorMessageText;
   }
 };
 </script>

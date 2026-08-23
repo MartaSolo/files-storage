@@ -60,8 +60,10 @@ const handleLogout = () => {
   try {
     logout();
     navigateTo("/");
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   isMenuOpen.value = false;
 };

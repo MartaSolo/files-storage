@@ -2,7 +2,7 @@ import type { Ref } from "vue";
 
 export const useClickOutside = (
   elTargetRef: Ref<HTMLElement | null>,
-  callbackFn: Function
+  callbackFn: () => void
 ) => {
   if (!elTargetRef) return;
 
@@ -13,9 +13,7 @@ export const useClickOutside = (
     ) {
       return;
     }
-    if (typeof callbackFn === "function") {
-      callbackFn();
-    }
+    callbackFn();
   };
 
   onMounted(() => {

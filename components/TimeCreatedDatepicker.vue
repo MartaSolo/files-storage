@@ -12,7 +12,7 @@ const emit = defineEmits<{
 }>();
 
 const date = ref<ModelValue>(props.modelValue);
-const root = ref<HTMLElement | null>(null);
+const root = ref<InstanceType<typeof VueDatePicker> | null>(null);
 
 const isRangeValid = computed(() => {
   if (Array.isArray(date.value)) {
@@ -22,9 +22,7 @@ const isRangeValid = computed(() => {
   }
 });
 
-const onClickOutside = () => {
-  if (root.value) (root.value as any).closeMenu();
-};
+const onClickOutside = () => root.value?.closeMenu();
 
 const handleDate = (modelData: ModelValue) => {
   date.value = modelData;

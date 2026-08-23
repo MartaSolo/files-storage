@@ -126,8 +126,10 @@ const handleCopyLink = () => {
 const handleCopyFile = async () => {
   try {
     await copyFile(props.fileName, props.fileList);
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   emit("fileAction");
   isMenuOpen.value = false;
@@ -136,8 +138,10 @@ const handleCopyFile = async () => {
 const handleDownloadFile = async () => {
   try {
     await downloadFile(props.fileName);
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   isMenuOpen.value = false;
 };
@@ -145,8 +149,10 @@ const handleDownloadFile = async () => {
 const handleDeleteFile = async () => {
   try {
     await deleteFile([props.fileName]);
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   emit("fileAction");
   isMenuOpen.value = false;

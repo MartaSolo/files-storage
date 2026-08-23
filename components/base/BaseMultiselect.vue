@@ -91,19 +91,19 @@ const isDropdownOpen = ref(false);
 const highlightedIndex = ref(-1);
 
 const prevIndex = computed(() => {
-  if (types.value?.length) {
-    return highlightedIndex.value === 0
-      ? types.value.length - 1
-      : highlightedIndex.value - 1;
-  }
+  if (!types.value?.length) return undefined;
+
+  return highlightedIndex.value === 0
+    ? types.value.length - 1
+    : highlightedIndex.value - 1;
 });
 
 const nextIndex = computed(() => {
-  if (types.value?.length) {
-    return highlightedIndex.value === types.value.length - 1
-      ? 0
-      : highlightedIndex.value + 1;
-  }
+  if (!types.value?.length) return undefined;
+
+  return highlightedIndex.value === types.value.length - 1
+    ? 0
+    : highlightedIndex.value + 1;
 });
 
 const highlightPrev = () => {

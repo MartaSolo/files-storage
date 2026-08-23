@@ -84,6 +84,7 @@ const fileComponent = computed(() => {
   if (previewFileType.value === "docx") return DocxFile;
   if (previewFileType.value === "xlsx") return XlsxFile;
   if (previewFileType.value === "other") return SomeFile;
+  return undefined;
 });
 
 const updatedFile = () => {

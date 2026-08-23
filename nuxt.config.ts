@@ -5,7 +5,12 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
   ssr: true,
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/supabase", "@nuxt/image"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/supabase",
+    "@nuxt/image",
+    "@nuxt/eslint",
+  ],
   vite: {
     server: {
       watch: {

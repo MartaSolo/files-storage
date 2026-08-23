@@ -191,15 +191,27 @@ const editPassword = ref(false);
 const passwordInputType = ref("password");
 
 const toggleEditName = () => {
-  editName.value ? hideNameInput() : (editName.value = true);
+  if (editName.value) {
+    hideNameInput();
+  } else {
+    editName.value = true;
+  }
 };
 
 const toggleEditEmail = () => {
-  editEmail.value ? hideEmailInput() : (editEmail.value = true);
+  if (editEmail.value) {
+    hideEmailInput();
+  } else {
+    editEmail.value = true;
+  }
 };
 
 const toggleEditPassword = () => {
-  editPassword.value ? hidePasswordInput() : (editPassword.value = true);
+  if (editPassword.value) {
+    hidePasswordInput();
+  } else {
+    editPassword.value = true;
+  }
 };
 
 const hideNameInput = () => {
@@ -235,9 +247,11 @@ const resetFormMessages = () => {
 };
 
 const showNotification = () => {
-  updateUserError.value
-    ? notify("error", updateUserError.value)
-    : notify("success", updateUserSuccess.value);
+  if (updateUserError.value) {
+    notify("error", updateUserError.value);
+  } else {
+    notify("success", updateUserSuccess.value);
+  }
 };
 
 const onUpdateName = async (name: string) => {

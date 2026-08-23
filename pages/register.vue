@@ -119,8 +119,10 @@ const registerUser = async () => {
     await register(name.value, email.value, password.value);
     resetForm();
     router.push("/success");
-  } catch (error: any) {
-    registerError.value = error.message;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    registerError.value = errorMessage;
   }
 };
 </script>
