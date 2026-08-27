@@ -13,9 +13,11 @@ const layoutComponent = computed(() => {
 });
 
 const toggleLayout = () => {
-  layoutType.value === "grid"
-    ? (layoutType.value = "list")
-    : (layoutType.value = "grid");
+  if (layoutType.value === "grid") {
+    layoutType.value = "list";
+  } else {
+    layoutType.value = "grid";
+  }
 };
 </script>
 

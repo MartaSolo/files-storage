@@ -1,3 +1,5 @@
+import { useSupabaseUser } from "#imports";
+
 export const useUploadByDragAndDrop = (
   maxFileSizeMB: number,
   maxFilesNumber: number

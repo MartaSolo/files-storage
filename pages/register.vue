@@ -70,10 +70,13 @@ const passwordInputType = ref("password");
 const registerError = ref("");
 
 const router = useRouter();
+
 const { name, nameError, nameSuccess, nameTouched, isNameValid } =
   useValidateName();
+
 const { email, emailTouched, emailError, emailSuccess, isEmailValid } =
   useValidateEmail();
+
 const {
   password,
   passwordTouched,
@@ -81,6 +84,7 @@ const {
   passwordSuccess,
   isPasswordValid,
 } = useValidatePassword();
+
 const { register } = useCreateUser();
 
 const isFormValid = computed(() => {
@@ -115,8 +119,10 @@ const registerUser = async () => {
     await register(name.value, email.value, password.value);
     resetForm();
     router.push("/success");
-  } catch (error: any) {
-    registerError.value = error.message;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    registerError.value = errorMessage;
   }
 };
 </script>

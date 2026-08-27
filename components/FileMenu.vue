@@ -50,8 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { FileObject } from "@supabase/storage-js";
-import { FileActions } from "@/types/FileActions";
+import type { FileObject } from "@supabase/storage-js";
+import type { FileActions } from "@/types/FileActions";
 
 const CopyLink = resolveComponent("CopyLink");
 const CopyFile = resolveComponent("CopyFile");
@@ -126,8 +126,10 @@ const handleCopyLink = () => {
 const handleCopyFile = async () => {
   try {
     await copyFile(props.fileName, props.fileList);
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   emit("fileAction");
   isMenuOpen.value = false;
@@ -136,8 +138,10 @@ const handleCopyFile = async () => {
 const handleDownloadFile = async () => {
   try {
     await downloadFile(props.fileName);
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   isMenuOpen.value = false;
 };
@@ -145,8 +149,10 @@ const handleDownloadFile = async () => {
 const handleDeleteFile = async () => {
   try {
     await deleteFile([props.fileName]);
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   emit("fileAction");
   isMenuOpen.value = false;
@@ -219,7 +225,8 @@ onBeforeUnmount(() => {
     z-index: 9999;
     background-color: $color_white;
     border-radius: $base-border-radius;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    box-shadow:
+      rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
       rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 
     &--bottom {

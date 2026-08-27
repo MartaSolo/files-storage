@@ -1,7 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: "2026-08-22",
+  future: {
+    compatibilityVersion: 4,
+  },
   ssr: true,
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/supabase", "@nuxt/image"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/supabase",
+    "@nuxt/image",
+    "@nuxt/eslint",
+  ],
   vite: {
     server: {
       watch: {
@@ -11,8 +20,13 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData:
-            "@import '@/assets/scss/_colors.scss'; @import '@/assets/scss/_font.scss'; @import '@/assets/scss/_breakpoints.scss'; @import '@/assets/scss/_mixin.scss'; @import '@/assets/scss/_other.scss';",
+          additionalData: `
+        @use '@/assets/scss/colors' as *;
+        @use '@/assets/scss/font' as *;
+        @use '@/assets/scss/breakpoints' as *;
+        @use '@/assets/scss/mixin' as *;
+        @use '@/assets/scss/other' as *;
+      `,
         },
       },
     },
@@ -35,5 +49,15 @@ export default defineNuxtConfig({
         lang: "en",
       },
     },
+  },
+  supabase: {
+    redirectOptions: {
+      login: "/login",
+      callback: "/confirm",
+      exclude: ["/register", "/login", "/", "/all-files"],
+    },
+  },
+  image: {
+    domains: ["rxajczyzdptktltwmbxc.supabase.co"],
   },
 });

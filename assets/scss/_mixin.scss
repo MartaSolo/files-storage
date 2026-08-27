@@ -1,3 +1,7 @@
+@use "./breakpoints" as *;
+@use "./colors" as *;
+@use "./other" as *;
+
 @mixin xsmallScreen {
   @media (min-width: $screen-xs) {
     @content;

@@ -104,8 +104,10 @@ const loginUser = async () => {
     resetForm();
     isStoragePublic.value = false;
     router.push("/");
-  } catch (error: any) {
-    loginError.value = error.message;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    loginError.value = errorMessage;
   }
 };
 </script>

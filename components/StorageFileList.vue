@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { FilterParams } from "@/types/FilterParams";
-import { FilesQueryParams } from "@/types/FilesQueryParams";
-import { FilesFetchedObject } from "@/types/FilesFetchedObject";
+import type { FilterParams } from "@/types/FilterParams";
+import type { FilesQueryParams } from "@/types/FilesQueryParams";
+import type { FilesFetchedObject } from "@/types/FilesFetchedObject";
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 
 const sortColumn = useSortColumn();
@@ -83,7 +83,9 @@ const updateList = () => {
           :model-value="filterParams"
           class="files__menu--filters"
           :file-types="data?.fileTypes || []"
-          @update:model-value="($event:FilterParams) => (filterParams = $event)"
+          @update:model-value="
+            ($event: FilterParams) => (filterParams = $event)
+          "
         />
         <SortFileList
           class="files__menu--sort"
@@ -94,7 +96,7 @@ const updateList = () => {
       <div v-if="data?.files.length" class="files__list" :class="computedClass">
         <StorageFileListItem
           v-for="file in data.files"
-          :key="file.id"
+          :key="file.id!"
           :file="file"
           :file-list="data.files"
           @update-file-list="updateList"

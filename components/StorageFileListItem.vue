@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FileObject } from "@supabase/storage-js";
+import type { FileObject } from "@supabase/storage-js";
 
 const XlsxFile = resolveComponent("XlsxFile");
 const SomeFile = resolveComponent("SomeFile");
@@ -31,7 +31,9 @@ const fileName = computed(() => {
 });
 
 const fileSize = computed(() => {
-  const size = props.file.metadata.size;
+  const size = props.file.metadata?.size;
+  if (size === null || size === undefined) return "size: unknown";
+
   const sizeLength = size.toString().length;
   if (sizeLength <= 5) {
     return `size: ${(size / 1000).toFixed(1)}KB`;
@@ -45,11 +47,13 @@ const sortFileType = computed(() => {
 });
 
 const previewFileType = computed(() => {
-  const type = props.file.metadata.mimetype;
+  const type = props.file.metadata?.mimetype;
+  if (type === null || type === undefined) return "other";
+
   const explicitTypes = type.split("/")[0];
 
   const splitName = props.file.name.split(".");
-  const fileExtension = splitName.at(-1);
+  const fileExtension = splitName[splitName.length - 1];
 
   if (explicitTypes === "image" || explicitTypes === "video") {
     return explicitTypes;
@@ -80,6 +84,7 @@ const fileComponent = computed(() => {
   if (previewFileType.value === "docx") return DocxFile;
   if (previewFileType.value === "xlsx") return XlsxFile;
   if (previewFileType.value === "other") return SomeFile;
+  return undefined;
 });
 
 const updatedFile = () => {
@@ -113,7 +118,7 @@ const updatedFile = () => {
         <video
           v-if="previewFileType === 'video'"
           class="file__preview--video"
-          :type="file.metadata.mimetype"
+          :type="file.metadata?.mimetype"
           controls
         >
           <source :src="previewUrl" />

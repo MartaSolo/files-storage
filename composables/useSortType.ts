@@ -1,4 +1,4 @@
-import { FileObject } from "@supabase/storage-js";
+import type { FileObject } from "@supabase/storage-js";
 import { getSortType } from "@/utils/helpers/getSortTypes";
 
 export const useSortType = (file?: FileObject, files?: FileObject[]) => {

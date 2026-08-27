@@ -24,7 +24,7 @@ Docker Compose _can_ be added for convenience even with one service (it lets you
 
 ```dockerfile
 # syntax=docker/dockerfile:1
-ARG NODE_VERSION=18.14.0
+ARG NODE_VERSION=22.22.2
 
 # full image — has Python + build tools needed for native modules
 FROM node:${NODE_VERSION} AS base
@@ -51,7 +51,7 @@ CMD ["node", ".output/server/index.mjs"]
 
 ```dockerfile
 # syntax=docker/dockerfile:1
-ARG NODE_VERSION=18.14.0
+ARG NODE_VERSION=22.22.2
 
 # full image — has Python + build tools needed for native modules
 FROM node:${NODE_VERSION} AS base
@@ -119,7 +119,7 @@ SUPABASE_KEY=your_key
 Opts in to the modern BuildKit syntax. Enables features like `--link` and better caching.
 
 ```dockerfile
-ARG NODE_VERSION=18.14.0
+ARG NODE_VERSION=22.22.2
 ```
 
 Defines a build-time variable for the Node version. Matches `.nvmrc`. Set once at the top — available in all `FROM` instructions throughout the file.
@@ -184,7 +184,7 @@ CMD ["node", ".output/server/index.mjs"]
 
 ```dockerfile
 # syntax=docker/dockerfile:1
-ARG NODE_VERSION=18.14.0
+ARG NODE_VERSION=22.22.2
 ```
 
 Same as above.

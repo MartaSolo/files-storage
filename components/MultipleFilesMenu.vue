@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FileObject } from "@supabase/storage-js";
+import type { FileObject } from "@supabase/storage-js";
 
 const selectedFiles = useSelectedFiles();
 const { deleteFile } = useDeleteFile();
@@ -41,8 +41,10 @@ const handleCopyFiles = async () => {
         return copyFile(file, props.fileList);
       })
     );
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   emit("filesAction");
   handleClearSelection();
@@ -61,8 +63,10 @@ const handleDownloadFiles = () => {
 const handleDeleteFiles = async () => {
   try {
     await deleteFile(selectedFiles.value);
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   emit("filesAction");
   handleClearSelection();

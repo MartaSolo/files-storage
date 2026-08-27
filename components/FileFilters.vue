@@ -34,7 +34,7 @@
             label="File type:"
             :file-types="fileTypes"
             :model-value="filters.types"
-            @update:model-value="($event:string[]) => (filters.types = $event)"
+            @update:model-value="($event: string[]) => (filters.types = $event)"
           />
         </div>
         <div class="filters__filter">
@@ -46,8 +46,8 @@
             :step="0.01"
             :min-value="filters.sizeMin"
             :max-value="filters.sizeMax"
-            @update:min-value="($event:number) => (filters.sizeMin = $event)"
-            @update:max-value="($event:number) => (filters.sizeMax = $event)"
+            @update:min-value="($event: number) => (filters.sizeMin = $event)"
+            @update:max-value="($event: number) => (filters.sizeMax = $event)"
           />
         </div>
         <div class="filters__filter">
@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
-import { FilterParams } from "@/types/FilterParams";
+import type { FilterParams } from "@/types/FilterParams";
 
 const props = defineProps<{
   fileTypes: string[];

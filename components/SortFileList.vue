@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SortOption } from "@/types/SortOptions";
-import { FileObjectKeys } from "@/types/FileObjectKeys";
+import type { SortOption } from "@/types/SortOptions";
+import type { FileObjectKeys } from "@/types/FileObjectKeys";
 
 const SortUp = resolveComponent("SortUp");
 const SortDown = resolveComponent("SortDown");
@@ -27,10 +27,11 @@ const sortOrder = useSortOrder();
 
 const isDropdownOpen = ref(false);
 
-const defaultSelectedOption = sortOptions.filter(
-  (option) =>
-    option.column === sortColumn.value && option.order === sortOrder.value
-)[0].label;
+const defaultSelectedOption =
+  sortOptions.find(
+    (option) =>
+      option.column === sortColumn.value && option.order === sortOrder.value
+  )?.label ?? sortOptions[0]!.label;
 
 const selectedOption = ref<string>(defaultSelectedOption);
 
@@ -90,7 +91,7 @@ const emit = defineEmits<{
 const selectOptionByKeyboard = () => {
   if (isDropdownOpen.value) {
     const highlightedOption = sortOptions[highlightedOptionIndex.value];
-    selectOption(highlightedOption);
+    selectOption(highlightedOption!);
     isDropdownOpen.value = false;
   } else {
     isDropdownOpen.value = true;

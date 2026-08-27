@@ -55,7 +55,9 @@ const route = useRoute();
     border-top-right-radius: inherit;
 
     &--active {
-      box-shadow: 0 7px 0 $color-white, 0 -3px 8px rgba(0, 0, 0, 0.1);
+      box-shadow:
+        0 7px 0 $color-white,
+        0 -3px 8px rgba(0, 0, 0, 0.1);
       color: $color-green-dark;
     }
 
@@ -63,7 +65,9 @@ const route = useRoute();
       background-color: $color-green-light;
       color: $text-color-active;
       opacity: 0.6;
-      transition: background-color 0.2s ease, color 0.2s ease;
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
       &:hover {
         background-color: $color-green-medium;
         color: rgba(0, 51, 51, 1);

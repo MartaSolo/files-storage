@@ -16,7 +16,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   name: string;
-  type: "image" | "video" | "docx" | "xlsx" | "pdf";
+  type: "image" | "video" | "docx" | "xlsx" | "pdf" | "other";
 }>();
 
 const selectedFiles = useSelectedFiles();

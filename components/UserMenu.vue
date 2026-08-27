@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserMenuOptions } from "@/types/UserMenuOptions";
+import type { UserMenuOptions } from "@/types/UserMenuOptions";
 
 const { logout } = useLogoutUser();
 const { checkProfileImage } = useProfileImage();
@@ -60,8 +60,10 @@ const handleLogout = () => {
   try {
     logout();
     navigateTo("/");
-  } catch (error: any) {
-    notify("error", error.message);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred.";
+    notify("error", errorMessage);
   }
   isMenuOpen.value = false;
 };
@@ -159,7 +161,8 @@ onMounted(() => {
   z-index: 9999;
   background-color: $color_white;
   border-radius: 4px;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+  box-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 

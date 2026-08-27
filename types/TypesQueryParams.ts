@@ -1,4 +1,4 @@
-import { StoragePath } from "@/types/StoragePath";
+import type { StoragePath } from "@/types/StoragePath";
 
 export interface TypesQueryParams {
   storage: StoragePath;
