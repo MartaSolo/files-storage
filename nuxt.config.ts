@@ -57,4 +57,7 @@ export default defineNuxtConfig({
       exclude: ["/register", "/login", "/", "/all-files"],
     },
   },
+  image: {
+    domains: ["rxajczyzdptktltwmbxc.supabase.co"],
+  },
 });
