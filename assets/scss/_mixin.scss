@@ -101,3 +101,24 @@
     background: $color-grey;
   }
 }
+
+@mixin skeleton-shimmer($shimmer: rgba(255, 255, 255, 0.5), $duration: 1.5s) {
+  background: $color-grey-light;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, $shimmer, transparent);
+    animation: skeleton-shimmer $duration infinite;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
