@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { SortOption } from "@/types/SortOptions";
 import type { FileObjectKeys } from "@/types/FileObjectKeys";
+import type { SortOrder } from "@/types/SortOrder";
 
 const SortUp = resolveComponent("SortUp");
 const SortDown = resolveComponent("SortDown");
@@ -16,21 +17,34 @@ const sortOptions: SortOption[] = [
   { label: "time created descending", column: "created_at", order: "desc" },
 ];
 
+const props = defineProps<{
+  sortColumn: FileObjectKeys;
+  sortOrder: SortOrder;
+}>();
+
+const emit = defineEmits<{
+  (
+    e: "setSortOptions",
+    sortselectedSortColumnColumn: FileObjectKeys,
+    selectedSortOrder: SortOrder
+  ): void;
+}>();
+
+const selectedSortColumn = ref<FileObjectKeys>(props.sortColumn);
+const selectedSortOrder = ref<SortOrder>(props.sortOrder);
+
 const root = ref<HTMLElement | null>(null);
 
 useClickOutside(root, () => {
   isDropdownOpen.value = false;
 });
 
-const sortColumn = useSortColumn();
-const sortOrder = useSortOrder();
-
 const isDropdownOpen = ref(false);
 
 const defaultSelectedOption =
   sortOptions.find(
     (option) =>
-      option.column === sortColumn.value && option.order === sortOrder.value
+      option.column === props.sortColumn && option.order === props.sortOrder
   )?.label ?? sortOptions[0]!.label;
 
 const selectedOption = ref<string>(defaultSelectedOption);
@@ -79,14 +93,10 @@ const selectOption = (chosenOption: SortOption) => {
   highlightedOptionIndex.value = sortOptions.findIndex(
     (option) => option.label === selectedOption.value
   );
-  sortColumn.value = chosenOption.column as FileObjectKeys;
-  sortOrder.value = chosenOption.order;
-  emit("setSortOptions");
+  selectedSortColumn.value = chosenOption.column as FileObjectKeys;
+  selectedSortOrder.value = chosenOption.order;
+  emit("setSortOptions", selectedSortColumn.value, selectedSortOrder.value);
 };
-
-const emit = defineEmits<{
-  (e: "setSortOptions"): void;
-}>();
 
 const selectOptionByKeyboard = () => {
   if (isDropdownOpen.value) {

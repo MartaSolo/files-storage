@@ -2,10 +2,13 @@
 import type { FilterParams } from "@/types/FilterParams";
 import type { FilesQueryParams } from "@/types/FilesQueryParams";
 import type { FilesFetchedObject } from "@/types/FilesFetchedObject";
+import type { FileObjectKeys } from "@/types/FileObjectKeys";
+import type { SortOrder } from "@/types/SortOrder";
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 
-const sortColumn = useSortColumn();
-const sortOrder = useSortOrder();
+const sortColumn = ref<FileObjectKeys>("name");
+const sortOrder = ref<SortOrder>("asc");
+
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
 const { storage } = useStorage();
@@ -57,8 +60,13 @@ const {
   query: queryParameters,
 });
 
-const updateList = () => {
-  refresh();
+const filterList = (updatedFilterParams: FilterParams) => {
+  filterParams.value = updatedFilterParams;
+};
+
+const sortList = (column: FileObjectKeys, order: SortOrder) => {
+  sortColumn.value = column;
+  sortOrder.value = order;
 };
 </script>
 
@@ -77,19 +85,19 @@ const updateList = () => {
           v-if="selectedFiles"
           class="files__menu--multiple"
           :file-list="data?.files || []"
-          @files-action="updateList"
+          @files-action="refresh"
         />
         <FileFilters
           :model-value="filterParams"
           class="files__menu--filters"
           :file-types="data?.fileTypes || []"
-          @update:model-value="
-            ($event: FilterParams) => (filterParams = $event)
-          "
+          @update:model-value="filterList"
         />
         <SortFileList
+          :sort-order="sortOrder"
+          :sort-column="sortColumn"
           class="files__menu--sort"
-          @set-sort-options="updateList"
+          @set-sort-options="sortList"
         />
         <LayoutSwitcher class="files__menu--switcher" />
       </div>
@@ -99,7 +107,7 @@ const updateList = () => {
           :key="file.id!"
           :file="file"
           :file-list="data.files"
-          @update-file-list="updateList"
+          @update-file-list="refresh"
         />
       </div>
       <BaseMessage v-else title="No files found" />

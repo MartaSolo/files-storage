@@ -1,13 +1,5 @@
-import type { FileObjectKeys } from "@/types/FileObjectKeys";
-import type { SortOrder } from "@/types/SortOrder";
 import type { LayoutType } from "@/types/LayoutType";
 import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholderSource";
-
-export const useSortColumn = () =>
-  useState<FileObjectKeys>("sort-column", () => "name");
-
-export const useSortOrder = () =>
-  useState<SortOrder>("sort-order", () => "asc");
 
 export const useLayoutType = () =>
   useState<LayoutType>("layout-type", () => "grid");
