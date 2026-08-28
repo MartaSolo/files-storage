@@ -119,7 +119,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Get file types
-  const fileTypes = getSortType(undefined, files);
+  const fileTypes = getSortType(files);
 
   // Apply filtering & sorting
   const filteredFiles = filterFiles(files, {
