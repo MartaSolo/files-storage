@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FileObject } from "@supabase/storage-js";
+import { getSortType } from "~/utils/helpers/getSortTypes";
 
 const XlsxFile = resolveComponent("XlsxFile");
 const SomeFile = resolveComponent("SomeFile");
@@ -16,7 +17,6 @@ const emit = defineEmits<{
 
 const layoutType = useLayoutType();
 const selectedFiles = useSelectedFiles();
-const { type } = useSortType(props.file);
 const { privateUrl } = useRetrievePrivateFileUrl(props.file.name);
 const { publicUrl } = useRetrievePublicFileUrl(props.file.name);
 
@@ -43,7 +43,8 @@ const fileSize = computed(() => {
 });
 
 const sortFileType = computed(() => {
-  return `type: ${type.value[0]}`;
+  const fileType = getSortType(props.file);
+  return `type: ${fileType}}`;
 });
 
 const previewFileType = computed(() => {
