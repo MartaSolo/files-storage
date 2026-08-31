@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxtjs/supabase",
     "@nuxt/image",
     "@nuxt/eslint",
+    "@nuxt/test-utils/module",
   ],
   vite: {
     server: {
@@ -59,5 +60,10 @@ export default defineNuxtConfig({
   },
   image: {
     domains: ["rxajczyzdptktltwmbxc.supabase.co"],
+  },
+  typescript: {
+    tsConfig: {
+      include: ["../tests/nuxt/**/*.{test,spec}.ts"],
+    },
   },
 });
