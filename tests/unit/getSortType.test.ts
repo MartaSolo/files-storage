@@ -2,7 +2,7 @@ import { getSortType } from "@/utils/helpers/getSortTypes";
 import {
   mockFileObject,
   mockFileObjectVariants,
-} from "./fixtures/supabase/fileObject";
+} from "../fixtures/supabase/fileObject";
 
 describe("test getSortType", () => {
   it("for a single file it returns the file type in the array", () => {
