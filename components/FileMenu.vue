@@ -41,7 +41,7 @@
       </template>
     </Transition>
     <RenameFileModal
-      v-if="showRenameModal"
+      :is-open="showRenameModal"
       :file-name="fileName"
       @close-rename-file-modal="showRenameModal = false"
       @file-name-updated="emit('fileAction')"

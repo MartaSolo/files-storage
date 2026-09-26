@@ -1,6 +1,6 @@
 <template>
   <div class="rename">
-    <BaseModal @close-modal="close">
+    <BaseModal :is-open="isOpen" @close-modal="close">
       <template #header>
         <h3 class="rename__header">Rename file</h3>
       </template>
@@ -37,6 +37,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   fileName: string;
+  isOpen: boolean;
 }>();
 
 const emit = defineEmits<{
