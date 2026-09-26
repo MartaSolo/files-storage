@@ -6,20 +6,33 @@
       { 'input--error': errorMessage },
       { 'input--success': valid && !errorMessage },
     ]"
+    data-testid="base-input"
   >
-    <label v-if="label" class="input__label" :for="name">{{ label }}</label>
+    <label
+      v-if="label"
+      class="input__label"
+      :for="name"
+      data-testid="base-input-label"
+    >
+      {{ label }}
+    </label>
     <input
       :id="name"
       v-bind="$attrs"
       class="input__input"
       :value="modelValue"
       :placeholder="placeholder"
+      data-testid="base-input-field"
       @input="onInput"
     />
     <slot />
-    <span v-if="errorMessage" class="input__error-message">{{
-      errorMessage
-    }}</span>
+    <span
+      v-if="errorMessage"
+      class="input__error-message"
+      data-testid="base-input-error"
+    >
+      {{ errorMessage }}
+    </span>
   </div>
 </template>
 

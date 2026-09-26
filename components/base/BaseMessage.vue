@@ -1,7 +1,18 @@
 <template>
   <div class="message">
-    <h2 :class="['message__title', `message__title--${type}`]">{{ title }}</h2>
-    <p v-if="description" class="message__description">{{ description }}</p>
+    <p
+      :class="['message__title', `message__title--${type}`]"
+      data-testid="base-message-title"
+    >
+      {{ title }}
+    </p>
+    <p
+      v-if="description"
+      class="message__description"
+      data-testid="base-message-description"
+    >
+      {{ description }}
+    </p>
   </div>
 </template>
 

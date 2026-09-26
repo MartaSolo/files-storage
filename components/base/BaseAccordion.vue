@@ -4,6 +4,7 @@
       id="accordionId"
       type="button"
       class="accordion__button"
+      data-testid="accordion-button"
       :aria-expanded="showContent"
       @click="showContent = !showContent"
     >
@@ -19,6 +20,7 @@
       <div
         v-if="showContent"
         class="accordion__content"
+        data-testid="accordion-content"
         role="region"
         aria-labelledby="accordionId"
       >

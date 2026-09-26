@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 interface Props {
   theme?: "white" | "green" | "light-green" | "light-gray";
   to?: string | null;
@@ -44,8 +42,13 @@ const buttonProps = computed(() => {
     v-bind="buttonProps"
     :class="computedClass"
     :aria-disabled="loading"
+    data-testid="base-button"
   >
-    <span v-if="loading" class="button__loader"></span>
+    <span
+      v-if="loading"
+      class="button__loader"
+      data-testid="button-loader"
+    ></span>
     <slot></slot>
   </component>
 </template>
