@@ -1,6 +1,6 @@
 <template>
   <div class="slider">
-    <p class="slider__label">{{ label }}</p>
+    <p class="slider__label" data-testid="slider-label">{{ label }}</p>
     <div class="slider__range minmax">
       <input
         id="min"
@@ -10,6 +10,7 @@
         :max="max"
         :value="minValue"
         :step="step"
+        data-testid="slider-range-min"
         @input="onInputMin"
       />
       <input
@@ -20,11 +21,12 @@
         :max="max"
         :value="maxValue"
         :step="step"
+        data-testid="slider-range-max"
         @input="onInputMax"
       />
     </div>
     <div class="slider__inputs">
-      <div class="slider__input_wrapper">
+      <div class="slider__input_wrapper" data-testid="slider-number-min">
         <BaseInput
           name="min-size"
           type="number"
@@ -35,11 +37,13 @@
           :step="step"
           @input="onInputMin"
         >
-          <span v-if="unit" class="slider__unit">{{ unit }}</span>
+          <span v-if="unit" class="slider__unit" data-testid="slider-unit-min">
+            {{ unit }}
+          </span>
         </BaseInput>
       </div>
       <div class="slider__dash"></div>
-      <div class="slider__input_wrapper">
+      <div class="slider__input_wrapper" data-testid="slider-number-max">
         <BaseInput
           name="max-size"
           type="number"
@@ -50,7 +54,9 @@
           :step="step"
           @input="onInputMax"
         >
-          <span v-if="unit" class="slider__unit">{{ unit }}</span>
+          <span v-if="unit" class="slider__unit" data-testid="slider-unit-max">
+            {{ unit }}
+          </span>
         </BaseInput>
       </div>
     </div>
