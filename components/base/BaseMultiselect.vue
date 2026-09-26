@@ -1,6 +1,6 @@
 <template>
   <div class="select">
-    <p class="select__title">{{ label }}</p>
+    <p class="select__title" data-testid="multiselect-label">{{ label }}</p>
     <div ref="dropdown" class="select__dropdown">
       <div class="select__container">
         <div class="select__selected">
@@ -9,6 +9,7 @@
               v-for="type in modelValue"
               :key="type"
               class="select__type"
+              :data-testid="`multiselect-selected-${type}`"
               @click="uncheckType(type)"
             >
               {{ type }}
@@ -18,9 +19,10 @@
         </div>
         <button
           class="select__button"
-          aria-labelledby="toggle dropdown"
+          aria-label="toggle dropdown"
           aria-haspopup="listbox"
           :aria-expanded="isDropdownOpen"
+          data-testid="multiselect-toggle"
           @click="toggleDropdown"
           @keyup.esc="isDropdownOpen = false"
           @keydown.down.prevent="highlightNext()"
@@ -28,15 +30,21 @@
           <component :is="isDropdownOpen ? SortUp : SortDown" />
         </button>
       </div>
-      <ul v-if="isDropdownOpen" class="select__list" role="listbox">
+      <ul
+        v-if="isDropdownOpen"
+        class="select__list"
+        role="listbox"
+        data-testid="multiselect-list"
+      >
         <li
-          v-for="(type, index) in types"
+          v-for="(type, index) in fileTypes"
           :key="type"
           class="select__listitem"
           :class="{
             'select__listitem--highlighted': highlightedIndex === index,
           }"
           role="option"
+          :data-testid="`multiselect-option-${type}`"
           @mouseover="highlightedIndex = index"
         >
           <input
@@ -46,6 +54,7 @@
             name="sortType"
             :value="type"
             :checked="modelValue.includes(type)"
+            :data-testid="`multiselect-checkbox-${type}`"
             @input="check(type, $event)"
           />
           <label
@@ -53,6 +62,7 @@
             :for="type"
             class="select__label"
             :tabindex="highlightedIndex === index ? '0' : '-1'"
+            :data-testid="`multiselect-option-label-${type}`"
             @keyup.left.prevent="highlightPrev()"
             @keyup.right.prevent="highlightNext()"
             @keyup.up.prevent="highlightPrev()"
@@ -84,24 +94,23 @@ const emit = defineEmits<{
   (e: "update:modelValue", modelValue: string[]): void;
 }>();
 
-const types = ref(props.fileTypes);
 const dropdown = ref<HTMLElement | null>(null);
 const labelsRefs = ref<HTMLLabelElement[] | null>(null);
 const isDropdownOpen = ref(false);
 const highlightedIndex = ref(-1);
 
 const prevIndex = computed(() => {
-  if (!types.value?.length) return undefined;
+  if (!props.fileTypes?.length) return undefined;
 
   return highlightedIndex.value === 0
-    ? types.value.length - 1
+    ? props.fileTypes.length - 1
     : highlightedIndex.value - 1;
 });
 
 const nextIndex = computed(() => {
-  if (!types.value?.length) return undefined;
+  if (!props.fileTypes?.length) return undefined;
 
-  return highlightedIndex.value === types.value.length - 1
+  return highlightedIndex.value === props.fileTypes.length - 1
     ? 0
     : highlightedIndex.value + 1;
 });
@@ -156,18 +165,18 @@ const uncheckType = (sortType: string) => {
 };
 
 const checkByKeyboard = (index: number) => {
-  if (!types.value?.length) return;
+  if (!props.fileTypes?.length) return;
   let updatedValue = [...props.modelValue];
 
   if (
-    types.value[index] &&
+    props.fileTypes[index] &&
     index !== -1 &&
-    !updatedValue.includes(types.value[index])
+    !updatedValue.includes(props.fileTypes[index])
   ) {
-    updatedValue.push(types.value[index]);
+    updatedValue.push(props.fileTypes[index]);
   } else {
     const filteredValue = updatedValue.filter(
-      (value) => value !== types.value?.[index]
+      (value) => value !== props.fileTypes?.[index]
     );
     updatedValue = filteredValue;
   }
