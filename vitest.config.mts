@@ -1,36 +1,38 @@
 import { defineConfig } from "vitest/config";
 import { defineVitestProject } from "@nuxt/test-utils/config";
-import { playwright } from "@vitest/browser-playwright";
 import vue from "@vitejs/plugin-vue";
+import { fileURLToPath } from "node:url";
 
 export default defineConfig({
   test: {
     globals: true,
     projects: [
-      // UNIT: plain Node, no DOM, no Nuxt runtime.
-      // For pure logic: helpers, formatters, sort/filter functions, etc.
-      await defineVitestProject({
+      // UNIT: happy-dom (no Nuxt runtime).
+      // For pure logic (helpers, formatters, sort/filter functions) and
+      // self-contained Vue components that don't use Nuxt auto-imports.
+      {
+        plugins: [vue()],
+        resolve: {
+          alias: {
+            "@": fileURLToPath(new URL("./", import.meta.url)),
+          },
+        },
         test: {
           name: "unit",
-          environment: "node",
+          environment: "happy-dom",
           globals: true,
           include: ["tests/unit/**/*.{test,spec}.ts"],
         },
-      }),
+      },
 
-      // BROWSER: real Chromium via Playwright, no Nuxt runtime booted.
-      // For plain, self-contained Vue components (Button, Input, Card...)
-      // that don't use Nuxt auto-imports/composables.
+      // E2E: real server + real browser, via @nuxt/test-utils/e2e.
+      // Each test file calls setup() and createPage()/$fetch() itself.
       {
-        plugins: [vue()],
         test: {
-          name: "browser",
-          include: ["tests/browser/**/*.{test,spec}.ts"],
-          browser: {
-            enabled: true,
-            provider: playwright(),
-            instances: [{ browser: "chromium" }],
-          },
+          name: "e2e",
+          environment: "node",
+          globals: true,
+          include: ["tests/e2e/**/*.{test,spec}.ts"],
         },
       },
 
@@ -46,17 +48,6 @@ export default defineConfig({
           include: ["tests/nuxt/**/*.{test,spec}.ts"],
         },
       }),
-
-      // E2E: real server + real browser, via @nuxt/test-utils/e2e.
-      // Each test file calls setup() and createPage()/$fetch() itself.
-      {
-        test: {
-          name: "e2e",
-          environment: "node",
-          globals: true,
-          include: ["tests/e2e/**/*.{test,spec}.ts"],
-        },
-      },
     ],
   },
 });
