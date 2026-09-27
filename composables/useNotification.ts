@@ -4,7 +4,7 @@ const theme = ref<Theme>("");
 const text = ref("");
 const isOpen = ref(false);
 const time = ref(5000);
-const timeout = ref();
+const timeout = ref<ReturnType<typeof setTimeout>>();
 
 export const useNotification = () => {
   const notify = (type: Theme, message: string) => {
@@ -21,6 +21,7 @@ export const useNotification = () => {
 
   const closeNotification = () => {
     isOpen.value = false;
+    clearTimeout(timeout.value);
   };
 
   return {
