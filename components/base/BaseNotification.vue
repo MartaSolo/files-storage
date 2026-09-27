@@ -1,13 +1,25 @@
 <template>
   <Transition name="notification">
-    <section v-if="isOpen" class="notification">
+    <section
+      v-if="isOpen"
+      class="notification"
+      role="alert"
+      aria-live="polite"
+      data-testid="notification"
+    >
       <div class="notification__container">
         <div
           :class="['notification__content', `notification__content--${theme}`]"
+          data-testid="notification-content"
         >
           {{ text }}
         </div>
-        <button class="notification__button" @click="closeNotification">
+        <button
+          class="notification__button"
+          aria-label="Close notification"
+          data-testid="notification-close-button"
+          @click="closeNotification"
+        >
           <CloseIcon />
         </button>
       </div>
