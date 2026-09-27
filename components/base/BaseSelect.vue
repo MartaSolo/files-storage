@@ -1,12 +1,14 @@
 <template>
-  <div ref="root" class="select">
+  <div ref="root" class="select" data-testid="select">
     <button
       type="button"
       role="combobox"
       aria-controls="listbox-container"
       aria-owns="listbox-container"
       :aria-expanded="isDropdownOpen"
+      :aria-activedescendant="highlightedOptionId"
       class="select__button"
+      data-testid="select-button"
       @click="toggleDropdown"
       @blur="setHighlightedIndex"
       @keydown.esc="isDropdownOpen = false"
@@ -24,14 +26,17 @@
       id="listbox-container"
       role="listbox"
       class="select__list"
+      data-testid="select-list"
     >
       <li
         v-for="(option, index) in options"
+        :id="`select-option-${index}`"
         :key="index"
         ref="listItems"
         role="option"
         :aria-selected="modelValue === option"
         class="select__list-item"
+        data-testid="select-option"
         :class="{
           active: highlightedIndex === index,
           selected: modelValue === option,
@@ -61,11 +66,16 @@ const root = ref<HTMLElement | null>(null);
 const listItems = ref<HTMLElement[] | null>(null);
 const highlightedIndex = ref(0);
 
+const highlightedOptionId = computed(() =>
+  isDropdownOpen.value ? `select-option-${highlightedIndex.value}` : undefined
+);
+
 const setHighlightedIndex = () => {
   if (props.modelValue) {
     highlightedIndex.value = props.options.indexOf(props.modelValue);
+  } else {
+    highlightedIndex.value = 0;
   }
-  highlightedIndex.value = 0;
 };
 
 onMounted(setHighlightedIndex);
@@ -107,8 +117,9 @@ const selectOptionByKeyboard = (index: number) => {
   if (isDropdownOpen.value) {
     const highlightedOption = props.options[index];
     if (highlightedOption) selectOption(highlightedOption);
+  } else {
+    isDropdownOpen.value = true;
   }
-  isDropdownOpen.value = true;
 };
 
 const scrollIntoView = () => {
@@ -120,7 +131,7 @@ const scrollIntoView = () => {
   highlightedItem.scrollIntoView({ block: "nearest" });
 };
 
-watch(highlightedIndex, scrollIntoView);
+watch([highlightedIndex, isDropdownOpen], scrollIntoView, { flush: "post" });
 </script>
 
 <style lang="scss" scoped>
