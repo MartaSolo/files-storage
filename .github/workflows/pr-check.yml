@@ -36,8 +36,22 @@ jobs:
           node-version: "22.22.2"
           cache: "npm"
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
       - run: npm run test:ci
+
+  e2e:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: https://placeholder.supabase.co
+      SUPABASE_KEY: placeholder_key
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.2"
+          cache: "npm"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
 
   build:
     runs-on: ubuntu-latest

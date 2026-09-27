@@ -66,7 +66,7 @@ npm run dev
 
 For full explanation of docker configuration go to [docs/docker.md](docs/docker.md).
 
-## Development (with live reload)
+# Development (with live reload)
 
 ```bash
 docker build -f Dockerfile.dev -t files-storage-dev .
@@ -78,7 +78,7 @@ docker run -p 3000:3000 -p 24678:24678 --env-file .env \
 
 Open http://localhost:3000. Source code changes are picked up automatically.
 
-## Production
+# Production
 
 ```bash
 docker build -t files-storage .
@@ -86,3 +86,25 @@ docker run -p 3000:3000 --env-file .env files-storage
 ```
 
 Open http://localhost:3000.
+
+# Tests
+
+This project uses a three-tier testing strategy:
+
+- **Unit** (Vitest + happy-dom) — pure logic and self-contained components
+- **Nuxt** (Vitest + full Nuxt runtime) — components/composables relying
+  on Nuxt auto-imports (`useState`, `useRoute`, etc.)
+- **E2E** (Playwright) — real browser, real Nuxt server, for
+  navigation and route-dependent behavior
+
+```bash
+npm run test        # unit + nuxt, watch mode
+npm run test:ci      # unit + nuxt, single run
+npm run test:e2e     # e2e, headless
+npm run test:e2e:ui  # e2e, interactive debugging
+```
+
+All tests run automatically on every pull request via GitHub Actions.
+
+For full configuration details, test conventions (`data-testid`, import
+aliases), and CI pipeline breakdown, see [docs/testing.md](docs/testing.md).

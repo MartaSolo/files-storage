@@ -25,19 +25,8 @@ export default defineConfig({
         },
       },
 
-      // E2E: real server + real browser, via @nuxt/test-utils/e2e.
-      // Each test file calls setup() and createPage()/$fetch() itself.
-      {
-        test: {
-          name: "e2e",
-          environment: "node",
-          globals: true,
-          include: ["tests/e2e/**/*.{test,spec}.ts"],
-        },
-      },
-
-      // NUXT: for later. Simulated DOM (happy-dom) with a full Nuxt app
-      // booted first. Use for components/composables relying on Nuxt
+      // NUXT: simulated DOM (happy-dom) with a full Nuxt app
+      // booted first. Used for components/composables relying on Nuxt
       // auto-imports, useState, useRoute, #imports, etc. Mount with
       // mountSuspended/renderSuspended from "@nuxt/test-utils/runtime".
       await defineVitestProject({

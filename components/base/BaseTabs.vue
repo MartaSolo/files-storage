@@ -1,38 +1,31 @@
 <template>
-  <ul class="tabs" role="tablist">
-    <li
-      v-for="tab in tabs"
-      :key="tab.path"
-      class="tabs__tab"
-      role="tab"
-      :aria-selected="route.path === tab.path"
-    >
-      <NuxtLink
-        :class="[
-          'tabs__link',
-          route.path === tab.path
-            ? 'tabs__link--active'
-            : 'tabs__link--inactive',
-        ]"
-        :to="tab.path"
-      >
-        {{ tab.label }}
-      </NuxtLink>
-    </li>
-  </ul>
+  <nav class="tabs" aria-label="Main navigation" data-testid="tabs-nav">
+    <ul class="tabs__list">
+      <li v-for="tab in tabs" :key="tab.path" class="tabs__tab">
+        <NuxtLink
+          class="tabs__link"
+          active-class="tabs__link--active"
+          :to="tab.path"
+          data-testid="tabs-link"
+        >
+          {{ tab.label }}
+        </NuxtLink>
+      </li>
+    </ul>
+  </nav>
 </template>
 
 <script setup lang="ts">
 defineProps<{
   tabs: { label: string; path: string }[];
 }>();
-
-const route = useRoute();
 </script>
 
 <style lang="scss" scoped>
 .tabs {
-  display: flex;
+  &__list {
+    display: flex;
+  }
 
   &__tab {
     flex-basis: 50%;
@@ -53,25 +46,22 @@ const route = useRoute();
     padding: 1rem 0;
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
+    background-color: $color-green-light;
+    color: $text-color-active;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+    &:hover {
+      background-color: $color-green-medium;
+      color: rgba(0, 51, 51, 1);
+    }
 
     &--active {
       box-shadow:
         0 7px 0 $color-white,
         0 -3px 8px rgba(0, 0, 0, 0.1);
       color: $color-green-dark;
-    }
-
-    &--inactive {
-      background-color: $color-green-light;
-      color: $text-color-active;
-      opacity: 0.6;
-      transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
-      &:hover {
-        background-color: $color-green-medium;
-        color: rgba(0, 51, 51, 1);
-      }
+      background-color: $color-white;
     }
   }
 }
