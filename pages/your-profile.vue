@@ -3,11 +3,6 @@ definePageMeta({
   layout: "no-tabs-layout",
   middleware: "no-auth",
 });
-
-onMounted(() => {
-  const isStoragePublic = useIsStoragePublic();
-  isStoragePublic.value = false;
-});
 </script>
 
 <template>
