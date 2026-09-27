@@ -38,7 +38,7 @@ jobs:
       - run: npm ci
       - run: npm run test:ci
 
-    e2e:
+  e2e:
     runs-on: ubuntu-latest
     env:
       SUPABASE_URL: https://placeholder.supabase.co
