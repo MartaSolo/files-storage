@@ -1,9 +1,9 @@
 export const useRetrievePrivateFileUrl = (fileName: string) => {
   const client = useSupabaseClient();
-
   const { storage } = useStorage();
 
   const privateUrlError = ref("");
+  const privateUrl = ref<string | undefined>();
 
   const getPrivateUrl = async () => {
     if (storage.value.bucket === "private") {
@@ -14,13 +14,12 @@ export const useRetrievePrivateFileUrl = (fileName: string) => {
       if (error) {
         privateUrlError.value = error.message;
       }
+      privateUrl.value = data?.signedUrl;
       return data?.signedUrl;
     }
   };
 
-  const { data: privateUrl } = useAsyncData(fileName, getPrivateUrl, {
-    server: false,
-  });
+  getPrivateUrl();
 
   return { privateUrl, privateUrlError, getPrivateUrl };
 };
