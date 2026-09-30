@@ -2,7 +2,12 @@
   <div :class="['list', `list--${theme}`]">
     <p class="list__title">{{ title }}</p>
     <ol class="list__list" role="list">
-      <li v-for="item in items" :key="item" class="list__item">
+      <li
+        v-for="item in items"
+        :key="item"
+        class="list__item"
+        data-testid="list-item"
+      >
         {{ item }}
       </li>
     </ol>

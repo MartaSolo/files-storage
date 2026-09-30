@@ -54,7 +54,6 @@ export const useUploadByDragAndDrop = (
     if (error) {
       errorMessages.value.push(`Error: ${error?.message}`);
       notUploadedFiles.value.push(file.name);
-      throw error;
     } else {
       uploadedFiles.value.push(file.name);
     }
@@ -64,48 +63,61 @@ export const useUploadByDragAndDrop = (
     errorMessages.value.push(`Error: some files have exceeded size`);
   };
 
-  const handleDrop = (e: DragEvent) => {
+  const handleDrop = async (e: DragEvent) => {
     e.stopPropagation();
     isDragActive.value = false;
 
     if (e.dataTransfer?.items) {
       if (numberOfFilesExceeded(e.dataTransfer.items)) return;
-      [...e.dataTransfer.items].forEach((item) => {
-        if (item.kind === "file") {
-          const file = item.getAsFile();
-          if (file) {
-            if (file.size < maxFileSizeBytes.value) {
-              uploadFileToSupabase(file);
-            } else {
-              addExceededSizeErrorMessage();
-              notUploadedFiles.value.push(file.name);
-            }
+
+      const uploads = [...e.dataTransfer.items]
+        .filter((item) => item.kind === "file")
+        .map((item) => item.getAsFile())
+        .filter((file): file is File => file !== null)
+        .map((file) => {
+          if (file.size < maxFileSizeBytes.value) {
+            return uploadFileToSupabase(file);
+          } else {
+            addExceededSizeErrorMessage();
+            notUploadedFiles.value.push(file.name);
+            return Promise.resolve();
           }
-        }
-      });
+        });
+
+      await Promise.all(uploads);
     } else if (e.dataTransfer?.files) {
       if (numberOfFilesExceeded(e.dataTransfer.files)) return;
-      [...e.dataTransfer.files].forEach((file) => {
+
+      const uploads = [...e.dataTransfer.files].map((file) => {
         if (file.size < maxFileSizeBytes.value) {
-          uploadFileToSupabase(file);
+          return uploadFileToSupabase(file);
         } else {
           addExceededSizeErrorMessage();
           notUploadedFiles.value.push(file.name);
+          return Promise.resolve();
         }
       });
+
+      await Promise.all(uploads);
     }
   };
 
-  const handleUpload = (e: Event) => {
+  const handleUpload = async (e: Event) => {
     const target = e.target as HTMLInputElement;
+
     if (!target.files || numberOfFilesExceeded(target.files)) return;
-    [...target.files].forEach((file) => {
+
+    const uploads = [...target.files].map((file) => {
       if (file.size < maxFileSizeBytes.value) {
-        uploadFileToSupabase(file);
+        return uploadFileToSupabase(file);
       } else {
+        addExceededSizeErrorMessage();
         notUploadedFiles.value.push(file.name);
+        return Promise.resolve();
       }
     });
+
+    await Promise.all(uploads);
   };
 
   const handleKeydown = (e: KeyboardEvent) => {

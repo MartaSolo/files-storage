@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" class="drag-and-drop">
+  <div ref="root" class="drag-and-drop" data-testid="drag-and-drop-root">
     <form class="drag-and-drop__form" @submit.prevent>
       <p class="drag-and-drop__info">
         You can upload max {{ maxFilesNumber }} files, max {{ maxFileSizeMB }}MB
@@ -8,6 +8,7 @@
       <div
         class="drag-and-drop__dropzone"
         :class="{ 'drag-and-drop__dropzone--active': isDragActive }"
+        data-testid="dropzone"
         @drop.prevent="handleDrop"
         @dragenter="handleDrag"
         @dragover.prevent="handleDrag"
@@ -27,6 +28,7 @@
         tabindex="0"
         role="button"
         aria-pressed="false"
+        data-testid="upload-label"
         @keydown="handleKeydown"
         @click="resetState"
       >
@@ -42,6 +44,7 @@
           type="file"
           name="file"
           multiple
+          data-testid="file-input"
           @change="handleUpload"
         />
       </label>
@@ -53,11 +56,22 @@
         title="Uploaded files:"
         :items="uploadedFiles"
         theme="success"
+        data-testid="uploaded-file-list"
       />
     </Transition>
     <Transition>
-      <div v-if="errorMessages" class="drag-and-drop__error">
-        <p v-for="message in errorMessages" :key="message">{{ message }}</p>
+      <div
+        v-if="errorMessages.length"
+        class="drag-and-drop__error"
+        data-testid="error-messages"
+      >
+        <p
+          v-for="message in errorMessages"
+          :key="message"
+          data-testid="error-message"
+        >
+          {{ message }}
+        </p>
       </div>
     </Transition>
     <Transition>
@@ -66,6 +80,7 @@
         title="Files not uploaded:"
         :items="notUploadedFiles"
         theme="failure"
+        data-testid="not-uploaded-file-list"
       />
     </Transition>
   </div>
