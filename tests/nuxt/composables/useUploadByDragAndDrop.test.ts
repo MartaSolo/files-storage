@@ -436,8 +436,8 @@ describe("useUploadByDragAndDrop", () => {
 
       await handleDrop(createItemsDropEvent(validFiles));
 
-      expect(uploadedFiles.value).toEqual([firstFile.name]);
-      expect(notUploadedFiles.value).toEqual([secondFile.name]);
+      expect(uploadedFiles.value).toEqual([firstFile?.name]);
+      expect(notUploadedFiles.value).toEqual([secondFile?.name]);
       expect(errorMessages.value).toEqual(["Error: Duplicate"]);
     });
 
