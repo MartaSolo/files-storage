@@ -61,7 +61,7 @@
     </Transition>
     <Transition>
       <div
-        v-if="errorMessages"
+        v-if="errorMessages.length"
         class="drag-and-drop__error"
         data-testid="error-messages"
       >
