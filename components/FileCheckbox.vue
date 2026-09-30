@@ -1,38 +1,38 @@
+<script setup lang="ts">
+const props = defineProps<{
+  modelValue: boolean;
+  name: string;
+  type: "image" | "video" | "docx" | "xlsx" | "pdf" | "other";
+}>();
+
+defineEmits<{
+  (e: "update:modelValue", modelValue: boolean): void;
+}>();
+
+const computedClass = computed(() => {
+  return ["checkbox__input", `checkbox__input--${props.type}`];
+});
+</script>
+
 <template>
   <div class="checkbox">
     <label class="checkbox__label" :for="props.name" :aria-label="props.name">
       <input
         :id="props.name"
-        v-model="selectedFiles"
-        :value="props.name"
+        :checked="modelValue"
         type="checkbox"
         name="file-checkbox"
         :class="computedClass"
+        @input="
+          $emit(
+            'update:modelValue',
+            ($event.target as HTMLInputElement).checked
+          )
+        "
       />
     </label>
   </div>
 </template>
-
-<script setup lang="ts">
-const props = defineProps<{
-  name: string;
-  type: "image" | "video" | "docx" | "xlsx" | "pdf" | "other";
-}>();
-
-const selectedFiles = useSelectedFiles();
-
-const isChecked = computed(() => {
-  return selectedFiles.value.includes(props.name);
-});
-
-const computedClass = computed(() => {
-  return [
-    "checkbox__input",
-    `checkbox__input--${props.type}`,
-    isChecked.value ? "checked" : "",
-  ];
-});
-</script>
 
 <style lang="scss" scoped>
 .checkbox {
@@ -63,7 +63,7 @@ const computedClass = computed(() => {
     }
   }
 
-  &__input:not(.checked):hover::before {
+  &__input:not(:checked):hover::before {
     position: absolute;
     background-image: none;
     background-color: $color-white;
@@ -114,7 +114,7 @@ const computedClass = computed(() => {
     left: 2px;
   }
 
-  &__input.checkbox__input--pdf:not(.checked):hover::before {
+  &__input.checkbox__input--pdf:not(:checked):hover::before {
     left: -1px;
   }
 
@@ -134,7 +134,7 @@ const computedClass = computed(() => {
     content: "=";
   }
 
-  &__input.checked::before {
+  &__input:checked::before {
     content: "";
     position: absolute;
     top: 2px;

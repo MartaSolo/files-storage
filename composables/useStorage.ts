@@ -11,33 +11,25 @@ export const useStorage = () => {
         bucket: "files",
         folder: "public",
       };
-    } else {
-      return {
-        bucket: "private",
-        folder: user.value.sub,
-      };
     }
+
+    return {
+      bucket: "private",
+      folder: user.value.sub,
+    };
   };
 
-  const storage = ref<StoragePath>(setStorage());
+  const storage = useState<StoragePath>("storage", setStorage);
 
   const updateStorage = () => {
-    if (!user.value?.sub || (user.value.sub && isStoragePublic.value)) {
-      storage.value.bucket = "files";
-      storage.value.folder = "public";
-    } else {
-      storage.value.bucket = "private";
-      storage.value.folder = user.value.sub;
-    }
+    storage.value = setStorage();
   };
 
-  watch(isStoragePublic, () => {
-    updateStorage();
-  });
+  watch(isStoragePublic, updateStorage);
+  watch(user, updateStorage);
 
-  watch(user, () => {
-    updateStorage();
-  });
-
-  return { storage, updateStorage };
+  return {
+    storage,
+    updateStorage,
+  };
 };

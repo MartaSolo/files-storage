@@ -4,9 +4,6 @@ import { PROFILE_PLACEHOLDER_SOURCE } from "@/utils/constants/profilePlaceholder
 export const useLayoutType = () =>
   useState<LayoutType>("layout-type", () => "grid");
 
-export const useSelectedFiles = () =>
-  useState<string[]>("selected-files", () => []);
-
 export const useIsStoragePublic = () =>
   useState("is-storage-public", () => true);
 

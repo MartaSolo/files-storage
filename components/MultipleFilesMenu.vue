@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import type { FileObject } from "@supabase/storage-js";
 
-const selectedFiles = useSelectedFiles();
 const { deleteFile } = useDeleteFile();
 const { downloadFile } = useDownloadFile();
 const { copyFile } = useCopyFile();
-const { storage } = useStorage();
 const { notify } = useNotification();
 
 const props = defineProps<{
   fileList: FileObject[];
+  selectedFiles: string[];
 }>();
 
 const emit = defineEmits<{
-  (e: "filesAction"): void;
+  (e: "filesAction" | "clearSelection"): void;
 }>();
 
-const numberOfSelectedFiles = computed(() => selectedFiles.value.length);
+const numberOfSelectedFiles = computed(() => props.selectedFiles.length);
 
 const computedWrapperClass = computed(() => {
   return numberOfSelectedFiles.value === 0 ? "inactive" : "";
@@ -30,14 +29,10 @@ const numbOfSelectedFilesLabel = computed(() => {
     : `${numberOfSelectedFiles.value} files selected`;
 });
 
-const handleClearSelection = () => {
-  selectedFiles.value = [];
-};
-
 const handleCopyFiles = async () => {
   try {
     await Promise.all(
-      selectedFiles.value.map((file) => {
+      props.selectedFiles.map((file) => {
         return copyFile(file, props.fileList);
       })
     );
@@ -47,34 +42,30 @@ const handleCopyFiles = async () => {
     notify("error", errorMessage);
   }
   emit("filesAction");
-  handleClearSelection();
+  emit("clearSelection");
 };
 
 const handleDownloadFiles = () => {
-  selectedFiles.value.forEach((file, index) => {
+  props.selectedFiles.forEach((file, index) => {
     const download = () => {
       downloadFile(file);
     };
     setTimeout(download, Number(`${index}000`));
   });
-  handleClearSelection();
+  emit("clearSelection");
 };
 
 const handleDeleteFiles = async () => {
   try {
-    await deleteFile(selectedFiles.value);
+    await deleteFile(props.selectedFiles);
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred.";
     notify("error", errorMessage);
   }
   emit("filesAction");
-  handleClearSelection();
+  emit("clearSelection");
 };
-
-watch(storage.value, () => {
-  selectedFiles.value = [];
-});
 </script>
 
 <template>
@@ -82,7 +73,7 @@ watch(storage.value, () => {
     <IconButton
       description="Clear selection"
       :disabled="isDisabled"
-      @click="handleClearSelection"
+      @click="$emit('clearSelection')"
     >
       <template #icon>
         <CloseIcon />
