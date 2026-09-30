@@ -1,29 +1,36 @@
 <script setup lang="ts">
+import type { FileType } from "@/types/fileTypes";
+
 const props = defineProps<{
   modelValue: boolean;
   name: string;
-  type: "image" | "video" | "docx" | "xlsx" | "pdf" | "other";
+  type: FileType;
 }>();
 
 defineEmits<{
-  (e: "update:modelValue", modelValue: boolean): void;
+  "update:modelValue": [value: boolean];
 }>();
 
-const computedClass = computed(() => {
-  return ["checkbox__input", `checkbox__input--${props.type}`];
-});
+const id = useId();
+
+const computedClass = computed(() => [
+  "checkbox__input",
+  `checkbox__input--${props.type}`,
+]);
 </script>
 
 <template>
-  <div class="checkbox">
-    <label class="checkbox__label" :for="props.name" :aria-label="props.name">
+  <div class="checkbox" data-testid="file-checkbox">
+    <label class="checkbox__label" :for="id">
       <input
-        :id="props.name"
+        :id="id"
         :checked="modelValue"
+        :aria-label="name"
         type="checkbox"
         name="file-checkbox"
         :class="computedClass"
-        @input="
+        data-testid="file-checkbox-input"
+        @change="
           $emit(
             'update:modelValue',
             ($event.target as HTMLInputElement).checked
