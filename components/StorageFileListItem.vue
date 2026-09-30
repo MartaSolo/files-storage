@@ -9,14 +9,15 @@ const DocxFile = resolveComponent("DocxFile");
 const props = defineProps<{
   file: FileObject;
   fileList: FileObject[];
+  isSelected: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "updateFileList"): void;
+  (e: "addFile" | "removeFile", name: string): void;
 }>();
 
 const layoutType = useLayoutType();
-const selectedFiles = useSelectedFiles();
 const { privateUrl } = useRetrievePrivateFileUrl(props.file.name);
 const { publicUrl } = useRetrievePublicFileUrl(props.file.name);
 
@@ -26,9 +27,7 @@ const previewUrl = computed(() => {
 
 const previewUrlError = ref(false);
 
-const fileName = computed(() => {
-  return props.file.name;
-});
+const fileName = computed(() => props.file.name);
 
 const fileSize = computed(() => {
   const size = props.file.metadata?.size;
@@ -88,20 +87,24 @@ const fileComponent = computed(() => {
   return undefined;
 });
 
-const updatedFile = () => {
-  emit("updateFileList");
+const handleSelection = (isChecked: boolean) => {
+  if (isChecked) {
+    emit("addFile", fileName.value);
+  } else {
+    emit("removeFile", fileName.value);
+  }
 };
 </script>
 
 <template>
   <div ref="root" class="file" :class="computedClass">
     <div class="file__details">
-      <!-- v-if="selectedFiles" added to get rid of hydration errors caused by useSelectedFiles composable -->
       <FileCheckbox
-        v-if="selectedFiles"
+        :model-value="isSelected"
         :name="fileName"
         :type="previewFileType"
         class="file__details--checkbox"
+        @update:model-value="handleSelection"
       />
       <span class="file__details--name">{{ fileName }}</span>
       <span class="file__details--size">{{ fileSize }}</span>
@@ -110,7 +113,7 @@ const updatedFile = () => {
         class="file__details--actions"
         :file-name="fileName"
         :file-list="fileList"
-        @file-action="updatedFile"
+        @file-action="$emit('updateFileList')"
       />
     </div>
     <div v-if="layoutType === 'grid'" class="file__preview">

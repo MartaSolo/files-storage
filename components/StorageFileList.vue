@@ -10,8 +10,22 @@ const sortColumn = ref<FileObjectKeys>("name");
 const sortOrder = ref<SortOrder>("asc");
 
 const layoutType = useLayoutType();
-const selectedFiles = useSelectedFiles();
 const { storage } = useStorage();
+
+const selectedFiles = ref<string[]>([]);
+
+const addFile = (filename: string) => selectedFiles.value.push(filename);
+
+const removeFile = (filename: string) => {
+  const fileIndex = selectedFiles.value.indexOf(filename);
+  selectedFiles.value.splice(fileIndex, 1);
+};
+
+const clearSelectedFiles = () => (selectedFiles.value = []);
+
+watch(storage, () => {
+  clearSelectedFiles();
+});
 
 const filterParams = ref<FilterParams>({
   name: "",
@@ -82,10 +96,11 @@ const sortList = (column: FileObjectKeys, order: SortOrder) => {
     <template v-else>
       <div class="files__menu">
         <MultipleFilesMenu
-          v-if="selectedFiles"
           class="files__menu--multiple"
           :file-list="data?.files || []"
+          :selected-files="selectedFiles"
           @files-action="refresh"
+          @clear-selection="clearSelectedFiles"
         />
         <FileFilters
           :model-value="filterParams"
@@ -107,6 +122,9 @@ const sortList = (column: FileObjectKeys, order: SortOrder) => {
           :key="file.id!"
           :file="file"
           :file-list="data.files"
+          :is-selected="selectedFiles.includes(file.name)"
+          @add-file="addFile"
+          @remove-file="removeFile"
           @update-file-list="refresh"
         />
       </div>
