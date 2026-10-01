@@ -1,42 +1,52 @@
+import {
+  PRIVATE_BUCKET,
+  PUBLIC_BUCKET,
+  PUBLIC_BUCKET_FOLDER,
+} from "@/utils/constants/supabaseStorage";
+
 export const useDownloadFile = () => {
   const client = useSupabaseClient();
   const { storage } = useStorage();
 
   const downloadFile = async (fileName: string) => {
-    let url;
+    const { bucket, folder } = storage.value;
 
-    if (storage.value.bucket === "private") {
+    let url: string;
+    let isObjectUrl = false;
+
+    if (bucket === PRIVATE_BUCKET) {
       const { data, error } = await client.storage
-        .from(storage.value.bucket)
-        .download(`${storage.value.folder}/${fileName}`);
+        .from(bucket)
+        .download(`${folder}/${fileName}`);
 
       if (error) throw new Error(error.message);
+      if (!data) throw new Error("File not found");
 
-      if (data) {
-        const file = new File([data], data.type);
-        url = URL.createObjectURL(file);
-      }
-    }
-
-    if (storage.value.bucket === "files") {
-      const { data } = await client.storage
-        .from(`${storage.value.bucket}/${storage.value.folder}`)
-        .getPublicUrl(`${fileName}`, { download: true });
+      url = URL.createObjectURL(data);
+      isObjectUrl = true;
+    } else if (bucket === PUBLIC_BUCKET) {
+      const { data } = client.storage
+        .from(bucket)
+        .getPublicUrl(`${PUBLIC_BUCKET_FOLDER}/${fileName}`, {
+          download: true,
+        });
 
       url = data.publicUrl;
+    } else {
+      throw new Error(`Unsupported bucket: ${bucket}`);
     }
 
     const link = document.createElement("a");
-    link.setAttribute("href", url || "");
+    link.setAttribute("href", url);
     link.setAttribute("download", fileName);
     link.style.display = "none";
 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    if (isObjectUrl) setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
-  return {
-    downloadFile,
-  };
+  return { downloadFile };
 };
