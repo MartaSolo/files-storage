@@ -20,7 +20,7 @@ const emit = defineEmits<{
 const layoutType = useLayoutType();
 const { storage } = useStorage();
 const { getPrivateUrl } = useRetrievePrivateFileUrl();
-const { getPublicUrl } = useRetrievePublicFileUrl();
+const { getFilePublicUrl } = useRetrievePublicFileUrl();
 
 const { data: previewUrl } = useLazyAsyncData(
   () =>
@@ -28,7 +28,8 @@ const { data: previewUrl } = useLazyAsyncData(
   async () => {
     if (previewFileType.value === "other") return null;
     return (
-      getPublicUrl(props.file.name) || (await getPrivateUrl(props.file.name))
+      getFilePublicUrl(props.file.name) ||
+      (await getPrivateUrl(props.file.name))
     );
   }
 );
