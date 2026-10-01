@@ -8,6 +8,7 @@ export const useProfileImage = () => {
   const client = useSupabaseClient<Database>();
   const user = useSupabaseUser();
   const { notify } = useNotification();
+  const { getPrivateUrl } = useRetrievePrivateFileUrl();
 
   const { storage } = useStorage();
   const profileImageSource = useProfileImageSource();
@@ -21,10 +22,7 @@ export const useProfileImage = () => {
   const setProfileImageSource = async () => {
     if (profileImageName.value) {
       try {
-        const { getPrivateUrl } = useRetrievePrivateFileUrl(
-          profileImageName.value
-        );
-        const link = await getPrivateUrl();
+        const link = await getPrivateUrl(profileImageName.value);
         if (link) profileImageSource.value = link;
       } catch (error) {
         profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;

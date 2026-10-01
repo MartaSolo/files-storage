@@ -1,16 +1,19 @@
-export const useCopyLink = (fileName: string) => {
+export const useCopyLink = () => {
   const { storage } = useStorage();
+  const { getPrivateUrl } = useRetrievePrivateFileUrl();
+  const { getPublicUrl } = useRetrievePublicFileUrl();
 
-  const copyLink = () => {
+  const copyLink = async (fileName: string) => {
     let link;
     if (storage.value.bucket === "private") {
-      const { privateUrl } = useRetrievePrivateFileUrl(fileName);
-      link = privateUrl.value;
+      link = await getPrivateUrl(fileName);
     } else {
-      const { publicUrl } = useRetrievePublicFileUrl(fileName);
-      link = publicUrl.value;
+      link = getPublicUrl(fileName);
     }
-    navigator.clipboard.writeText(link || "");
+
+    if (!link) throw new Error("Could not create link.");
+
+    await navigator.clipboard.writeText(link || "");
   };
 
   return { copyLink };

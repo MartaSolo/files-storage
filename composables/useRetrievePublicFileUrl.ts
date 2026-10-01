@@ -1,16 +1,14 @@
-export const useRetrievePublicFileUrl = (fileName: string) => {
+export const useRetrievePublicFileUrl = () => {
   const client = useSupabaseClient();
-
   const { storage } = useStorage();
-  const publicUrl = ref("");
 
-  if (storage.value.bucket === "files") {
-    const { data } = client.storage
-      .from("files/public")
-      .getPublicUrl(`${fileName}`);
+  const getPublicUrl = (fileName: string) => {
+    if (storage.value.bucket !== "files") return undefined;
 
-    publicUrl.value = data.publicUrl;
-  }
+    const { data } = client.storage.from("files/public").getPublicUrl(fileName);
 
-  return { publicUrl };
+    return data.publicUrl;
+  };
+
+  return { getPublicUrl };
 };

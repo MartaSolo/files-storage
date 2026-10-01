@@ -18,12 +18,20 @@ const emit = defineEmits<{
 }>();
 
 const layoutType = useLayoutType();
-const { privateUrl } = useRetrievePrivateFileUrl(props.file.name);
-const { publicUrl } = useRetrievePublicFileUrl(props.file.name);
+const { storage } = useStorage();
+const { getPrivateUrl } = useRetrievePrivateFileUrl();
+const { getPublicUrl } = useRetrievePublicFileUrl();
 
-const previewUrl = computed(() => {
-  return publicUrl.value || privateUrl.value;
-});
+const { data: previewUrl } = useLazyAsyncData(
+  () =>
+    `preview-${storage.value.bucket}-${storage.value.folder}-${props.file.name}`,
+  async () => {
+    if (previewFileType.value === "other") return null;
+    return (
+      getPublicUrl(props.file.name) || (await getPrivateUrl(props.file.name))
+    );
+  }
+);
 
 const previewUrlError = ref(false);
 
@@ -53,7 +61,7 @@ const previewFileType = computed(() => {
   const explicitTypes = type.split("/")[0];
 
   const splitName = props.file.name.split(".");
-  const fileExtension = splitName[splitName.length - 1];
+  const fileExtension = splitName[splitName.length - 1]?.toLocaleLowerCase();
 
   if (explicitTypes === "image" || explicitTypes === "video") {
     return explicitTypes;
