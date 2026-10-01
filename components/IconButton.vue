@@ -7,6 +7,8 @@ const props = withDefaults(
   { theme: "grey" }
 );
 
+defineOptions({ inheritAttrs: false });
+
 const isTextDisplayed = ref(false);
 
 const computedClass = computed(() => `button__btn--${props.theme}`);
@@ -22,21 +24,18 @@ const showText = () => (isTextDisplayed.value = true);
 const hideText = () => (isTextDisplayed.value = false);
 </script>
 
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-};
-</script>
-
 <template>
   <div class="button">
     <button
       class="button__btn"
+      type="button"
       :class="computedClass"
       v-bind="$attrs"
       :aria-label="description"
       @mouseenter="showText"
       @mouseleave="hideText"
+      @focus="showText"
+      @blur="hideText"
       @click="hideText"
     >
       <slot name="icon" />
