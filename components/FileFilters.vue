@@ -1,22 +1,38 @@
 <template>
-  <div class="filters">
+  <div class="filters" data-testid="file-filters">
     <div class="filters__menu">
       <IconButton
         description="File filters"
         theme="green"
+        data-testid="file-filters-toggle"
+        :aria-expanded="isFilterOpen"
         @click="toggleFilters"
       >
         <template #icon>
           <FilterIcon />
-          <div v-if="activeFilters >= 1" class="filters__number">
-            {{ activeFilters }}
+          <div
+            v-if="activeFiltersCount >= 1"
+            class="filters__number"
+            data-testid="file-filters-count"
+          >
+            {{ activeFiltersCount }}
           </div>
         </template>
       </IconButton>
     </div>
     <Transition>
-      <div v-if="isFilterOpen" class="filters__selection">
-        <button class="filters__close-button" @click="isFilterOpen = false">
+      <div
+        v-if="isFilterOpen"
+        class="filters__selection"
+        data-testid="file-filters-panel"
+      >
+        <button
+          class="filters__close-button"
+          aria-label="Close filters"
+          data-testid="file-filters-close"
+          type="button"
+          @click="isFilterOpen = false"
+        >
           <CloseIcon />
         </button>
         <div class="filters__filter">
@@ -25,6 +41,7 @@
             label="Name includes:"
             name="name-filter"
             class="filters__filter-name"
+            data-testid="file-filters-name"
             :model-value="filters.name"
             @update:model-value="($event) => (filters.name = $event as string)"
           />
@@ -32,6 +49,7 @@
         <div class="filters__filter">
           <BaseMultiselect
             label="File type:"
+            data-testid="file-filters-types"
             :file-types="fileTypes"
             :model-value="filters.types"
             @update:model-value="($event: string[]) => (filters.types = $event)"
@@ -41,6 +59,7 @@
           <BaseMinMaxSlider
             label="Size range:"
             unit="MB"
+            data-testid="file-filters-size"
             :min="0"
             :max="MAX_FILE_SIZE_MB"
             :step="0.01"
@@ -53,16 +72,24 @@
         <div class="filters__filter">
           <p class="filters__filter-label">Time created:</p>
           <TimeCreatedDatepicker
+            data-testid="file-filters-dates"
             :model-value="filters.dates"
-            @update:model-value="($event) => (filters.dates = $event as Date[])"
+            @update:model-value="
+              ($event) => (filters.dates = ($event as Date[] | null) ?? [])
+            "
           />
         </div>
         <div class="filters__actions">
-          <BaseButton theme="white" @click="handleClear">
+          <BaseButton
+            theme="white"
+            data-testid="file-filters-clear"
+            @click="handleClear"
+          >
             Clear filters
           </BaseButton>
           <BaseButton
-            :disabled="!isDateValid || !selectedFilters"
+            :disabled="!isDateValid || !hasFiltersChanged"
+            data-testid="file-filters-confirm"
             @click="handleConfirm"
           >
             Confirm
@@ -92,38 +119,36 @@ const isFilterOpen = ref(false);
 
 const filters = reactive<FilterParams>({ ...props.modelValue });
 
-const activeFilters = computed(() => {
-  let activeFilters = 0;
-  if (props.modelValue.name) activeFilters = 1;
-  if (props.modelValue.types.length) activeFilters += 1;
-  if (
-    props.modelValue.sizeMin !== 0 ||
-    props.modelValue.sizeMax !== MAX_FILE_SIZE_MB
-  )
-    activeFilters += 1;
-  if (isDateValid.value && props.modelValue.dates?.length) activeFilters += 1;
-  return activeFilters;
-});
+const hasValidDates = (dates: FilterParams["dates"]) =>
+  !!dates?.length && !dates.some((date) => date === null);
 
-const selectedFilters = computed(() => {
-  let selectedFilters = 0;
-  if (filters.name) selectedFilters = 1;
-  if (filters.types.length) selectedFilters += 1;
-  if (filters.sizeMin !== 0 || filters.sizeMax !== MAX_FILE_SIZE_MB)
-    selectedFilters += 1;
-  if (isDateValid.value && filters.dates?.length) selectedFilters += 1;
-  return selectedFilters;
-});
-
-const toggleFilters = () => {
-  isFilterOpen.value = !isFilterOpen.value;
+const countFilters = (f: FilterParams) => {
+  let count = 0;
+  if (f.name) count++;
+  if (f.types.length) count++;
+  if (f.sizeMin !== 0 || f.sizeMax !== MAX_FILE_SIZE_MB) count++;
+  if (hasValidDates(f.dates)) count++;
+  return count;
 };
 
-const isDateValid = computed(() => {
-  return !(
-    Array.isArray(filters.dates) && filters.dates?.some((el) => el === null)
-  );
-});
+const activeFiltersCount = computed(() => countFilters(props.modelValue));
+
+const isDateValid = computed(
+  () => !filters.dates.some((date) => date === null)
+);
+
+const isSameFilters = (a: FilterParams, b: FilterParams) =>
+  a.name === b.name &&
+  a.sizeMin === b.sizeMin &&
+  a.sizeMax === b.sizeMax &&
+  a.types.length === b.types.length &&
+  a.types.every((type) => b.types.includes(type)) &&
+  a.dates.length === b.dates.length &&
+  a.dates.every((date, i) => date?.getTime() === b.dates[i]?.getTime());
+
+const hasFiltersChanged = computed(
+  () => !isSameFilters(filters, props.modelValue)
+);
 
 const resetFilters = () => {
   filters.name = "";
@@ -133,22 +158,43 @@ const resetFilters = () => {
   filters.dates = [];
 };
 
+const emitFilters = () => {
+  emit("update:modelValue", {
+    ...filters,
+    types: [...filters.types],
+    dates: [...filters.dates],
+  });
+};
+
 const handleClear = () => {
-  if (activeFilters.value) {
-    resetFilters();
-    emit("update:modelValue", { ...filters });
-  }
+  resetFilters();
+  if (activeFiltersCount.value) emitFilters();
   isFilterOpen.value = false;
 };
 
 const handleConfirm = () => {
-  emit("update:modelValue", { ...filters });
+  emitFilters();
   isFilterOpen.value = false;
 };
 
-watch(storage.value, () => {
-  handleClear();
-});
+const toggleFilters = () => {
+  isFilterOpen.value = !isFilterOpen.value;
+  if (isFilterOpen.value) {
+    filters.name = props.modelValue.name;
+    filters.types = [...props.modelValue.types];
+    filters.sizeMin = props.modelValue.sizeMin;
+    filters.sizeMax = props.modelValue.sizeMax;
+    filters.dates = [...props.modelValue.dates];
+  }
+};
+
+watch(
+  storage,
+  () => {
+    handleClear();
+  },
+  { deep: true }
+);
 </script>
 
 <style lang="scss" scoped>
