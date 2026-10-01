@@ -1,7 +1,10 @@
 <template>
-  <div ref="root" class="menu">
+  <div ref="root" class="menu" data-testid="file-menu">
     <IconButton
       description="More actions"
+      aria-haspopup="menu"
+      :aria-expanded="isMenuOpen"
+      data-testid="file-menu-trigger"
       @click="toggleMenu"
       @keydown.up.prevent="highlightPrev"
       @keydown.down.prevent="highlightNext"
@@ -9,36 +12,42 @@
       @keydown.space.prevent="handleActionByKeyboard"
       @keydown.esc="isMenuOpen = false"
       @keydown.tab="isMenuOpen = false"
+      @keyup.space.prevent
     >
       <template #icon>
         <MoreActions />
       </template>
     </IconButton>
     <Transition name="menu" :duration="300">
-      <template v-if="isMenuOpen">
-        <ul :class="['menu__list', `menu__list--${menuListPosition}`]">
-          <li
-            v-for="(action, index) in actions"
-            :key="action.id"
-            class="menu__list-item"
-            :class="{
-              'menu__list-item--highlighted': highlightedIndex === index,
-            }"
+      <ul
+        v-if="isMenuOpen"
+        role="menu"
+        :class="['menu__list', `menu__list--${menuListPosition}`]"
+      >
+        <li
+          v-for="(action, index) in actions"
+          :key="action.id"
+          class="menu__list-item"
+          role="none"
+          :data-testid="`file-menu-item-${index}`"
+          :class="{
+            'menu__list-item--highlighted': highlightedIndex === index,
+          }"
+        >
+          <button
+            class="menu__item-button"
+            :data-testid="`file-menu-action-${action.id}`"
+            role="menuitem"
+            @click="handleAction(action.id)"
+            @mouseover="highlightedIndex = index"
           >
-            <button
-              class="menu__item-button"
-              :aria-label="action.label"
-              @click="handleAction(index)"
-              @mouseover="highlightedIndex = index"
-            >
-              <div class="menu__item-icon">
-                <component :is="action.svg" />
-              </div>
-              {{ action.label }}
-            </button>
-          </li>
-        </ul>
-      </template>
+            <div class="menu__item-icon">
+              <component :is="action.svg" />
+            </div>
+            {{ action.label }}
+          </button>
+        </li>
+      </ul>
     </Transition>
     <RenameFileModal
       :is-open="showRenameModal"
@@ -51,7 +60,7 @@
 
 <script setup lang="ts">
 import type { FileObject } from "@supabase/storage-js";
-import type { FileActions } from "@/types/FileActions";
+import type { FileActions, FileActionId } from "@/types/FileActions";
 
 const CopyLink = resolveComponent("CopyLink");
 const CopyFile = resolveComponent("CopyFile");
@@ -84,7 +93,7 @@ const highlightedIndex = ref(0);
 const menuListPosition = ref("bottom");
 
 const { copyFile } = useCopyFile();
-const { copyLink } = useCopyLink(props.fileName);
+const { copyLink } = useCopyLink();
 const { deleteFile } = useDeleteFile();
 const { downloadFile } = useDownloadFile();
 const { notify } = useNotification();
@@ -102,11 +111,11 @@ const nextIndex = computed(() => {
 });
 
 const highlightPrev = () => {
-  highlightedIndex.value = prevIndex.value;
+  if (isMenuOpen.value) highlightedIndex.value = prevIndex.value;
 };
 
 const highlightNext = () => {
-  highlightedIndex.value = nextIndex.value;
+  if (isMenuOpen.value) highlightedIndex.value = nextIndex.value;
 };
 
 useClickOutside(root, () => {
@@ -118,44 +127,50 @@ const toggleMenu = () => {
   highlightedIndex.value = 0;
 };
 
-const handleCopyLink = () => {
-  copyLink();
+const getErrorMessage = (error: unknown) => {
+  return error instanceof Error ? error.message : "Unknown error occurred.";
+};
+
+const handleCopyLink = async () => {
   isMenuOpen.value = false;
+  try {
+    await copyLink(props.fileName);
+  } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    notify("error", errorMessage);
+  }
 };
 
 const handleCopyFile = async () => {
+  isMenuOpen.value = false;
   try {
     await copyFile(props.fileName, props.fileList);
+    emit("fileAction");
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred.";
+    const errorMessage = getErrorMessage(error);
     notify("error", errorMessage);
   }
-  emit("fileAction");
-  isMenuOpen.value = false;
 };
 
 const handleDownloadFile = async () => {
+  isMenuOpen.value = false;
   try {
     await downloadFile(props.fileName);
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred.";
+    const errorMessage = getErrorMessage(error);
     notify("error", errorMessage);
   }
-  isMenuOpen.value = false;
 };
 
 const handleDeleteFile = async () => {
+  isMenuOpen.value = false;
   try {
     await deleteFile([props.fileName]);
+    emit("fileAction");
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred.";
+    const errorMessage = getErrorMessage(error);
     notify("error", errorMessage);
   }
-  emit("fileAction");
-  isMenuOpen.value = false;
 };
 
 const handleRenameFile = () => {
@@ -163,40 +178,48 @@ const handleRenameFile = () => {
   isMenuOpen.value = false;
 };
 
-const handleAction = (i: number) => {
-  switch (i) {
-    case 0:
+const handleAction = (id: FileActionId) => {
+  switch (id) {
+    case "copyLink":
       return handleCopyLink();
-    case 1:
+    case "copyFile":
       return handleCopyFile();
-    case 2:
+    case "downloadFile":
       return handleDownloadFile();
-    case 3:
+    case "deleteFile":
       return handleDeleteFile();
-    case 4:
+    case "renameFile":
       return handleRenameFile();
   }
 };
 
 const handleActionByKeyboard = () => {
   if (isMenuOpen.value) {
-    handleAction(highlightedIndex.value);
+    const actionId = actions?.[highlightedIndex.value]?.id;
+    if (actionId) handleAction(actionId);
+    highlightedIndex.value = 0;
   } else {
+    highlightedIndex.value = 0;
     isMenuOpen.value = true;
   }
 };
 
+const BOTTOM_MARGIN = 240;
+
 onMounted(() => {
-  const target = root.value as Element;
+  if (!root.value) return;
 
   const observerOptions = {
-    rootMargin: "0px 0px -240px 0px",
+    rootMargin: `0px 0px -${BOTTOM_MARGIN}px 0px`,
     threshold: [0, 0.25, 0.5, 0.75, 1],
   };
 
   observer.value = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.intersectionRatio < 1 && entry.boundingClientRect.top > 240) {
+      if (
+        entry.intersectionRatio < 1 &&
+        entry.boundingClientRect.top > BOTTOM_MARGIN
+      ) {
         menuListPosition.value = "top";
       } else {
         menuListPosition.value = "bottom";
@@ -204,12 +227,11 @@ onMounted(() => {
     });
   }, observerOptions);
 
-  observer.value.observe(target);
+  observer.value.observe(root.value);
 });
 
 onBeforeUnmount(() => {
-  const target = root.value as Element;
-  observer.value?.unobserve(target);
+  observer.value?.disconnect();
 });
 </script>
 

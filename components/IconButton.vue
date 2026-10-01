@@ -13,12 +13,6 @@ const isTextDisplayed = ref(false);
 
 const computedClass = computed(() => `button__btn--${props.theme}`);
 
-const WIDTH_MULTIPLIER = 7;
-
-const descriptionStyle = computed(() => {
-  return `width:${props.description.length * WIDTH_MULTIPLIER}px;`;
-});
-
 const showText = () => (isTextDisplayed.value = true);
 
 const hideText = () => (isTextDisplayed.value = false);
@@ -40,11 +34,7 @@ const hideText = () => (isTextDisplayed.value = false);
     >
       <slot name="icon" />
     </button>
-    <div
-      v-show="isTextDisplayed"
-      class="button__description"
-      :style="descriptionStyle"
-    >
+    <div v-show="isTextDisplayed" class="button__description">
       {{ description }}
     </div>
   </div>
@@ -96,7 +86,7 @@ const hideText = () => (isTextDisplayed.value = false);
   background-color: $text-color-primary;
   display: inline-block;
   color: $color-grey-lightest;
-  padding: 0.25rem 0;
+  padding: 0.25rem 0.5rem;
   margin-top: 0.25rem;
   border-radius: 5px;
   font-size: 0.75rem;
@@ -105,5 +95,7 @@ const hideText = () => (isTextDisplayed.value = false);
   display: flex;
   justify-content: center;
   z-index: 9999;
+  width: max-content;
+  white-space: nowrap;
 }
 </style>
