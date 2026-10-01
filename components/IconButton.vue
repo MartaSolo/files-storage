@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { IconButtonTheme } from "~/types/IconButtonTheme";
+
 const props = withDefaults(
   defineProps<{
     description: string;
-    theme?: "grey" | "green" | "white";
+    theme?: IconButtonTheme;
   }>(),
   { theme: "grey" }
 );
@@ -19,7 +21,7 @@ const hideText = () => (isTextDisplayed.value = false);
 </script>
 
 <template>
-  <div class="button">
+  <div class="button" data-testid="icon-button-root">
     <button
       class="button__btn"
       type="button"
@@ -34,7 +36,11 @@ const hideText = () => (isTextDisplayed.value = false);
     >
       <slot name="icon" />
     </button>
-    <div v-show="isTextDisplayed" class="button__description">
+    <div
+      v-show="isTextDisplayed"
+      class="button__description"
+      data-testid="icon-button-description"
+    >
       {{ description }}
     </div>
   </div>
