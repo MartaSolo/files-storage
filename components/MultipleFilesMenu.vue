@@ -3,7 +3,7 @@ import type { FileObject } from "@supabase/storage-js";
 
 const { deleteFile } = useDeleteFile();
 const { downloadFile } = useDownloadFile();
-const { copyFile } = useCopyFile();
+const { copyFiles } = useCopyFile();
 const { notify } = useNotification();
 
 const props = defineProps<{
@@ -31,11 +31,7 @@ const numbOfSelectedFilesLabel = computed(() => {
 
 const handleCopyFiles = async () => {
   try {
-    await Promise.all(
-      props.selectedFiles.map((file) => {
-        return copyFile(file, props.fileList);
-      })
-    );
+    await copyFiles(props.selectedFiles, props.fileList);
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred.";
