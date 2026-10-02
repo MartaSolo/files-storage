@@ -17,7 +17,7 @@
             @blur="inputTouched = true"
             @focus="handleInputFocus"
           >
-            <span class="rename__extension">{{ file.extension }}</span>
+            <span class="rename__extension">{{ extension }}</span>
           </BaseInput>
         </div>
         <p class="rename__error">{{ errorMessage }}</p>
@@ -35,6 +35,8 @@
 </template>
 
 <script setup lang="ts">
+import { splitFileName } from "@/utils/helpers/splitFileName";
+
 const props = defineProps<{
   fileName: string;
   isOpen: boolean;
@@ -45,13 +47,14 @@ const emit = defineEmits<{
 }>();
 
 const renameFile = useRenameFile();
-const file = useFileName(props.fileName);
 
-const newFileName = ref(file.name);
+const { name, extension } = splitFileName(props.fileName);
+
+const newFileName = ref(name);
 const errorMessage = ref("");
 const inputTouched = ref(false);
 
-const newFullFileName = computed(() => `${newFileName.value}${file.extension}`);
+const newFullFileName = computed(() => `${newFileName.value}${extension}`);
 
 const isDisabled = computed(() => props.fileName === newFullFileName.value);
 
