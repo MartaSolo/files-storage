@@ -32,8 +32,7 @@ export const useProfileImage = () => {
         notify("error", errorMessage);
       }
     } else {
-      profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;
-      profileImageName.value = "";
+      resetProfileImage();
     }
   };
 
@@ -102,6 +101,11 @@ export const useProfileImage = () => {
     isLoading.value = false;
   };
 
+  const resetProfileImage = () => {
+    profileImageSource.value = PROFILE_PLACEHOLDER_SOURCE;
+    profileImageName.value = "";
+  };
+
   return {
     checkProfileImage,
     upsertProfileImage,
@@ -111,5 +115,6 @@ export const useProfileImage = () => {
     profileImageError,
     selectedImage,
     isLoading,
+    resetProfileImage,
   };
 };
