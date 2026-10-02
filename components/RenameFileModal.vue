@@ -14,18 +14,37 @@
             name="rename"
             type="text"
             class="rename__input"
-            @blur="inputTouched = true"
-            @focus="handleInputFocus"
           >
-            <span class="rename__extension">{{ extension }}</span>
+            <span class="rename__extension" data-testid="rename-extension">{{
+              extension
+            }}</span>
           </BaseInput>
         </div>
-        <p class="rename__error">{{ errorMessage }}</p>
+        <p
+          v-if="errorMessage"
+          role="alert"
+          class="rename__error"
+          data-testid="rename-error"
+        >
+          {{ errorMessage }}
+        </p>
       </template>
       <template #footer>
         <div class="rename__buttons">
-          <BaseButton theme="white" @click="close"> Cancel </BaseButton>
-          <BaseButton :disabled="isDisabled" @click="handleRename">
+          <BaseButton
+            theme="white"
+            :disabled="isRenaming"
+            data-testid="rename-cancel"
+            @click="close"
+          >
+            Cancel
+          </BaseButton>
+          <BaseButton
+            :disabled="isDisabled"
+            :loading="isRenaming"
+            data-testid="rename-confirm"
+            @click="handleRename"
+          >
             Confirm
           </BaseButton>
         </div>
@@ -46,37 +65,56 @@ const emit = defineEmits<{
   (e: "closeRenameFileModal" | "fileNameUpdated"): void;
 }>();
 
-const renameFile = useRenameFile();
+const { rename } = useRenameFile();
 
-const { name, extension } = splitFileName(props.fileName);
+const fileParts = computed(() => splitFileName(props.fileName));
+const extension = computed(() => fileParts.value.extension);
 
-const newFileName = ref(name);
+const newFileName = ref(fileParts.value.name);
 const errorMessage = ref("");
-const inputTouched = ref(false);
+const isRenaming = ref(false);
 
-const newFullFileName = computed(() => `${newFileName.value}${extension}`);
+const trimmedName = computed(() => newFileName.value.trim());
 
-const isDisabled = computed(() => props.fileName === newFullFileName.value);
+const newFullFileName = computed(
+  () => `${trimmedName.value}${extension.value}`
+);
+
+const isDisabled = computed(
+  () =>
+    isRenaming.value ||
+    !trimmedName.value ||
+    newFullFileName.value === props.fileName
+);
+watch(
+  () => props.isOpen,
+  (isOpen) => {
+    if (!isOpen) return;
+    newFileName.value = fileParts.value.name;
+    errorMessage.value = "";
+  }
+);
+
+watch(newFileName, () => {
+  errorMessage.value = "";
+});
 
 const close = () => {
   emit("closeRenameFileModal");
 };
 
-const handleInputFocus = () => {
-  if (newFileName.value && inputTouched.value) {
-    errorMessage.value = "";
-  }
-};
-
 const handleRename = async () => {
+  isRenaming.value = true;
+
   try {
-    await renameFile.rename(props.fileName, newFullFileName.value);
+    await rename(props.fileName, newFullFileName.value);
     emit("fileNameUpdated");
     close();
   } catch (error) {
-    const errorMessageText =
+    errorMessage.value =
       error instanceof Error ? error.message : "Unknown error occurred.";
-    errorMessage.value = errorMessageText;
+  } finally {
+    isRenaming.value = false;
   }
 };
 </script>
