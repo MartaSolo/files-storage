@@ -3,16 +3,21 @@ export const useRenameFile = () => {
   const { storage } = useStorage();
 
   const rename = async (fileName: string, newFileName: string) => {
-    const { data, error } = await client.storage
-      .from(storage.value.bucket)
-      .move(
-        `${storage.value.folder}/${fileName}`,
-        `${storage.value.folder}/${newFileName}`
-      );
-    if (error) {
-      throw new Error(error.message);
+    const trimmedName = newFileName.trim();
+
+    if (!trimmedName || trimmedName === fileName) return;
+
+    if (trimmedName.includes("/")) {
+      throw new Error("File name cannot contain slashes");
     }
-    return data;
+
+    const { bucket, folder } = storage.value;
+
+    const { error } = await client.storage
+      .from(bucket)
+      .move(`${folder}/${fileName}`, `${folder}/${trimmedName}`);
+
+    if (error) throw error;
   };
 
   return { rename };

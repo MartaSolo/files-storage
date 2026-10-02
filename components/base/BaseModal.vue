@@ -9,14 +9,6 @@
         @keydown.tab="handleFocusTrap"
       >
         <div class="modal__container">
-          <!-- <button
-            class="modal__button"
-            data-testid="modal-close-button"
-            @click="() => {
-  emit('closeModal');
-  console.log("emitted closeModal")
-            }"
-          > -->
           <button
             class="modal__button"
             data-testid="modal-close-button"
