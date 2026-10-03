@@ -12,73 +12,102 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "filesAction" | "clearSelection"): void;
+  filesAction: [];
+  clearSelection: [];
 }>();
+
+const isLoading = ref(false);
 
 const numberOfSelectedFiles = computed(() => props.selectedFiles.length);
 
-const computedWrapperClass = computed(() => {
-  return numberOfSelectedFiles.value === 0 ? "inactive" : "";
-});
+const isDisabled = computed(
+  () => numberOfSelectedFiles.value === 0 || isLoading.value
+);
 
-const isDisabled = computed(() => numberOfSelectedFiles.value === 0);
-
-const numbOfSelectedFilesLabel = computed(() => {
+const numberOfSelectedFilesLabel = computed(() => {
   return numberOfSelectedFiles.value === 1
     ? `${numberOfSelectedFiles.value} file selected`
     : `${numberOfSelectedFiles.value} files selected`;
 });
 
+const notifyError = (error: unknown) => {
+  const errorMessage =
+    error instanceof Error ? error.message : "Unknown error occurred.";
+  notify("error", errorMessage);
+};
+
+const handleClearSelection = () => {
+  emit("clearSelection");
+};
+
 const handleCopyFiles = async () => {
+  let succeeded = false;
+  isLoading.value = true;
   try {
     await copyFiles(props.selectedFiles, props.fileList);
+    succeeded = true;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred.";
-    notify("error", errorMessage);
+    notifyError(error);
+  } finally {
+    isLoading.value = false;
   }
+  if (succeeded) emit("clearSelection");
   emit("filesAction");
-  emit("clearSelection");
+};
+
+const handleDeleteFiles = async () => {
+  let succeeded = false;
+  isLoading.value = true;
+  try {
+    await deleteFile(props.selectedFiles);
+    succeeded = true;
+  } catch (error) {
+    notifyError(error);
+  } finally {
+    isLoading.value = false;
+  }
+  if (succeeded) emit("clearSelection");
+  emit("filesAction");
 };
 
 const handleDownloadFiles = () => {
   props.selectedFiles.forEach((file, index) => {
-    const download = () => {
-      downloadFile(file);
+    const download = async () => {
+      try {
+        await downloadFile(file);
+      } catch (error) {
+        notifyError(error);
+      }
     };
-    setTimeout(download, Number(`${index}000`));
+    setTimeout(download, index * 1000);
   });
-  emit("clearSelection");
-};
-
-const handleDeleteFiles = async () => {
-  try {
-    await deleteFile(props.selectedFiles);
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred.";
-    notify("error", errorMessage);
-  }
-  emit("filesAction");
   emit("clearSelection");
 };
 </script>
 
 <template>
-  <div class="menu__files" :class="computedWrapperClass">
+  <div
+    class="menu__files"
+    :class="{ inactive: !numberOfSelectedFiles }"
+    data-testid="multiple-files-menu"
+  >
     <IconButton
       description="Clear selection"
       :disabled="isDisabled"
-      @click="$emit('clearSelection')"
+      data-testid="multiple-files-menu-clear"
+      @click="handleClearSelection"
     >
       <template #icon>
         <CloseIcon />
       </template>
     </IconButton>
-    <p class="menu__files--label">{{ numbOfSelectedFilesLabel }}</p>
+    <p class="menu__files--label" data-testid="multiple-files-menu-label">
+      {{ numberOfSelectedFilesLabel }}
+    </p>
     <IconButton
       description="Copy files"
       :disabled="isDisabled"
+      data-testid="multiple-files-menu-copy"
       @click="handleCopyFiles"
     >
       <template #icon>
@@ -88,6 +117,7 @@ const handleDeleteFiles = async () => {
     <IconButton
       description="Download files"
       :disabled="isDisabled"
+      data-testid="multiple-files-menu-download"
       @click="handleDownloadFiles"
     >
       <template #icon>
@@ -97,6 +127,7 @@ const handleDeleteFiles = async () => {
     <IconButton
       description="Delete files"
       :disabled="isDisabled"
+      data-testid="multiple-files-menu-delete"
       @click="handleDeleteFiles"
     >
       <template #icon>
