@@ -1,35 +1,28 @@
 import type { StoragePath } from "@/types/StoragePath";
 import { useSupabaseUser } from "#imports";
+import {
+  PRIVATE_BUCKET,
+  PUBLIC_BUCKET,
+  PUBLIC_BUCKET_FOLDER,
+} from "@/utils/constants/supabaseStorage";
 
 export const useStorage = () => {
   const user = useSupabaseUser();
   const isStoragePublic = useIsStoragePublic();
 
-  const setStorage = (): StoragePath => {
-    if (!user.value?.sub || (user.value.sub && isStoragePublic.value)) {
+  const storage = computed<StoragePath>(() => {
+    if (!user.value?.sub || isStoragePublic.value) {
       return {
-        bucket: "files",
-        folder: "public",
+        bucket: PUBLIC_BUCKET,
+        folder: PUBLIC_BUCKET_FOLDER,
       };
     }
 
     return {
-      bucket: "private",
+      bucket: PRIVATE_BUCKET,
       folder: user.value.sub,
     };
-  };
+  });
 
-  const storage = useState<StoragePath>("storage", setStorage);
-
-  const updateStorage = () => {
-    storage.value = setStorage();
-  };
-
-  watch(isStoragePublic, updateStorage);
-  watch(user, updateStorage);
-
-  return {
-    storage,
-    updateStorage,
-  };
+  return { storage };
 };

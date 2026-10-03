@@ -27,7 +27,6 @@ const {
 const profileImageSource = useProfileImageSource();
 const { notify } = useNotification();
 const isStoragePublic = useIsStoragePublic();
-const { updateStorage } = useStorage();
 
 watch(
   uploadedFiles,
@@ -55,7 +54,6 @@ watch(selectedImage, () => {
 
 onMounted(async () => {
   isStoragePublic.value = false;
-  await updateStorage();
   await checkProfileImage();
   getPrivateFileList();
 });
