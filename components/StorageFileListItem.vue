@@ -22,37 +22,8 @@ const { storage } = useStorage();
 const { getPrivateUrl } = useRetrievePrivateFileUrl();
 const { getFilePublicUrl } = useRetrievePublicFileUrl();
 
-const { data: previewUrl } = useLazyAsyncData(
-  () =>
-    `preview-${storage.value.bucket}-${storage.value.folder}-${props.file.name}`,
-  async () => {
-    if (previewFileType.value === "other") return null;
-    return (
-      getFilePublicUrl(props.file.name) ||
-      (await getPrivateUrl(props.file.name))
-    );
-  }
-);
-
-const previewUrlError = ref(false);
-
-const fileName = computed(() => props.file.name);
-
-const fileSize = computed(() => {
-  const size = props.file.metadata?.size;
-  if (size === null || size === undefined) return "size: unknown";
-
-  const sizeLength = size.toString().length;
-  if (sizeLength <= 5) {
-    return `size: ${(size / 1000).toFixed(1)}KB`;
-  } else {
-    return `size: ${(size / 1000000).toFixed(1)}MB`;
-  }
-});
-
-const sortFileType = computed(() => {
-  const fileType = getSortType(props.file);
-  return `type: ${fileType}}`;
+const computedClass = computed(() => {
+  return layoutType.value === "grid" ? "file--grid" : "file--list";
 });
 
 const previewFileType = computed(() => {
@@ -62,7 +33,7 @@ const previewFileType = computed(() => {
   const explicitTypes = type.split("/")[0];
 
   const splitName = props.file.name.split(".");
-  const fileExtension = splitName[splitName.length - 1]?.toLocaleLowerCase();
+  const fileExtension = splitName[splitName.length - 1]?.toLowerCase();
 
   if (explicitTypes === "image" || explicitTypes === "video") {
     return explicitTypes;
@@ -77,8 +48,46 @@ const previewFileType = computed(() => {
   }
 });
 
-const computedClass = computed(() => {
-  return layoutType.value === "grid" ? "file--grid" : "file--list";
+const needsPreviewUrl = computed(
+  () =>
+    layoutType.value === "grid" &&
+    ["image", "video", "pdf"].includes(previewFileType.value)
+);
+
+const { data: previewUrl } = useLazyAsyncData(
+  () =>
+    `preview-${storage.value.bucket}-${storage.value.folder}-${props.file.name}-${needsPreviewUrl.value ? "on" : "off"}`,
+  async () => {
+    if (!needsPreviewUrl.value) return null;
+    return (
+      getFilePublicUrl(props.file.name) ||
+      (await getPrivateUrl(props.file.name))
+    );
+  }
+);
+
+const previewUrlError = ref(false);
+
+watch(
+  () => props.file.name,
+  () => (previewUrlError.value = false)
+);
+
+const fileName = computed(() => props.file.name);
+
+const fileSize = computed(() => {
+  const size = props.file.metadata?.size;
+  if (size === null || size === undefined) return "size: unknown";
+
+  if (size < 1_000_000) {
+    return `size: ${(size / 1000).toFixed(1)}KB`;
+  }
+  return `size: ${(size / 1_000_000).toFixed(1)}MB`;
+});
+
+const sortFileType = computed(() => {
+  const fileType = getSortType(props.file);
+  return `type: ${fileType}`;
 });
 
 const filePreviewComponent = computed(() => {
@@ -106,7 +115,7 @@ const handleSelection = (isChecked: boolean) => {
 </script>
 
 <template>
-  <div ref="root" class="file" :class="computedClass">
+  <div class="file" :class="computedClass" data-testid="file-item">
     <div class="file__details">
       <FileCheckbox
         :model-value="isSelected"
@@ -115,9 +124,15 @@ const handleSelection = (isChecked: boolean) => {
         class="file__details--checkbox"
         @update:model-value="handleSelection"
       />
-      <span class="file__details--name">{{ fileName }}</span>
-      <span class="file__details--size">{{ fileSize }}</span>
-      <span class="file__details--type">{{ sortFileType }}</span>
+      <span class="file__details--name" data-testid="file-item-name">{{
+        fileName
+      }}</span>
+      <span class="file__details--size" data-testid="file-item-size">{{
+        fileSize
+      }}</span>
+      <span class="file__details--type" data-testid="file-item-type">{{
+        sortFileType
+      }}</span>
       <FileMenu
         class="file__details--actions"
         :file-name="fileName"
@@ -125,36 +140,56 @@ const handleSelection = (isChecked: boolean) => {
         @file-action="$emit('updateFileList')"
       />
     </div>
-    <div v-if="layoutType === 'grid'" class="file__preview">
-      <div v-if="!previewUrl" class="file__preview--placeholder"></div>
+    <div
+      v-if="layoutType === 'grid'"
+      class="file__preview"
+      data-testid="file-item-preview"
+    >
+      <component
+        :is="fileComponent"
+        v-if="filePreviewComponent"
+        class="file__preview--component"
+        data-testid="file-item-preview-component"
+      />
+      <div
+        v-else-if="!previewUrl"
+        class="file__preview--placeholder"
+        data-testid="file-item-preview-placeholder"
+      ></div>
       <template v-else>
         <video
           v-if="previewFileType === 'video'"
           class="file__preview--video"
-          :type="file.metadata?.mimetype"
+          :class="{ 'file__preview--placeholder': previewUrlError }"
           controls
+          data-testid="file-item-preview-video"
         >
-          <source :src="previewUrl" />
+          <source
+            :src="previewUrl"
+            :type="file.metadata?.mimetype"
+            data-testid="file-item-preview-video-source"
+            @error="previewUrlError = true"
+          />
           Your browser does not support HTML video.
         </video>
-        <embed
+        <object
           v-else-if="previewFileType === 'pdf'"
           class="file__preview--embed"
-          :src="previewUrl"
+          :data="previewUrl"
           type="application/pdf"
-          frameBorder="0"
-        />
-        <component
-          :is="fileComponent"
-          v-else-if="filePreviewComponent"
-          class="file__preview--component"
-        />
+          data-testid="file-item-preview-pdf"
+        >
+          <a :href="previewUrl" target="_blank" class="file__preview--link">
+            Open PDF
+          </a>
+        </object>
         <a
           v-else
           :href="previewUrl"
           target="_blank"
           class="file__preview--link"
           :class="{ 'file__preview--placeholder': previewUrlError }"
+          data-testid="file-item-preview-link"
         >
           <nuxt-img
             :src="previewUrl"
@@ -165,6 +200,7 @@ const handleSelection = (isChecked: boolean) => {
             quality="80"
             sizes="xs:100vw sm:100vw md:50vw lg:50vw xl:30vw 2xl:30vw"
             class="file__preview--image"
+            data-testid="file-item-preview-image"
             @error="previewUrlError = true"
           />
         </a>
