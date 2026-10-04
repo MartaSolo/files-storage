@@ -1,9 +1,9 @@
-import type { FileObjectKeys } from "@/types/FileObjectKeys";
 import type { SortOrder } from "@/types/SortOrder";
+import type { SortColumn } from "@/types/SortOptions";
 import type { StoragePath } from "@/types/StoragePath";
 
 export interface FilesQueryParams {
-  key: FileObjectKeys;
+  key: SortColumn;
   order: SortOrder;
   storage: StoragePath;
   name?: string;

@@ -1,11 +1,14 @@
 import type { SortOrder } from "@/types/SortOrder";
-import type {
-  FileObjectKeys,
-  FileObjectMetadataKeys,
-} from "@/types/FileObjectKeys";
+import type { FileObject } from "@supabase/storage-js";
 
-export type SortColumn =
-  Extract<FileObjectKeys, "name" | "created_at"> | FileObjectMetadataKeys;
+export const sortValueGetters = {
+  name: (file: FileObject) => file.name,
+  created_at: (file: FileObject) => file.created_at,
+  mimetype: (file: FileObject) => file.metadata?.mimetype,
+  size: (file: FileObject) => file.metadata?.size,
+};
+
+export type SortColumn = keyof typeof sortValueGetters;
 
 export interface SortOption {
   label: string;

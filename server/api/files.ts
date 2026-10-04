@@ -3,10 +3,8 @@ import type { FilesQueryParams } from "~~/types/FilesQueryParams";
 import { serverSupabaseClient } from "#supabase/server";
 import { getSortType } from "@/utils/helpers/getSortTypes";
 import type { SortOrder } from "@/types/SortOrder";
-import type {
-  FileObjectKeys,
-  FileObjectMetadataKeys,
-} from "@/types/FileObjectKeys";
+import { sortValueGetters } from "@/types/SortOptions";
+import type { SortColumn } from "@/types/SortOptions";
 
 const MB_TO_BYTES = 1000000;
 
@@ -72,26 +70,27 @@ const filterFiles = (
  */
 const sortFiles = (
   files: FileObject[],
-  key: FileObjectKeys | FileObjectMetadataKeys,
+  key: SortColumn,
   order: SortOrder
 ): FileObject[] => {
-  const sortOrder = order === "asc" ? 1 : -1;
+  const getValue = sortValueGetters[key];
+  const direction = order === "asc" ? 1 : -1;
 
-  return [...files].sort((e1, e2) => {
-    const a =
-      key in e1
-        ? e1[key as FileObjectKeys]
-        : e1.metadata?.[key as FileObjectMetadataKeys];
-    const b =
-      key in e2
-        ? e2[key as FileObjectKeys]
-        : e2.metadata?.[key as FileObjectMetadataKeys];
+  return [...files].sort((a, b) => {
+    const valueA = getValue(a);
+    const valueB = getValue(b);
 
-    if (key === "name") {
-      return sortOrder === 1 ? a.localeCompare(b) : b.localeCompare(a);
+    if (valueA == null && valueB == null) return 0;
+    if (valueA == null) return 1; // empty (eg. folders) at the end
+    if (valueB == null) return -1;
+
+    if (typeof valueA === "string" && typeof valueB === "string") {
+      return valueA.localeCompare(valueB) * direction;
     }
-
-    return (a < b ? -1 : a > b ? 1 : 0) * sortOrder;
+    if (typeof valueA === "number" && typeof valueB === "number") {
+      return (valueA - valueB) * direction;
+    }
+    return 0;
   });
 };
 
