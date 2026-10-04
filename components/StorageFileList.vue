@@ -2,11 +2,11 @@
 import type { FilterParams } from "@/types/FilterParams";
 import type { FilesQueryParams } from "@/types/FilesQueryParams";
 import type { FilesFetchedObject } from "@/types/FilesFetchedObject";
-import type { FileObjectKeys } from "@/types/FileObjectKeys";
 import type { SortOrder } from "@/types/SortOrder";
+import type { SortColumn } from "@/types/SortOptions";
 import { MAX_FILE_SIZE_MB } from "@/utils/constants/maxFileSizeMB";
 
-const sortColumn = ref<FileObjectKeys>("name");
+const sortColumn = ref<SortColumn>("name");
 const sortOrder = ref<SortOrder>("asc");
 
 const layoutType = useLayoutType();
@@ -78,7 +78,7 @@ const filterList = (updatedFilterParams: FilterParams) => {
   filterParams.value = updatedFilterParams;
 };
 
-const sortList = (column: FileObjectKeys, order: SortOrder) => {
+const sortList = (column: SortColumn, order: SortOrder) => {
   sortColumn.value = column;
   sortOrder.value = order;
 };
