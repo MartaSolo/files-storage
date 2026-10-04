@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { SortOption } from "@/types/SortOptions";
-import type { FileObjectKeys } from "@/types/FileObjectKeys";
+import type { SortOption, SortColumn } from "@/types/SortOptions";
 import type { SortOrder } from "@/types/SortOrder";
 
 const SortUp = resolveComponent("SortUp");
@@ -18,40 +17,33 @@ const sortOptions: SortOption[] = [
 ];
 
 const props = defineProps<{
-  sortColumn: FileObjectKeys;
+  sortColumn: SortColumn;
   sortOrder: SortOrder;
 }>();
 
 const emit = defineEmits<{
   (
     e: "setSortOptions",
-    sortselectedSortColumnColumn: FileObjectKeys,
+    selectedSortColumn: SortColumn,
     selectedSortOrder: SortOrder
   ): void;
 }>();
 
-const selectedSortColumn = ref<FileObjectKeys>(props.sortColumn);
-const selectedSortOrder = ref<SortOrder>(props.sortOrder);
+const selectedOption = computed(
+  () =>
+    sortOptions.find(
+      (option) =>
+        option.column === props.sortColumn && option.order === props.sortOrder
+    ) ?? sortOptions[0]!
+);
+
+const selectedIndex = computed(() => sortOptions.indexOf(selectedOption.value));
 
 const root = ref<HTMLElement | null>(null);
 
-useClickOutside(root, () => {
-  isDropdownOpen.value = false;
-});
-
 const isDropdownOpen = ref(false);
 
-const defaultSelectedOption =
-  sortOptions.find(
-    (option) =>
-      option.column === props.sortColumn && option.order === props.sortOrder
-  )?.label ?? sortOptions[0]!.label;
-
-const selectedOption = ref<string>(defaultSelectedOption);
-
-const highlightedOptionIndex = ref(
-  sortOptions.map((option) => option.label).indexOf(selectedOption.value)
-);
+const highlightedOptionIndex = ref(selectedIndex.value);
 
 const sortOptionsLength = sortOptions.length;
 
@@ -65,17 +57,42 @@ const nextOptionIndex = computed(() => {
   return next > sortOptionsLength - 1 ? 0 : next;
 });
 
-const highlightPrevOption = () => {
-  highlightedOptionIndex.value = prevOptionIndex.value;
+const openDropdown = () => {
+  highlightedOptionIndex.value = selectedIndex.value;
+  isDropdownOpen.value = true;
 };
 
-const highlightNextOption = () => {
-  highlightedOptionIndex.value = nextOptionIndex.value;
+const closeDropdown = () => {
+  isDropdownOpen.value = false;
+};
+
+const toggleOptions = () => {
+  if (isDropdownOpen.value) {
+    closeDropdown();
+  } else {
+    openDropdown();
+  }
+};
+
+const handleArrowUp = () => {
+  if (isDropdownOpen.value) {
+    highlightedOptionIndex.value = prevOptionIndex.value;
+  } else {
+    openDropdown();
+  }
+};
+
+const handleArrowDown = () => {
+  if (isDropdownOpen.value) {
+    highlightedOptionIndex.value = nextOptionIndex.value;
+  } else {
+    openDropdown();
+  }
 };
 
 const calculatedClass = (optionLabel: string, optionIndex: number) => {
   const selectedClass =
-    optionLabel === selectedOption.value ? "sort__option--selected" : "";
+    optionLabel === selectedOption.value.label ? "sort__option--selected" : "";
   const highlightedClass =
     optionIndex === highlightedOptionIndex.value
       ? "sort__option--highlighted"
@@ -83,70 +100,86 @@ const calculatedClass = (optionLabel: string, optionIndex: number) => {
   return [selectedClass, highlightedClass];
 };
 
-const toggleOptions = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
-
 const selectOption = (chosenOption: SortOption) => {
-  toggleOptions();
-  selectedOption.value = chosenOption.label;
-  highlightedOptionIndex.value = sortOptions.findIndex(
-    (option) => option.label === selectedOption.value
-  );
-  selectedSortColumn.value = chosenOption.column as FileObjectKeys;
-  selectedSortOrder.value = chosenOption.order;
-  emit("setSortOptions", selectedSortColumn.value, selectedSortOrder.value);
+  closeDropdown();
+  if (
+    chosenOption.column !== props.sortColumn ||
+    chosenOption.order !== props.sortOrder
+  ) {
+    emit("setSortOptions", chosenOption.column, chosenOption.order);
+  }
 };
 
 const selectOptionByKeyboard = () => {
   if (isDropdownOpen.value) {
     const highlightedOption = sortOptions[highlightedOptionIndex.value];
-    selectOption(highlightedOption!);
-    isDropdownOpen.value = false;
+    if (highlightedOption) selectOption(highlightedOption);
   } else {
-    isDropdownOpen.value = true;
+    openDropdown();
   }
 };
+
+const sortButtonId = useId();
+const sortDropdownId = useId();
+const spanId = useId();
+
+const getOptionId = (option: SortOption) =>
+  `${sortDropdownId}-${option.column}-${option.order}`;
+
+const highlightedOptionId = computed(() => {
+  if (!isDropdownOpen.value) return undefined;
+  const option = sortOptions[highlightedOptionIndex.value];
+  return option ? getOptionId(option) : undefined;
+});
+
+useClickOutside(root, () => {
+  closeDropdown();
+});
 </script>
 
 <template>
-  <div ref="root" class="sort">
+  <div ref="root" class="sort" data-testid="sort">
     <div class="sort__select">
-      <span id="sort-label" class="sort__label">Sort by:</span>
+      <span :id="spanId" class="sort__label">Sort by:</span>
       <button
-        id="sort-button"
+        :id="sortButtonId"
         class="sort__selected"
-        aria-haspopup="listbox"
+        role="combobox"
+        :aria-activedescendant="highlightedOptionId"
         :aria-expanded="isDropdownOpen"
-        aria-controls="sort-dropdown"
+        :aria-controls="sortDropdownId"
+        :aria-labelledby="spanId"
+        data-testid="sort-button"
         @click="toggleOptions"
         @keydown.enter.prevent="selectOptionByKeyboard"
         @keydown.space.prevent="selectOptionByKeyboard"
-        @keydown.up.prevent="highlightPrevOption"
-        @keydown.down.prevent="highlightNextOption"
-        @keydown.escape="isDropdownOpen = false"
-        @keydown.tab="isDropdownOpen = false"
+        @keydown.up.prevent="handleArrowUp"
+        @keydown.down.prevent="handleArrowDown"
+        @keydown.escape="closeDropdown"
+        @keydown.tab="closeDropdown"
       >
-        {{ selectedOption }}
+        {{ selectedOption.label }}
         <component :is="isDropdownOpen ? SortUp : SortDown" />
       </button>
     </div>
     <ul
       v-if="isDropdownOpen"
-      id="sort-dropdown"
+      :id="sortDropdownId"
       class="sort__dropdown"
-      tabindex="-1"
       role="listbox"
-      aria-labelledby="sort-button"
+      :aria-labelledby="spanId"
     >
       <li
         v-for="(option, index) in sortOptions"
-        :id="option.label"
-        :key="option.label"
+        :id="getOptionId(option)"
+        :key="getOptionId(option)"
         class="sort__option"
         :class="calculatedClass(option.label, index)"
         role="option"
-        :aria-selected="option.label === selectedOption"
+        :aria-selected="option.label === selectedOption.label"
+        data-testid="sort-option"
+        @mousedown.prevent
+        @mouseenter="highlightedOptionIndex = index"
         @click="selectOption(option)"
       >
         {{ option.label }}
